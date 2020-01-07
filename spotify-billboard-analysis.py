@@ -60,7 +60,7 @@ ax.set_xticks(np.arange(30))
 ax.set_xticklabels(genresJoined['spotify_genre'][0:30], rotation=45, ha="right", rotation_mode="anchor")
 ax.set_xlabel("Genre")
 fig.tight_layout()
-fig.suptitle("Frequency of Genres of Billboard Hot 100 Songs", fontsize=20)
+fig.suptitle("Frequency of Genres of Billboard Songs", fontsize=20)
 fig.subplots_adjust(top=0.9)
 fig.savefig("images/genresJoined.png")
 
@@ -74,7 +74,7 @@ ax.set_xticks(np.arange(30))
 ax.set_xticklabels(genres['spotify_genre'][0:30], rotation=45, ha="right", rotation_mode="anchor")
 ax.set_xlabel("Genre")
 fig.tight_layout()
-fig.suptitle("Frequency of Genres of Billboard Hot 100 Songs (Unique)", fontsize=20)
+fig.suptitle("Frequency of Genres of Billboard Songs (Unique)", fontsize=20)
 fig.subplots_adjust(top=0.9)
 fig.savefig("images/genres.png")
 
@@ -94,36 +94,31 @@ for ax in axs.flat:
     ax.set_title(decades[i], fontsize="large")
     i += 1
 fig.tight_layout()
-fig.suptitle("Frequency of Genres of Billboard Hot 100 Songs by Decade", fontsize=30)
+fig.suptitle("Frequency of Genres of Billboard Songs by Decade", fontsize=28)
 fig.subplots_adjust(top=0.9)
 fig.savefig("images/genresJoinedDecade.png")
 
 
-# Mean of each numerical metric by year
-numericalsYear = [joined.columns.tolist()[1]] + joined.columns.tolist()[11:21]
-numericalMetricsYear = joined[numericalsYear].groupby(['Year']).aggregate(np.nanmean).reset_index()
-numericalMetricsYear = numericalMetricsYear.rename(columns={'spotify_track_duration_ms': 'trackduration'})
-for metric in numericalMetricsYear.columns.tolist()[1:]:
+# Explicitness
+explicitness = joined[['Year', 'spotify_track_explicit']].dropna()
+explicitness['num'] = explicitness['spotify_track_explicit'].astype(int)
+explicitness = explicitness.groupby(['Year']).aggregate(np.nanmean).reset_index()
+fig, ax = plt.subplots()
+ax.plot(explicitness['Year'], explicitness['num'])
+ax.set_xlabel("Year")
+fig.suptitle("Explicitness of Billboard Songs", fontsize=14)
+fig.savefig("images/explicitness.png")
+
+
+# Mean of each numerical metric
+numericals = [joined.columns.tolist()[1]] + joined.columns.tolist()[11:21]
+numericalMetrics = joined[numericals].groupby(['Year']).aggregate(np.nanmean).reset_index()
+numericalMetrics = numericalMetrics.rename(columns={'spotify_track_duration_ms': 'trackduration'})
+for metric in numericalMetrics.columns.tolist()[1:]:
     fig, ax = plt.subplots()
-    ax.plot(np.arange(1958, 2020), numericalMetricsYear[metric])
+    ax.plot(numericalMetrics['Year'], numericalMetrics[metric])
+    if metric not in ['trackduration', 'loudness', 'tempo']:
+        ax.set_ylim((0, 1))
     ax.set_xlabel("Year")
-    fig.suptitle("Mean {} of Billboard Hot 100 Songs by Year".format(metric.capitalize()), fontsize=12)
+    fig.suptitle("Mean {} of Billboard Songs by Year".format(metric.capitalize()), fontsize=14)
     fig.savefig("images/{}Year.png".format(metric))
-
-
-# Mean of each numerical metric by decade
-numericalsDecade = [joined.columns.tolist()[2]] + joined.columns.tolist()[11:21]
-numericalMetricsDecade = joined[numericalsDecade].groupby(['Decade']).aggregate(np.nanmean).reset_index()
-numericalMetricsDecade = numericalMetricsDecade.rename(columns={'spotify_track_duration_ms': 'trackduration'})
-for metric in numericalMetricsDecade.columns.tolist()[1:]:
-    fig, ax = plt.subplots()
-    ax.bar(np.arange(7), numericalMetricsDecade[metric])
-    ax.set_xticks(np.arange(7))
-    ax.set_xticklabels(numericalMetricsDecade['Decade'], rotation=90)
-    ax.set_xlabel("Decade")
-    fig.suptitle("Mean {} of Billboard Hot 100 Songs by Year".format(metric.capitalize()), fontsize=12)
-    fig.savefig("images/{}Decade.png".format(metric))
-
-
-
-
