@@ -11,12 +11,13 @@ features['spotify_genre'] = features['spotify_genre'].apply(lambda l: [s[1:-1] f
 weeks = pd.read_csv("data/hot-stuff.csv", converters={'WeekID': lambda d: datetime. \
                     strptime(d,"%m/%d/%Y").date()})
 joined = weeks.merge(features, on='SongID')
+#joined.to_csv("data/weeks-features-joined.csv")
 
 
 # Genre histogram
 featuresExpanded = features.explode('spotify_genre')
 featuresExpanded = featuresExpanded[featuresExpanded.spotify_genre != ''].dropna()
-featuresExpanded.to_csv("data/features-expanded.csv")
+#featuresExpanded.to_csv("data/features-expanded.csv")
 
 featureGenres = featuresExpanded.groupby('spotify_genre')['SongID'].count().reset_index() \
                     .sort_values(by=['SongID'], ascending=False)
