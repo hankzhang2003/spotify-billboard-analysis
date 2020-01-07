@@ -3,5 +3,4 @@
 .ipynb_checkpoints
 *.bak
 *.swp
-*.xlsx
-*.csv
+.data/
