@@ -4,7 +4,7 @@
 
 ### Description of Dataset
 
-This dataset contains information about the Billboard Hot 100 Songs chart ranging from 8/2/1958 to 6/22/2019.  The data was taken from data.world.  The first data table contains data about the position of each song on the chart over the time period and has 320,000 rows.  The second data table contains data about the features of each song and has 28,500 rows.
+This dataset contains information about the Billboard Hot 100 Songs chart ranging from August 1958 to January 2020.  The data was taken from data.world.  The first data table contains data about the position of each song on the chart over the time period and has 320,000 rows.  The second data table contains data about the features of each song and has 28,500 rows.
 
 &nbsp;
 
