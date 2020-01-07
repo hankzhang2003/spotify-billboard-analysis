@@ -4,7 +4,9 @@
 
 ### Description of Dataset
 
-This dataset contains information about the Billboard Hot 100 Songs chart ranging from 8/2/1958 to 6/22/2019.  The data was taken from data.world.  The first data table contains data about the position of each song on the chart over the time period and has 318,000 rows.  The second data table contains data about the features of each song and has 28,000 rows.
+This dataset contains information about the Billboard Hot 100 Songs chart ranging from 8/2/1958 to 6/22/2019.  The data was taken from data.world.  The first data table contains data about the position of each song on the chart over the time period and has 320,000 rows.  The second data table contains data about the features of each song and has 28,500 rows.
+
+&nbsp;
 
 ### Columns
 
@@ -19,10 +21,12 @@ This dataset contains information about the Billboard Hot 100 Songs chart rangin
 * **Peak position:** The peak position of a song on the chart.
 * **Weeks on chart:** The number of weeks a song has stayed on the chart.
 
+* **Spotify genre:** A list containing all the genres a track is classified under.
 * **Spotify track ID:** The ID of a track in Spotify's database.
-* **Artist genre:** A list containing all the genres a track is classified under.
+* **Spotify track album:** Name of album.
+* **Spotify track explicit:** Whether a track is considered explicit.
 * **Spotify track duration ms:** The length of the track in milliseconds.
-* **Spotify track popularity:**
+* **Spotify track popularity:** A measure of how popular a track is, based on the total number of plays and recency of plays.  Range [0, 100].
 * **Danceability:** A measure of how suitable a track is for dancing based on a combination of elements including tempo, rhythm stability, beat strength, and overall regularity.  Range [0, 1].
 * **Energy:** A measure of intensity and activity, manifested in features such as dynamic range, perceived loudness, timbre, onset rate, and general entropy. Range [0, 1].
 * **Key:** The estimated overall key of the track, using standard pitch class notation.  0 = C, 1 = C\#/D♭, 2 = D,..., 11 = B. 
