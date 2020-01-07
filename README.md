@@ -1,14 +1,14 @@
 # Analysis of Spotify Billboard Hot 100 Songs
 
-## By: Hank Zhang
+# By: Hank Zhang
 
-### Description of Dataset
+## Description of Dataset
 
 This dataset contains information about the Billboard Hot 100 Songs chart ranging from August 1958 to January 2020.  The data was taken from data.world.  The first data table (hot-stuff.csv, also known as weeks) contains data about the position of each song on the chart over the time period and has 320,000 rows.  The second data table (hot-100-audio features.csv, also known as features) contains data about the features of each song and has 28,500 rows.
 
 &nbsp;
 
-### Columns
+## Columns
 
 * **URL:** The URL of the list of Billboard Hot 100 Songs for that week.
 * **WeekID:** A string containing the date at which each measurement of the Billboard Hot 100 Songs was taken.
@@ -51,5 +51,6 @@ Since the spotify genre column in the features table was in the form of a list, 
 
 &nbsp;
 
-### Plots
+## Plots
+
 
