@@ -90,8 +90,8 @@ for ax in axs.flat:
     ax.bar(np.arange(15), temp['SongID'].iloc[0:15])
     ax.set_ylim((0, 24000))
     ax.set_xticks(np.arange(15))
-    ax.set_xticklabels(temp['spotify_genre'][0:15], rotation=45, ha="right", rotation_mode="anchor")
-    ax.set_title(decades[i])
+    ax.set_xticklabels(temp['spotify_genre'][0:15], fontsize="large", rotation=45, ha="right", rotation_mode="anchor")
+    ax.set_title(decades[i], fontsize="large")
     i += 1
 fig.tight_layout()
 fig.suptitle("Frequency of Genres of Billboard Hot 100 Songs by Decade", fontsize=30)
