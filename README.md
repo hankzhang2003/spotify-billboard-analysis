@@ -4,7 +4,7 @@
 
 ### Description of Dataset
 
-This dataset contains information about the Billboard Hot 100 Songs chart ranging from August 1958 to January 2020.  The data was taken from data.world.  The first data table contains data about the position of each song on the chart over the time period and has 320,000 rows.  The second data table contains data about the features of each song and has 28,500 rows.
+This dataset contains information about the Billboard Hot 100 Songs chart ranging from August 1958 to January 2020.  The data was taken from data.world.  The first data table (hot-stuff.csv, also known as weeks) contains data about the position of each song on the chart over the time period and has 320,000 rows.  The second data table (hot-100-audio features.csv, also known as features) contains data about the features of each song and has 28,500 rows.
 
 &nbsp;
 
@@ -42,7 +42,14 @@ This dataset contains information about the Billboard Hot 100 Songs chart rangin
 * **Tempo:** The overall estimated speed of a track in beats per minute (BPM).  Corresponds to the average beat duration within the track.
 * **Time signature:** An estimate of how many beats are in each measure.  Also known as meter.
 
-The columns 'url', 'Instance', 'Previous Week Position', 'Peak Position', 'Weeks on Chart', 'spotify_track_id', 'spotify_track_preview_url',
-'spotify_track_album', and 'spotify_track_popularity' were dropped as they were not needed for this analysis.
+The columns "url", "Instance", "Previous Week Position", "Peak Position", "Weeks on Chart", "spotify_track_id", "spotify_track_preview_url", 
+"spotify_track_album", and "spotify_track_popularity" were dropped as they were not needed for this analysis.
+
+The WeekID from the weeks table was parsed into a datetime during the import.  Two new columns named "Year" and "Decade" were created; Year is the year gathered from the datetime and Decade is a string that describes the decade of that year, obtained by passing the year into a custom-made function.
+
+Since the spotify genre column in the features table was in the form of a list, the dataframe was stripped of its endings, expanded with explode(), and stripped again of quotes in order to analyze the individual genres of each song.
 
 &nbsp;
+
+### Plots
+
