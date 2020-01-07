@@ -14,13 +14,15 @@ This dataset contains information about the Billboard Hot 100 Songs chart rangin
 * **WeekID:** A string containing the date at which each measurement of the Billboard Hot 100 Songs was taken.
 * **Week position:** The position of a song on the chart for that week.
 * **Song:** Title of song.
-* **Performer:** Name of artist.
 * **SongID:** A unique ID for each song created from concatenating the song name and artist name.
 * **Instance:** The number of different times a song has appeared on the chart.  Used to separate breaks for a given song.
 * **Previous week:** The position of the song on the chart the week before.
 * **Peak position:** The peak position of a song on the chart.
 * **Weeks on chart:** The number of weeks a song has stayed on the chart.
 
+* **SongID:** A unique ID for each song created from concatenating the song name and artist name.
+* **Performer:** Name of artist.
+* **Song:** Title of song.
 * **Spotify genre:** A list containing all the genres a track is classified under.
 * **Spotify track ID:** The ID of a track in Spotify's database.
 * **Spotify track album:** Name of album.
@@ -40,3 +42,7 @@ This dataset contains information about the Billboard Hot 100 Songs chart rangin
 * **Tempo:** The overall estimated speed of a track in beats per minute (BPM).  Corresponds to the average beat duration within the track.
 * **Time signature:** An estimate of how many beats are in each measure.  Also known as meter.
 
+The columns 'url', 'Instance', 'Previous Week Position', 'Peak Position', 'Weeks on Chart', 'spotify_track_id', 'spotify_track_preview_url',
+'spotify_track_album', and 'spotify_track_popularity' were dropped as they were not needed for this analysis.
+
+&nbsp;
