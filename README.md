@@ -10,6 +10,8 @@ This dataset contains information about the Billboard Hot 100 Songs chart rangin
 
 ## Columns
 
+### Weeks
+
 * **URL:** The URL of the list of Billboard Hot 100 Songs for that week.
 * **WeekID:** A string containing the date at which each measurement of the Billboard Hot 100 Songs was taken.
 * **Week position:** The position of a song on the chart for that week.
@@ -19,6 +21,8 @@ This dataset contains information about the Billboard Hot 100 Songs chart rangin
 * **Previous week:** The position of the song on the chart the week before.
 * **Peak position:** The peak position of a song on the chart.
 * **Weeks on chart:** The number of weeks a song has stayed on the chart.
+
+### Features
 
 * **SongID:** A unique ID for each song created from concatenating the song name and artist name.
 * **Performer:** Name of artist.
@@ -41,6 +45,8 @@ This dataset contains information about the Billboard Hot 100 Songs chart rangin
 * **Valence:** A measure that describes the musical positiveness conveyed by a track.  Tracks with high valence sound more positive (happy, cheerful, euphoric), while tracks with low valence sound more negative (sad, depressed, angry).  Range [0, 1].
 * **Tempo:** The overall estimated speed of a track in beats per minute (BPM).  Corresponds to the average beat duration within the track.
 * **Time signature:** An estimate of how many beats are in each measure.  Also known as meter.
+
+### Edits
 
 The columns "url", "Instance", "Previous Week Position", "Peak Position", "Weeks on Chart", "spotify_track_id", "spotify_track_preview_url", 
 "spotify_track_album", and "spotify_track_popularity" were dropped as they were not needed for this analysis.
