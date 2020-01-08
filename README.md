@@ -59,13 +59,21 @@ Since the spotify genre column in the features table had the genres in the form 
 
 ## Plots
 
-### Genre histogram
+### Genre Histogram
 
-![Genres](/images/genres.png)
+![Genres](/images/genresJoined.png)
 
-asdf
+This graph shows the frequency of the top 30 genres over the time period.  Songs that have remained on the chart for multiple weeks are counted multiple times.
 
-### Genre histogram by decade
+
+### Genre Histogram (Unique)
+
+![Genres unique](/images/genres.png)
+
+This graph shows the frequency of the top 30 genres over the time period.  This set is of the unique songs, so each song only appears once no matter how long it has been on the chart.
+
+
+### Genre Histogram by Decade
 
 ![Genres by decade](/images/genresJoinedDecade.png)
 
@@ -77,61 +85,61 @@ asdf
 
 asdf
 
-### Mean of track duration
+### Track duration
 
 ![Track duration](/images/trackduration.png)
 
 asdf
 
-### Mean of danceability
+### Danceability
 
 ![Danceability](/images/danceability.png)
 
 asdf
 
-### Mean of energy
+### Energy
 
 ![Energy](/images/energy.png)
 
 asdf
 
-### Mean of loudness
+### Loudness
 
 ![Loudness](/images/loudness.png)
 
 asdf
 
-### Mean of speechiness
+### Speechiness
 
 ![Speechiness](/images/speechiness.png)
 
 asdf
 
-### Mean of acousticness
+### Acousticness
 
 ![Acousticness](/images/acousticness.png)
 
 asdf
 
-### Mean of instrumentalness
+### Instrumentalness
 
 ![Instrumentalness](/images/instrumentalness.png)
 
 asdf
 
-### Mean of liveness
+### Liveness
 
 ![Liveness](/images/liveness.png)
 
 asdf
 
-### Mean of valence
+### Valence
 
 ![Valence](/images/valence.png)
 
 asdf
 
-### Mean of tempo
+### Tempo
 
 ![Tempo](/images/tempo.png)
 
