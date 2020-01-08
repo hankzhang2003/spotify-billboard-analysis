@@ -1,6 +1,8 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+import scipy.stats as stats
+import itertools
 
 # Import csvs and remove null rows and unnecessary columns
 weeks = pd.read_csv("data/hot-stuff.csv", converters={'WeekID': lambda d: pd.to_datetime(d, \
@@ -17,6 +19,7 @@ featuresFilter = ['spotify_track_id', 'spotify_track_preview_url', 'spotify_trac
                   'spotify_track_popularity', 'key', 'mode', 'time_signature']
 features.drop(featuresFilter, axis=1, inplace=True)
 
+featuresScatter = features.dropna()
 
 # Derived dataframes
 
@@ -83,8 +86,8 @@ fig.savefig("images/genres.png")
 genresJoinedDecade = joinedGenres.groupby(['spotify_genre', 'Decade'])['SongID'].count().reset_index() \
                     .sort_values(by=['SongID'], ascending=False)
 decades = ["1960s", "1970s", "1980s", "1990s", "2000s","2010s"]
-i = 0
 fig, axs = plt.subplots(3, 2, figsize=(14, 14))
+i = 0
 for ax in axs.flat:
     temp = genresJoinedDecade.loc[genresJoinedDecade['Decade'] == decades[i]]
     ax.bar(np.arange(15), temp['SongID'].iloc[0:15])
@@ -110,7 +113,7 @@ fig.suptitle("Explicitness of Billboard Songs", fontsize=14)
 fig.savefig("images/explicitness.png")
 
 
-# Mean of each numerical metric
+# Mean of each numerical metric by year
 numericals = [joined.columns.tolist()[1]] + joined.columns.tolist()[11:21]
 numericalMetrics = joined[numericals].groupby(['Year']).aggregate(np.nanmean).reset_index()
 numericalMetrics = numericalMetrics.rename(columns={'spotify_track_duration_ms': 'trackduration'})
@@ -120,3 +123,12 @@ for metric in numericalMetrics.columns.tolist()[1:]:
     ax.set_xlabel("Year")
     fig.suptitle("Mean {} of Billboard Songs by Year".format(metric.capitalize()), fontsize=14)
     fig.savefig("images/{}.png".format(metric))
+
+
+# Test all pairs of columns for correlation coefficient R^2 and filter out most relevant ones
+correlations = list(itertools.combinations(features.columns.tolist()[6:15], 2))
+for t in correlations:
+    r2 = stats.pearsonr(featuresScatter[t[0]], featuresScatter[t[1]])[0]
+    if abs(r2) > 0.15:
+        print("\nR^2 of " + t[0] + " and " + t[1] + " is " + str(r2))
+
