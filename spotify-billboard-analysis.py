@@ -117,8 +117,6 @@ numericalMetrics = numericalMetrics.rename(columns={'spotify_track_duration_ms':
 for metric in numericalMetrics.columns.tolist()[1:]:
     fig, ax = plt.subplots()
     ax.plot(numericalMetrics['Year'], numericalMetrics[metric])
-    if metric not in ['trackduration', 'loudness', 'tempo']:
-        ax.set_ylim((0, 1))
     ax.set_xlabel("Year")
     fig.suptitle("Mean {} of Billboard Songs by Year".format(metric.capitalize()), fontsize=14)
     fig.savefig("images/{}.png".format(metric))
