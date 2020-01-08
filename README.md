@@ -36,7 +36,7 @@ This dataset contains information about the Billboard Hot 100 Songs chart rangin
 * **Danceability:** A measure of how suitable a track is for dancing based on a combination of elements including tempo, rhythm stability, beat strength, and overall regularity.  Range [0, 1].
 * **Energy:** A measure of intensity and activity, manifested in features such as dynamic range, perceived loudness, timbre, onset rate, and general entropy. Range [0, 1].
 * **Key:** The estimated overall key of the track, using standard pitch class notation.  0 = C, 1 = C\#/D♭, 2 = D,..., 11 = B. 
-* **Loudness:** The overall loudness of a track in decibels (dB), averaged across the entire track.  Corresponds to the amplitude of sound waves.  Range [=-60, 0].
+* **Loudness:** The overall loudness of a track in decibels (dB), averaged across the entire track.  It corresponds to the amplitude of sound waves.  Loudness is measured on a logarithmic scale, and more positive numbers mean louder sounds.  Range [=-60, 0].
 * **Mode:** The modality of a track.  1 = major, 0 = minor.
 * **Speechiness:** The presence and proportion of spoken words in a track.  Range [0, 1].
 * **Acousticness:** A confidence measure of whether the track is acoustic.  Range [0, 1].  Values close to 1 represent close to entirely acoustic tracks.
@@ -59,4 +59,81 @@ Since the spotify genre column in the features table was in the form of a list, 
 
 ## Plots
 
+### Genre histogram
+
+![Genres](/images/genres.png)
+
+asdf
+
+### Genre histogram by decade
+
+![Genres by decade](/images/genresJoinedDecade.png)
+
+asdf
+
+### Explicitness
+
+![Explicitness](/images/explicitness.png)
+
+asdf
+
+### Mean of track duration
+
+![Track duration](/images/trackduration.png)
+
+asdf
+
+### Mean of danceability
+
+![Danceability](/images/danceability.png)
+
+asdf
+
+### Mean of energy
+
+![Energy](/images/energy.png)
+
+asdf
+
+### Mean of loudness
+
+![Loudness](/images/loudness.png)
+
+asdf
+
+### Mean of speechiness
+
+![Speechiness](/images/speechiness.png)
+
+asdf
+
+### Mean of acousticness
+
+![Acousticness](/images/acousticness.png)
+
+asdf
+
+### Mean of instrumentalness
+
+![Instrumentalness](/images/instrumentalness.png)
+
+asdf
+
+### Mean of liveness
+
+![Liveness](/images/liveness.png)
+
+asdf
+
+### Mean of valence
+
+![Valence](/images/valence.png)
+
+asdf
+
+### Mean of tempo
+
+![Tempo](/images/tempo.png)
+
+asdf
 
