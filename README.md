@@ -88,7 +88,7 @@ This graph shows the proportion of explicit tracks over the time period.  What i
 
 ### Track duration
 
-![Track duration](/images/trackduration.png)
+![Track duration](/images/track_duration.png)
 
 This graph shows the mean track duration of songs over the time period.  There is an increase around the 1970s but overall there is no real trend that evolves over time.
 
