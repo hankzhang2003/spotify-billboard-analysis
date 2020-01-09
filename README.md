@@ -59,37 +59,36 @@ Since the spotify genre column in the features table had the genres in the form 
 
 ## Plots
 
-### Genre Histogram
+### Frequency of Genres
 
 ![Genres](/images/genresJoined.png)
 
-This graph shows the frequency of the top 30 genres over the time period.  Songs that have remained on the chart for multiple weeks are counted multiple times.  This seems well balanced, with all different kinds of genres represented.
+This graph shows the frequency of the top 30 genres over the time period.  Songs that have remained on the chart for multiple weeks are counted multiple times.  This seems well balanced, with all different kinds of genres represented, from rock to pop to 
 
 
-### Genre Histogram (Unique)
+### Frequency of Genres (Unique)
 
 ![Genres unique](/images/genres.png)
 
 This graph shows the frequency of the top 30 genres over the time period.  This set is of the unique songs, so each song only appears once no matter how long it has been on the chart.
 
-
-### Genre Histogram by Decade
+### Frequency of Genres by Decade
 
 ![Genres by decade](/images/genresJoinedDecade.png)
 
-asdf
+This gra
 
 ### Explicitness
 
 ![Explicitness](/images/explicitness.png)
 
-asdf
+This graph shows the proportion of explicit tracks over the time period.  What is interesting is that there is little to no presence of profanity in music up until 1990.  However, the amount of tracks with explicit material increased sharply after that time period and takes an even more alarming leap around 2015.
 
 ### Track duration
 
 ![Track duration](/images/trackduration.png)
 
-asdf
+This graph shows the mean track duration of songs over the time period.  There is an increase around the 1970s but overall there is no real trend that evolves over time.
 
 ### Danceability
 
@@ -144,4 +143,39 @@ asdf
 ![Tempo](/images/tempo.png)
 
 asdf
+
+### Acousticness and Energy
+
+![Acousticness and Energy](/images/acousticnessandenergy.png)
+
+asdf
+
+### Loudness and Energy
+
+![Loudness and Energy](/images/loudnessandenergy.png)
+
+asdf
+
+### Acousticness and Loudness
+
+![Acousticness and Loudness](/images/acousticnessandloudness.png)
+
+asdf
+
+### Energy and Danceability
+
+![Energy and Danceability](/images/energyanddanceability.png)
+
+asdf
+
+### Danceability and Valence
+
+![Acousticness and Energy](/images/acousticnessandenergy.png)
+
+asdf
+
+
+
+
+
 

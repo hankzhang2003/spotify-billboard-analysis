@@ -55,13 +55,14 @@ joinedGenres = joined.explode('spotify_genre')
 joinedGenres = joinedGenres[joinedGenres.spotify_genre != '']
 
 
-# Genre histogram
-genresJoined = joinedGenres.groupby(['spotify_genre'])['SongID'].count().reset_index() \
-                    .sort_values(by=['SongID'], ascending=False)
+# Frequency of genres
+genresJoined = joinedGenres.groupby(['spotify_genre'])['SongID'].count().reset_index(). \
+                    sort_values(by=['SongID'], ascending=False)
 fig, ax = plt.subplots(figsize=(12, 6))
 ax.bar(np.arange(30), genresJoined['SongID'].iloc[0:30])
 ax.set_xticks(np.arange(30))
-ax.set_xticklabels(genresJoined['spotify_genre'][0:30], rotation=45, ha="right", rotation_mode="anchor")
+ax.set_xticklabels(genresJoined['spotify_genre'][0:30], rotation=45, ha="right",
+                   rotation_mode="anchor")
 ax.set_xlabel("Genre")
 fig.tight_layout()
 fig.suptitle("Frequency of Genres of Billboard Songs", fontsize=20)
@@ -69,9 +70,9 @@ fig.subplots_adjust(top=0.9)
 fig.savefig("images/genresJoined.png")
 
 
-# Genre histogram (Unique)
-genres = featureGenres.groupby(['spotify_genre'])['SongID'].count().reset_index() \
-                    .sort_values(by=['SongID'], ascending=False)
+# Frequency of genres (unique)
+genres = featureGenres.groupby(['spotify_genre'])['SongID'].count().reset_index(). \
+            sort_values(by=['SongID'], ascending=False)
 fig, ax = plt.subplots(figsize=(12, 6))
 ax.bar(np.arange(30), genres['SongID'].iloc[0:30])
 ax.set_xticks(np.arange(30))
@@ -83,10 +84,10 @@ fig.subplots_adjust(top=0.9)
 fig.savefig("images/genres.png")
 
 
-'''
-# Genre histogram by decade
-genresJoinedDecade = joinedGenres.groupby(['spotify_genre', 'Decade'])['SongID'].count().reset_index() \
-                    .sort_values(by=['SongID'], ascending=False)
+
+# Frequency of genres by decade
+genresJoinedDecade = joinedGenres.groupby(['spotify_genre', 'Decade'])['SongID'].count(). \
+                        reset_index().sort_values(by=['SongID'], ascending=False)
 decades = ["1960s", "1970s", "1980s", "1990s", "2000s","2010s"]
 fig, axs = plt.subplots(3, 2, figsize=(14, 14))
 i = 0
@@ -95,19 +96,21 @@ for ax in axs.flat:
     ax.bar(np.arange(15), temp['SongID'].iloc[0:15])
     ax.set_ylim((0, 24000))
     ax.set_xticks(np.arange(15))
-    ax.set_xticklabels(temp['spotify_genre'][0:15], fontsize="large", rotation=45, ha="right", rotation_mode="anchor")
+    ax.set_xticklabels(temp['spotify_genre'][0:15], fontsize="large", rotation=45, ha="right",
+                       rotation_mode="anchor")
     ax.set_title(decades[i], fontsize="large")
     i += 1
 fig.tight_layout()
 fig.suptitle("Frequency of Genres of Billboard Songs by Decade", fontsize=28)
 fig.subplots_adjust(top=0.9)
 fig.savefig("images/genresJoinedDecade.png")
+
+
+
 '''
-
-
-# Genre histogram by decade
-genresJoinedDecade = joinedGenres.groupby(['spotify_genre', 'Decade'])['SongID'].count().reset_index() \
-                    .sort_values(by=['SongID'], ascending=False)
+# Frequency of genres by decade
+genresJoinedDecade = joinedGenres.groupby(['spotify_genre', 'Decade'])['SongID'].count(). \
+                        reset_index().sort_values(by=['SongID'], ascending=False)
 decades = ["1960s", "1970s", "1980s", "1990s", "2000s", "2010s"]
 
 def stacked_bar_helper(axis, ) -> None:
@@ -128,6 +131,7 @@ ax.legend(handles, labels, loc='upper center')
 fig.suptitle("Frequency of Genres of Billboard Songs by Decade", fontsize=28)
 fig.subplots_adjust(top=0.9)
 fig.savefig("images/genresJoinedDecade.png")
+'''
 
 
 # Explicitness
@@ -157,11 +161,31 @@ for metric in numericalMetrics.columns.tolist()[1:]:
 correlations = list(itertools.combinations(features.columns.tolist()[6:15], 2))
 for t in correlations:
     r2 = stats.pearsonr(featuresScatter[t[0]], featuresScatter[t[1]])[0]
-    if abs(r2) > 0.15:
+    if abs(r2) > 0.2:
         print("\nR^2 of " + t[0] + " and " + t[1] + " is " + str(r2))
 
 
-# Loudness and energy
+# Paired mean plots
+dualPlots = [('acousticness', 'energy'), ('loudness', 'energy'), ('acousticness', 'loudness'),
+             ('energy', 'danceability'), ('danceability', 'valence')]
+for pair in dualPlots:
+    fig, ax = plt.subplots()
+    ax.plot(numericalMetrics['Year'], numericalMetrics[pair[0]])
+    ax.plot(numericalMetrics['Year'], numericalMetrics[pair[1]])
+    ax.set_xlabel("Year")
+    fig.suptitle("Mean {} and {} of Billboard Songs by Year".format(pair[0].capitalize(),
+                    pair[1].capitalize()), fontsize=12)
+    fig.savefig("images/{}and{}.png".format(pair[0], pair[1]))
 
 
-# Get pairs with highest correlation
+# Scatterplots
+dualPlots = [('acousticness', 'energy'), ('loudness', 'energy'), ('acousticness', 'loudness'),
+             ('energy', 'danceability'), ('danceability', 'valence')]
+for pair in dualPlots:
+    fig, ax = plt.subplots()
+    ax.scatter(numericalMetrics[pair[0]], numericalMetrics[pair[1]])
+    fig.suptitle("{} vs {} of Billboard Songs".format(pair[0].capitalize(), pair[1].capitalize()), fontsize=14)
+    fig.savefig("images/{}vs{}Scatter.png".format(pair[0], pair[1]))
+
+
+
