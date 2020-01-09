@@ -53,6 +53,8 @@ The columns "url", "Instance", "Previous Week Position", "Peak Position", "Weeks
 
 The week ID from the weeks table was parsed into a datetime during the import.  Two new columns named Year and Decade were created; Year is the year gathered from the datetime and Decade is a string that describes the decade of that year, obtained by passing the year into a custom-made function.
 
+The spotify track duration was given in milliseconds.  A new column named Track_duration was created that contains the duration in seconds.
+
 Since the spotify genre column in the features table had the genres in the form of a list, the dataframe was stripped of its endings, expanded with explode(), and stripped again of quotes in order to analyze the individual genres of each song and the frequency of each genre.
 
 &nbsp;
@@ -150,18 +152,6 @@ asdf
 
 asdf
 
-### Energy and Loudness
-
-![Energy and Loudness](/images/energyandloudness.png)
-
-asdf
-
-### Acousticness and Loudness
-
-![Acousticness and Loudness](/images/acousticnessandloudness.png)
-
-asdf
-
 ### Energy and Danceability
 
 ![Energy and Danceability](/images/energyanddanceability.png)
@@ -174,9 +164,39 @@ asdf
 
 asdf
 
+### Energy and Loudness
+
+![Energy and Loudness](/images/energyandloudness.png)
+
+asdf
+
+### Acousticness and Loudness
+
+![Acousticness and Loudness](/images/acousticnessandloudness.png)
+
+asdf
+
+### Energy and Tempo
+
+![Energy and Tempo](/images/energyandtempo.png)
+
+asdf
+
 ### Acousticness vs Energy
 
 ![Acousticness vs Energy](/images/acousticnessvsenergyScatter.png)
+
+asdf
+
+### Energy vs Danceability
+
+![Energy and Danceability](/images/energyvsdanceabilityScatter.png)
+
+asdf
+
+### Danceability vs Valence
+
+![Acousticness vs Energy](/images/danceabilityvsvalenceScatter.png)
 
 asdf
 
@@ -192,17 +212,12 @@ asdf
 
 asdf
 
-### Energy vs Danceability
+### Energy vs Tempo
 
-![Energy and Danceability](/images/energyvsdanceabilityScatter.png)
-
-asdf
-
-### Danceability vs Valence
-
-![Acousticness vs Energy](/images/danceabilityvsvalenceScatter.png)
+![Energy vs Tempo](/images/energyvstempoScatter.png)
 
 asdf
+
 
 
 

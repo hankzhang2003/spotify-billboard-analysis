@@ -20,8 +20,6 @@ featuresFilter = ['spotify_track_id', 'spotify_track_preview_url', 'spotify_trac
                   'spotify_track_popularity', 'key', 'mode', 'time_signature']
 features.drop(featuresFilter, axis=1, inplace=True)
 
-featuresScatter = features.dropna()
-
 # Derived dataframes
 
 def decade(year: int) -> str:
@@ -44,6 +42,9 @@ def decade(year: int) -> str:
 
 weeks.insert(1, 'Year', weeks['WeekID'].dt.year)
 weeks.insert(2, 'Decade', weeks['Year'].apply(decade))
+
+features.insert(7, 'track_duration', features['spotify_track_duration_ms'] / 1000)
+featuresScatter = features.dropna()
 
 joined = weeks.merge(features, on='SongID')
 joined.to_csv("data/joined.csv", index=False)
@@ -146,46 +147,67 @@ fig.savefig("images/explicitness.png")
 
 
 # Mean of each numerical metric by year
-numericals = [joined.columns.tolist()[1]] + joined.columns.tolist()[11:21]
+numericals = [joined.columns.tolist()[1]] + joined.columns.tolist()[12:22]
 numericalMetrics = joined[numericals].groupby(['Year']).aggregate(np.nanmean).reset_index()
-numericalMetrics = numericalMetrics.rename(columns={'spotify_track_duration_ms': 'trackduration'})
 for metric in numericalMetrics.columns.tolist()[1:]:
     fig, ax = plt.subplots()
     ax.plot(numericalMetrics['Year'], numericalMetrics[metric])
     ax.set_xlabel("Year")
+    ax.set_ylabel("{}".format(metric.capitalize()))
     fig.suptitle("Mean {} of Billboard Songs by Year".format(metric.capitalize()), fontsize=14)
     fig.savefig("images/{}.png".format(metric))
 
 
 # Test all pairs of columns for correlation coefficient R^2 and select most relevant ones
-correlations = list(itertools.combinations(features.columns.tolist()[6:15], 2))
+correlations = list(itertools.combinations(features.columns.tolist()[7:16], 2))
 for t in correlations:
     r2 = stats.pearsonr(featuresScatter[t[0]], featuresScatter[t[1]])[0]
-    if abs(r2) > 0.2:
+    if abs(r2) > 0.15:
         print("\nR^2 of " + t[0] + " and " + t[1] + " is " + str(r2))
 
 
-# Paired mean plots
-dualPlots = [('acousticness', 'energy'), ('energy', 'loudness'), ('acousticness', 'loudness'),
-             ('energy', 'danceability'), ('danceability', 'valence')]
-for pair in dualPlots:
+# Dual plots with same y-axis
+dualPlotsNormal = [('acousticness', 'energy'), ('energy', 'danceability'), ('danceability', 'valence')]
+for pair in dualPlotsNormal:
     fig, ax = plt.subplots()
     ax.plot(numericalMetrics['Year'], numericalMetrics[pair[0]])
     ax.plot(numericalMetrics['Year'], numericalMetrics[pair[1]])
     ax.set_xlabel("Year")
+    ax.set_ylabel("{}".format("Value"))
+    ax.legend([pair[0].capitalize(), pair[1].capitalize()])
+    fig.suptitle("Mean {} and {} of Billboard Songs by Year".format(pair[0].capitalize(),
+                    pair[1].capitalize()), fontsize=12)
+    fig.savefig("images/{}and{}.png".format(pair[0], pair[1]))
+
+
+# Dual plots with mixed y-axes:
+dualPlotsMixed = [('energy', 'loudness'), ('acousticness', 'loudness'), ('energy', 'tempo')]
+legendLocations = [(0.35, 0.87), (0.55, 0.87), (0.32, 0.87)]
+for i, pair in enumerate(dualPlotsMixed):
+    fig, ax = plt.subplots()
+    l1 = ax.plot(numericalMetrics['Year'], numericalMetrics[pair[0]])
+    ax2 = ax.twinx()
+    l2 = ax2.plot(numericalMetrics['Year'], numericalMetrics[pair[1]], color="C1")
+    ax.set_xlabel("Year")
+    ax.set_ylabel(pair[0])
+    ax2.set_ylabel(pair[1])
+    fig.legend([pair[0].capitalize(), pair[1].capitalize()], bbox_to_anchor=legendLocations[i])
     fig.suptitle("Mean {} and {} of Billboard Songs by Year".format(pair[0].capitalize(),
                     pair[1].capitalize()), fontsize=12)
     fig.savefig("images/{}and{}.png".format(pair[0], pair[1]))
 
 
 # Scatterplots
-dualPlots = [('acousticness', 'energy'), ('energy', 'loudness'), ('acousticness', 'loudness'),
-             ('energy', 'danceability'), ('danceability', 'valence')]
-for pair in dualPlots:
+scatterplots = dualPlotsNormal + dualPlotsMixed
+for pair in scatterplots:
     fig, ax = plt.subplots()
     ax.scatter(numericalMetrics[pair[0]], numericalMetrics[pair[1]])
-    fig.suptitle("{} vs {} of Billboard Songs".format(pair[0].capitalize(), pair[1].capitalize()), fontsize=14)
+    ax.set_xlabel(pair[0].capitalize())
+    ax.set_ylabel(pair[1].capitalize())
+    fig.suptitle("{} vs {} of Billboard Songs".format(pair[0].capitalize(), pair[1].capitalize()),
+                 fontsize=14)
     fig.savefig("images/{}vs{}Scatter.png".format(pair[0], pair[1]))
 
 
+# Hypothesis test
 
