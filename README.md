@@ -2,9 +2,13 @@
 
 # By: Hank Zhang
 
+## Overview
+
+This is an an analysis of the Spotify features of songs on the Billboard Hot 100 Songs chart.  The objective of this project is to analyze the evolution of music over the years
+
 ## Description of Dataset
 
-This dataset contains information about the Billboard Hot 100 Songs chart between August 1958 and January 2020.  The data was taken from data.world.  The first data table (hot-stuff.csv, also known as weeks) contains data about the position of each song on the chart over the time period and has 320,000 rows.  The second data table (hot-100-audio features.csv, also known as features) contains data about the features of each song and has 28,500 rows.
+The dataset contains information about the Billboard Hot 100 Songs chart between August 1958 and January 2020.  The data was taken from data.world.  The first data table (hot-stuff.csv, also known as weeks) contains data about the position of each song on the chart over the time period and has 320,000 rows.  The second data table (hot-100-audio features.csv, also known as features) contains data about the features of each song and has 28,500 rows.
 
 &nbsp;
 
@@ -65,155 +69,117 @@ Since the spotify genre column in the features table had the genres in the form 
 
 ![Genres](/images/genresJoined.png)
 
-This graph shows the frequency of the top 30 genres over the time period.  Songs that have remained on the chart for multiple weeks are counted multiple times.  This seems well balanced, with all different kinds of genres represented, from rock to pop to 
-
+This graph shows the frequency of the top 30 genres over the time period.  Songs that have remained on the chart for multiple weeks are counted multiple times.  This seems well balanced, with all different kinds of genres represented, from rock to pop to country to hip hop.  This seems consistent with the evolution of music from the 1950s until now.
 
 ### Frequency of Genres (Unique)
 
 ![Genres unique](/images/genres.png)
 
-This graph shows the frequency of the top 30 genres over the time period.  This set is of the unique songs, so each song only appears once no matter how long it has been on the chart.
+This graph shows the frequency of the top 30 genres over the time period.  This set is of the unique songs, so each song only appears once no matter how long it has been on the chart. This is similar to the last graph; the adjustments in the rankings depends on how long each song has remained on the chart.  A genre that is pushed down means that it has stayed on the chart for a long time and has its numbers inflated by multiple submissions.
 
 ### Frequency of Genres by Decade
 
 ![Genres by decade](/images/genresJoinedDecade.png)
 
-This gra
+This graph shows the frequency of the top 15 genres during each decade.  Here one can see the clear evolution of the popularity of certain genres.  Most notably, genres like rock and soul were quite popular up until the 1980s.  In the 1990s and 2000s, pop, dance, and hip hop started taking over as the most popular genres. 
 
 ### Explicitness
 
 ![Explicitness](/images/explicitness.png)
 
-This graph shows the proportion of explicit tracks over the time period.  What is interesting is that there is little to no presence of profanity in music up until 1990.  However, the amount of tracks with explicit material increased sharply after that time period and takes an even more alarming leap around 2015.
+This graph shows the proportion of explicit songs in a time series over the time period.  What is interesting is that there is little to no presence of profanity in music up until 1990.  However, the amount of tracks with explicit material increased sharply after that time period and takes an even more alarming leap around 2015. This can partially be attributed to the increase in hip hop and rap music which tend to have words and topics that are significantly more on the explicit side, whereas older music tends to have more mellow topics and lyrics.
 
 ### Track duration
 
 ![Track duration](/images/track_duration.png)
 
-This graph shows the mean track duration of songs over the time period.  There is an increase around the 1970s but overall there is no real trend that evolves over time.
+This graph shows the mean track duration (seconds) of songs in a time series over the time period.  There is an increase around the 1970s followed by a decrease in the 1990s but overall there is no real trend that evolves over time.
 
-### Danceability
+### Danceability, Energy, Loudness
 
 ![Danceability](/images/danceability.png)
-
-asdf
-
-### Energy
-
 ![Energy](/images/energy.png)
-
-asdf
-
-### Loudness
-
 ![Loudness](/images/loudness.png)
 
-asdf
+These graphs show the mean danceability, energy, and loudness (dB) of songs in a time series over the time period.  These are typically characteristics of upbeat songs.  Over the past few decades the music people listen to has gotten significantly more upbeat than before, resulting in similar upward trends of these metrics.
 
-### Speechiness
+### Speechiness and Instrumentalness
 
 ![Speechiness](/images/speechiness.png)
+![Instrumentalness](/images/instrumentalness.png)
 
-asdf
+These graphs show the mean speechiness and instrumentalness of songs in a time series over the time period.  These are 2 metrics that typically contrast with one another, as more vocals in a song typically means fewer instrumental parts.
 
 ### Acousticness
 
 ![Acousticness](/images/acousticness.png)
 
-asdf
-
-### Instrumentalness
-
-![Instrumentalness](/images/instrumentalness.png)
-
-asdf
+This graph shows the mean acousticness of songs in a time series over the time period.  As expected, the acousticness of songs goes down over time due to the release of new technologies and hence more encouragement to produce more electronic music rather than using traditional instruments.
 
 ### Liveness
 
 ![Liveness](/images/liveness.png)
 
-asdf
+This graph shows the mean liveness of songs in a time series over the time period.  This has also decreased over the decades, but the trend has gone up down a lot rather than remaining homogeneous.  Most live tracks come from concerts, which are typically held by bands, and the genres bar charts have already shown that the genres of music most likely to be played by bands peaked in popularity in the 1960s and 1980s. 
 
 ### Valence
 
 ![Valence](/images/valence.png)
 
-asdf
+This graph shows the mean valence of songs in a time series over the time period.  The average valence of songs has actually gone down over the years, indicating an overall decrease of positiveness in the music.  This is a difficult metric to measure numerically and more exploration and data analysis techniques will be needed to make a definitive conclusion about valence and positiveness.
 
 ### Tempo
 
 ![Tempo](/images/tempo.png)
 
-asdf
+This graph shows the mean tempo of songs in a time series over the time period.  Interestingly, since the danceability, energy, and loudness of songs had a definitive increase, one would expect tempo to have an increase as well.  However, the average tempo had little net change over the years; it went up and down many times.
 
-### Acousticness and Energy
+### Energy and Loudness
 
-![Acousticness and Energy](/images/acousticnessandenergy.png)
+![Energy and Loudness](/images/energyandloudness.png)
+![Energy vs Loudness](/images/energyvsloudnessScatter.png)
 
 asdf
 
 ### Energy and Danceability
 
 ![Energy and Danceability](/images/energyanddanceability.png)
+![Energy and Danceability](/images/energyvsdanceabilityScatter.png)
 
 asdf
 
-### Danceability and Valence
 
-![Danceability and Valence](/images/danceabilityandvalence.png)
+### Acousticness and Energy
 
-asdf
-
-### Energy and Loudness
-
-![Energy and Loudness](/images/energyandloudness.png)
+![Acousticness and Energy](/images/acousticnessandenergy.png)
+![Acousticness vs Energy](/images/acousticnessvsenergyScatter.png)
 
 asdf
 
 ### Acousticness and Loudness
 
 ![Acousticness and Loudness](/images/acousticnessandloudness.png)
+![Acousticness vs Loudness](/images/acousticnessvsloudnessScatter.png)
+
+asdf
+
+### Energy and Valence
+
+![Energy and Valence](/images/energyandvalence.png)
+![Energy vs Valence](/images/energyvsvalenceScatter.png)
+
+asdf
+
+### Danceability and Valence
+
+![Danceability and Valence](/images/danceabilityandvalence.png)
+![Danceability vs Valence](/images/danceabilityvsvalenceScatter.png)
 
 asdf
 
 ### Energy and Tempo
 
 ![Energy and Tempo](/images/energyandtempo.png)
-
-asdf
-
-### Acousticness vs Energy
-
-![Acousticness vs Energy](/images/acousticnessvsenergyScatter.png)
-
-asdf
-
-### Energy vs Danceability
-
-![Energy and Danceability](/images/energyvsdanceabilityScatter.png)
-
-asdf
-
-### Danceability vs Valence
-
-![Acousticness vs Energy](/images/danceabilityvsvalenceScatter.png)
-
-asdf
-
-### Energy vs Loudness
-
-![Energy vs Loudness](/images/energyvsloudnessScatter.png)
-
-asdf
-
-### Acousticness vs Loudness
-
-![Acousticness vs Loudness](/images/acousticnessvsloudnessScatter.png)
-
-asdf
-
-### Energy vs Tempo
-
 ![Energy vs Tempo](/images/energyvstempoScatter.png)
 
 asdf

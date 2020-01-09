@@ -13,7 +13,7 @@ weeksFilter = ['url', 'Instance', 'Previous Week Position', 'Peak Position',
 weeks.drop(weeksFilter, axis=1, inplace=True)
 
 features = pd.read_csv("data/hot-100-audio-features.csv", converters={'spotify_genre':
-                        lambda s: s[1:-1].split(', ')}, encoding="latin-1")
+                       lambda s: s[1:-1].split(', ')}, encoding="latin-1")
 features['spotify_genre'] = features['spotify_genre'].apply(lambda l: [s[1:-1] for s in l])
 features.dropna(subset=['spotify_genre'])
 featuresFilter = ['spotify_track_id', 'spotify_track_preview_url', 'spotify_track_album',
@@ -58,7 +58,7 @@ joinedGenres = joinedGenres[joinedGenres.spotify_genre != '']
 
 # Frequency of genres
 genresJoined = joinedGenres.groupby(['spotify_genre'])['SongID'].count().reset_index(). \
-                    sort_values(by=['SongID'], ascending=False)
+                   sort_values(by=['SongID'], ascending=False)
 fig, ax = plt.subplots(figsize=(12, 6))
 ax.bar(np.arange(30), genresJoined['SongID'].iloc[0:30])
 ax.set_xticks(np.arange(30))
@@ -73,7 +73,7 @@ fig.savefig("images/genresJoined.png")
 
 # Frequency of genres (unique)
 genres = featureGenres.groupby(['spotify_genre'])['SongID'].count().reset_index(). \
-            sort_values(by=['SongID'], ascending=False)
+             sort_values(by=['SongID'], ascending=False)
 fig, ax = plt.subplots(figsize=(12, 6))
 ax.bar(np.arange(30), genres['SongID'].iloc[0:30])
 ax.set_xticks(np.arange(30))
@@ -88,7 +88,7 @@ fig.savefig("images/genres.png")
 
 # Frequency of genres by decade
 genresJoinedDecade = joinedGenres.groupby(['spotify_genre', 'Decade'])['SongID'].count(). \
-                        reset_index().sort_values(by=['SongID'], ascending=False)
+                         reset_index().sort_values(by=['SongID'], ascending=False)
 decades = ["1960s", "1970s", "1980s", "1990s", "2000s","2010s"]
 fig, axs = plt.subplots(3, 2, figsize=(14, 14))
 i = 0
@@ -167,7 +167,8 @@ for t in correlations:
 
 
 # Dual plots with same y-axis
-dualPlotsNormal = [('acousticness', 'energy'), ('energy', 'danceability'), ('danceability', 'valence')]
+dualPlotsNormal = [('acousticness', 'energy'), ('energy', 'danceability'), ('energy', 'valence'),
+                   ('danceability', 'valence')]
 for pair in dualPlotsNormal:
     fig, ax = plt.subplots()
     ax.plot(numericalMetrics['Year'], numericalMetrics[pair[0]])
@@ -176,7 +177,7 @@ for pair in dualPlotsNormal:
     ax.set_ylabel("{}".format("Value"))
     ax.legend([pair[0].capitalize(), pair[1].capitalize()])
     fig.suptitle("Mean {} and {} of Billboard Songs by Year".format(pair[0].capitalize(),
-                    pair[1].capitalize()), fontsize=12)
+                 pair[1].capitalize()), fontsize=12)
     fig.savefig("images/{}and{}.png".format(pair[0], pair[1]))
 
 
@@ -193,7 +194,7 @@ for i, pair in enumerate(dualPlotsMixed):
     ax2.set_ylabel(pair[1])
     fig.legend([pair[0].capitalize(), pair[1].capitalize()], bbox_to_anchor=legendLocations[i])
     fig.suptitle("Mean {} and {} of Billboard Songs by Year".format(pair[0].capitalize(),
-                    pair[1].capitalize()), fontsize=12)
+                 pair[1].capitalize()), fontsize=12)
     fig.savefig("images/{}and{}.png".format(pair[0], pair[1]))
 
 
