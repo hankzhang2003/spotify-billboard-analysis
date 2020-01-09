@@ -166,7 +166,7 @@ for t in correlations:
 
 
 # Paired mean plots
-dualPlots = [('acousticness', 'energy'), ('loudness', 'energy'), ('acousticness', 'loudness'),
+dualPlots = [('acousticness', 'energy'), ('energy', 'loudness'), ('acousticness', 'loudness'),
              ('energy', 'danceability'), ('danceability', 'valence')]
 for pair in dualPlots:
     fig, ax = plt.subplots()
@@ -179,7 +179,7 @@ for pair in dualPlots:
 
 
 # Scatterplots
-dualPlots = [('acousticness', 'energy'), ('loudness', 'energy'), ('acousticness', 'loudness'),
+dualPlots = [('acousticness', 'energy'), ('energy', 'loudness'), ('acousticness', 'loudness'),
              ('energy', 'danceability'), ('danceability', 'valence')]
 for pair in dualPlots:
     fig, ax = plt.subplots()

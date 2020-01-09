@@ -150,9 +150,9 @@ asdf
 
 asdf
 
-### Loudness and Energy
+### Energy and Loudness
 
-![Loudness and Energy](/images/loudnessandenergy.png)
+![Energy and Loudness](/images/energyandloudness.png)
 
 asdf
 
@@ -180,9 +180,9 @@ asdf
 
 asdf
 
-### Loudness vs Energy
+### Energy vs Loudness
 
-![Loudness vs Energy](/images/loudnessvsenergyScatter.png)
+![Energy vs Loudness](/images/energyvsloudnessScatter.png)
 
 asdf
 
