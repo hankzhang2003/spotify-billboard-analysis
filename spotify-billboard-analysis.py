@@ -3,6 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import scipy.stats as stats
 import itertools
+#import spotipy
 
 # Import csvs and remove null rows and unnecessary columns
 weeks = pd.read_csv("data/hot-stuff.csv", converters={'WeekID': lambda d: pd.to_datetime(d, \
@@ -82,6 +83,7 @@ fig.subplots_adjust(top=0.9)
 fig.savefig("images/genres.png")
 
 
+'''
 # Genre histogram by decade
 genresJoinedDecade = joinedGenres.groupby(['spotify_genre', 'Decade'])['SongID'].count().reset_index() \
                     .sort_values(by=['SongID'], ascending=False)
@@ -97,6 +99,32 @@ for ax in axs.flat:
     ax.set_title(decades[i], fontsize="large")
     i += 1
 fig.tight_layout()
+fig.suptitle("Frequency of Genres of Billboard Songs by Decade", fontsize=28)
+fig.subplots_adjust(top=0.9)
+fig.savefig("images/genresJoinedDecade.png")
+'''
+
+
+# Genre histogram by decade
+genresJoinedDecade = joinedGenres.groupby(['spotify_genre', 'Decade'])['SongID'].count().reset_index() \
+                    .sort_values(by=['SongID'], ascending=False)
+decades = ["1960s", "1970s", "1980s", "1990s", "2000s", "2010s"]
+
+def stacked_bar_helper(axis, ) -> None:
+    pass
+
+genreList = {}
+for d in decades:
+    temp = genresJoinedDecade.loc[genresJoinedDecade['Decade'] == d]
+    genreList[d] = temp['spotify_genre'].iloc[0:15]
+fig, ax = plt.subplots()
+for d in genreList.keys():
+    temp = genresJoinedDecade.loc[genresJoinedDecade['Decade'] == d]
+    ax.bar(np.arange(len(decades)), temp['SongID'].iloc[0:15])
+ax.set_xticks(np.arange(len(decades)))
+ax.set_xticklabels(decades, fontsize="large", rotation=45, ha="right", rotation_mode="anchor")
+handles, labels = ax.get_legend_handles_labels()
+ax.legend(handles, labels, loc='upper center')
 fig.suptitle("Frequency of Genres of Billboard Songs by Decade", fontsize=28)
 fig.subplots_adjust(top=0.9)
 fig.savefig("images/genresJoinedDecade.png")
@@ -125,10 +153,12 @@ for metric in numericalMetrics.columns.tolist()[1:]:
     fig.savefig("images/{}.png".format(metric))
 
 
-# Test all pairs of columns for correlation coefficient R^2 and filter out most relevant ones
+# Test all pairs of columns for correlation coefficient R^2 and select most relevant ones
 correlations = list(itertools.combinations(features.columns.tolist()[6:15], 2))
 for t in correlations:
     r2 = stats.pearsonr(featuresScatter[t[0]], featuresScatter[t[1]])[0]
     if abs(r2) > 0.15:
         print("\nR^2 of " + t[0] + " and " + t[1] + " is " + str(r2))
+
+
 

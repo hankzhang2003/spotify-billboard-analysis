@@ -63,7 +63,7 @@ Since the spotify genre column in the features table had the genres in the form 
 
 ![Genres](/images/genresJoined.png)
 
-This graph shows the frequency of the top 30 genres over the time period.  Songs that have remained on the chart for multiple weeks are counted multiple times.
+This graph shows the frequency of the top 30 genres over the time period.  Songs that have remained on the chart for multiple weeks are counted multiple times.  This seems well balanced, with all different kinds of genres represented.
 
 
 ### Genre Histogram (Unique)
