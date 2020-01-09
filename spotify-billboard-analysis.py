@@ -161,4 +161,7 @@ for t in correlations:
         print("\nR^2 of " + t[0] + " and " + t[1] + " is " + str(r2))
 
 
+# Loudness and energy
 
+
+# Get pairs with highest correlation
