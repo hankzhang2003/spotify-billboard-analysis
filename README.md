@@ -170,9 +170,40 @@ asdf
 
 ### Danceability and Valence
 
-![Acousticness and Energy](/images/acousticnessandenergy.png)
+![Danceability and Valence](/images/danceabilityandvalence.png)
 
 asdf
+
+### Acousticness vs Energy
+
+![Acousticness vs Energy](/images/acousticnessvsenergyScatter.png)
+
+asdf
+
+### Loudness vs Energy
+
+![Loudness vs Energy](/images/loudnessvsenergyScatter.png)
+
+asdf
+
+### Acousticness vs Loudness
+
+![Acousticness vs Loudness](/images/acousticnessvsloudnessScatter.png)
+
+asdf
+
+### Energy vs Danceability
+
+![Energy and Danceability](/images/energyvsdanceabilityScatter.png)
+
+asdf
+
+### Danceability vs Valence
+
+![Acousticness vs Energy](/images/danceabilityvsvalenceScatter.png)
+
+asdf
+
 
 
 
