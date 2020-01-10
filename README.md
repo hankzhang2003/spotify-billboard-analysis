@@ -136,7 +136,7 @@ This graph shows the mean valence of songs in a time series over the time period
 
 ![Tempo](/images/tempo.png)
 
-This graph shows the mean tempo of songs in a time series over the time period.  Interestingly, since the danceability, energy, and loudness of songs had a definitive increase, one would expect tempo to have an increase as well.  However, the average tempo had little net change over the years; it went up and down many times.
+This graph shows the mean tempo of songs in a time series over the time period.  Interestingly, since the danceability, energy, and loudness of songs had a definitive increase, one would expect tempo to have an increase as well.  However, the average tempo had little net change over the years; it went up and down many times but only ended up a little bit above the initial values in the 1950s.
 
 &nbsp;
 
@@ -188,6 +188,12 @@ These graphs compare danceability and valence, both as a function of time and ag
 ![Energy vs Tempo](/images/energyvstempoScatter.png)
 
 These graphs compare energy and tempo, both as a function of time and against each other.  There is a slight positive correlation between the two variables.  The Pearson r^2 correlation coefficient is 0.1620.  This was slightly surprising since I expected the correlation to be higher since logically a high or low energy level in a track would be reflected in how fast the song is.
+
+&nbsp;
+
+## Hypothesis Testing
+
+We use a Mann-Whitney U-test because the variables are not normally distributed.
 
 &nbsp;
 
