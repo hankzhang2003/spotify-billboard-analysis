@@ -66,9 +66,10 @@ ax.bar(np.arange(30), genresJoined['SongID'].iloc[0:30])
 ax.set_xticks(np.arange(30))
 ax.set_xticklabels(genresJoined['spotify_genre'][0:30], rotation=45, ha="right",
                    rotation_mode="anchor")
-ax.set_xlabel("Genre")
+ax.set_xlabel("Genre", fontsize=14)
+ax.set_ylabel("Frequency", fontsize=14)
 fig.tight_layout()
-fig.suptitle("Frequency of Genres of Billboard Songs", fontsize=20)
+fig.suptitle("Frequency of Genres of Tracks", fontsize=20)
 fig.subplots_adjust(top=0.9)
 fig.savefig("images/genresJoined.png")
 
@@ -80,12 +81,12 @@ fig, ax = plt.subplots(figsize=(12, 6))
 ax.bar(np.arange(30), genres['SongID'].iloc[0:30])
 ax.set_xticks(np.arange(30))
 ax.set_xticklabels(genres['spotify_genre'][0:30], rotation=45, ha="right", rotation_mode="anchor")
-ax.set_xlabel("Genre")
+ax.set_xlabel("Genre", fontsize=14)
+ax.set_ylabel("Frequency", fontsize=14)
 fig.tight_layout()
-fig.suptitle("Frequency of Genres of Billboard Songs (Unique)", fontsize=20)
+fig.suptitle("Frequency of Genres of Tracks (Unique)", fontsize=20)
 fig.subplots_adjust(top=0.9)
 fig.savefig("images/genres.png")
-
 
 
 # Frequency of genres by decade
@@ -102,10 +103,9 @@ for i, ax in enumerate(axs.flat):
                        rotation_mode="anchor")
     ax.set_title(decades[i], fontsize="large")
 fig.tight_layout()
-fig.suptitle("Frequency of Genres of Billboard Songs by Decade", fontsize=28)
+fig.suptitle("Frequency of Genres of Tracks by Decade", fontsize=28)
 fig.subplots_adjust(top=0.9)
 fig.savefig("images/genresJoinedDecade.png")
-
 
 
 '''
@@ -129,11 +129,10 @@ ax.set_xticks(np.arange(len(decades)))
 ax.set_xticklabels(decades, fontsize="large", rotation=45, ha="right", rotation_mode="anchor")
 handles, labels = ax.get_legend_handles_labels()
 ax.legend(handles, labels, loc='upper center')
-fig.suptitle("Frequency of Genres of Billboard Songs by Decade", fontsize=28)
+fig.suptitle("Frequency of Genres of Tracks by Decade", fontsize=28)
 fig.subplots_adjust(top=0.9)
 fig.savefig("images/genresJoinedDecade.png")
 '''
-
 
 # Explicitness
 explicitness = joined[['Year', 'spotify_track_explicit']].dropna()
@@ -141,8 +140,9 @@ explicitness['num'] = explicitness['spotify_track_explicit'].astype(int)
 explicitness = explicitness.groupby(['Year']).aggregate(np.nanmean).reset_index()
 fig, ax = plt.subplots()
 ax.plot(explicitness['Year'], explicitness['num'])
-ax.set_xlabel("Year")
-fig.suptitle("Explicitness of Billboard Songs", fontsize=14)
+ax.set_xlabel("Year", fontsize=14)
+ax.set_ylabel("Proportion of explicit songs", fontsize=14)
+fig.suptitle("Explicitness of Tracks", fontsize=20)
 fig.savefig("images/explicitness.png")
 
 
@@ -152,9 +152,9 @@ numericalMetrics = joined[numericals].groupby(['Year']).aggregate(np.nanmean).re
 for metric in numericalMetrics.columns.tolist()[1:]:
     fig, ax = plt.subplots()
     ax.plot(numericalMetrics['Year'], numericalMetrics[metric])
-    ax.set_xlabel("Year")
-    ax.set_ylabel("{}".format(metric.capitalize()))
-    fig.suptitle("Mean {} of Billboard Songs by Year".format(metric.capitalize()), fontsize=14)
+    ax.set_xlabel("Year", fontsize=14)
+    ax.set_ylabel("{}".format(metric.capitalize()), fontsize=14)
+    fig.suptitle("Mean {} of Tracks by Year".format(metric.capitalize()), fontsize=20)
     fig.savefig("images/{}.png".format(metric))
 
 
@@ -173,11 +173,11 @@ for pair in dualPlotsNormal:
     fig, ax = plt.subplots()
     ax.plot(numericalMetrics['Year'], numericalMetrics[pair[0]])
     ax.plot(numericalMetrics['Year'], numericalMetrics[pair[1]])
-    ax.set_xlabel("Year")
-    ax.set_ylabel("{}".format("Value"))
+    ax.set_xlabel("Year", fontsize=12)
+    ax.set_ylabel("{}".format("Value"), fontsize=12)
     ax.legend([pair[0].capitalize(), pair[1].capitalize()])
-    fig.suptitle("Mean {} and {} of Billboard Songs by Year".format(pair[0].capitalize(),
-                 pair[1].capitalize()), fontsize=12)
+    fig.suptitle("{} and {} of Tracks by Year".format(pair[0].capitalize(),
+                 pair[1].capitalize()), fontsize=18)
     fig.savefig("images/{}and{}.png".format(pair[0], pair[1]))
 
 
@@ -189,12 +189,15 @@ for i, pair in enumerate(dualPlotsMixed):
     l1 = ax.plot(numericalMetrics['Year'], numericalMetrics[pair[0]])
     ax2 = ax.twinx()
     l2 = ax2.plot(numericalMetrics['Year'], numericalMetrics[pair[1]], color="C1")
-    ax.set_xlabel("Year")
-    ax.set_ylabel(pair[0])
-    ax2.set_ylabel(pair[1])
+    ax.set_xlabel("Year", fontsize=14)
+    ax.set_ylabel(pair[0].capitalize(), fontsize=14)
+    if pair[1] == 'Loudness':
+        ax2.set_ylabel("Loudness (dB)", fontsize=14)
+    elif pair[1] == 'tempo':
+        ax2.set_ylabel("Tempo (bpm)", fontsize=14)
     fig.legend([pair[0].capitalize(), pair[1].capitalize()], bbox_to_anchor=legendLocations[i])
-    fig.suptitle("Mean {} and {} of Billboard Songs by Year".format(pair[0].capitalize(),
-                 pair[1].capitalize()), fontsize=12)
+    fig.suptitle("{} and {} of Tracks by Year".format(pair[0].capitalize(),
+                 pair[1].capitalize()), fontsize=18)
     fig.savefig("images/{}and{}.png".format(pair[0], pair[1]))
 
 
@@ -203,13 +206,13 @@ scatterplots = dualPlotsNormal + dualPlotsMixed
 for pair in scatterplots:
     fig, ax = plt.subplots()
     ax.scatter(featuresNoNulls[pair[0]], featuresNoNulls[pair[1]])
-    ax.set_xlabel(pair[0].capitalize())
-    ax.set_ylabel(pair[1].capitalize())
-    fig.suptitle("{} vs {} of Billboard Songs".format(pair[0].capitalize(), pair[1].capitalize()),
-                 fontsize=14)
+    ax.set_xlabel(pair[0].capitalize(), fontsize=14)
+    ax.set_ylabel(pair[1].capitalize(), fontsize=14)
+    fig.suptitle("{} vs {} of Tracks".format(pair[0].capitalize(), pair[1].capitalize()),
+                 fontsize=20)
     fig.savefig("images/{}vs{}Scatter.png".format(pair[0], pair[1]))
     r2 = stats.pearsonr(featuresNoNulls[pair[0]], featuresNoNulls[pair[1]])[0]
-    print("\nR^2 of " + pair[0] + " and " + pair[1] + " is " + str(r2))
+    print("R^2 of " + pair[0] + " and " + pair[1] + " is " + str(r2))
 
 
 # Hypothesis test

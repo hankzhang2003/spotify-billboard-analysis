@@ -105,7 +105,7 @@ This graph shows the mean track duration (seconds) of songs in a time series ove
 ![Energy](/images/energy.png)
 ![Loudness](/images/loudness.png)
 
-These graphs show the mean danceability, energy, and loudness (dB) of songs in a time series over the time period.  These are typically characteristics of upbeat songs.  Over the past few decades the music people listen to has gotten significantly more upbeat than before, resulting in similar upward trends of these metrics.  The most notable changes were around 1980 and 2000.
+These graphs show the mean danceability, energy, and loudness (decibels) of songs in a time series over the time period.  These are typically characteristics of upbeat songs.  Over the past few decades the music people listen to has gotten significantly more upbeat than before, resulting in similar upward trends of these metrics.  The most notable changes were around 1980 and 2000.
 
 ### Speechiness and Instrumentalness
 
@@ -136,7 +136,7 @@ This graph shows the mean valence of songs in a time series over the time period
 
 ![Tempo](/images/tempo.png)
 
-This graph shows the mean tempo of songs in a time series over the time period.  Interestingly, since the danceability, energy, and loudness of songs had a definitive increase, one would expect tempo to have an increase as well.  However, the average tempo had little net change over the years; it went up and down many times but only ended up a little bit above the initial values in the 1950s.
+This graph shows the mean tempo (beats per minute) of songs in a time series over the time period.  Interestingly, since the danceability, energy, and loudness of songs had a definitive increase, one would expect tempo to have an increase as well.  However, the average tempo had little net change over the years; it went up and down many times but only ended up a little bit above the initial values in the 1950s.
 
 &nbsp;
 
@@ -193,9 +193,35 @@ These graphs compare energy and tempo, both as a function of time and against ea
 
 ## Hypothesis Testing
 
-We use a Mann-Whitney U-test because the variables are not normally distributed.
+Hypothesis testing was done on the metrics that were closest to normally distributed, which were energy, danceability, loudness, valence, and tempo.  The two-sample t-test and Mann-Whitney U-test were both used.  
+
+### Hypothesis Test Setup
+
+H<sub>0</sub> = Music today has the same energy, danceability, loudness, valence, and tempo as music of 60 years ago.
+
+H<sub>a</sub> = Music today does not have the same energy, danceability, loudness, valence, and tempo as music of 60 years ago.
+
+$\alpha$ = 0.05, can be set to 0.02 if we want an even higher level of certainty.
+
+### Two-sample t-test Results
+
+Energy: u = -138.0755, p = 0.0
+Danceability: u = -121.4532, p = 0.0
+Loudness: u = -245.8457, p = 0.0
+Valence: u = 114.6155, p = 0.0
+Tempo: u = -14.3916, p = 6.559112204592384e-47
+
+### Mann-Whitney U-test Results
+
+Energy: u = 5.6794056e8, p = 0.0
+Danceability: u = 6.2678145e8, p = 0.0
+Loudness: u = 2.5575936e8, p = 0.0
+Valence: u = 1.5164469e9, p = 0.0
+Tempo: u = 1.0079646e9, p = 2.7332407119580174e-62
 
 &nbsp;
+
+
 
 ## Conclusion
 
