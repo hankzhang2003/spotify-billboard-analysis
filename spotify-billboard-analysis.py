@@ -93,7 +93,7 @@ fig.savefig("images/genres.png")
 genresJoinedDecade = joinedGenres.groupby(['spotify_genre', 'Decade'])['SongID'].count(). \
                          reset_index().sort_values(by=['SongID'], ascending=False)
 decades = ["1960s", "1970s", "1980s", "1990s", "2000s","2010s"]
-fig, axs = plt.subplots(3, 2, figsize=(14, 14))
+fig, axs = plt.subplots(2, 3, figsize=(20, 10))
 for i, ax in enumerate(axs.flat):
     temp = genresJoinedDecade.loc[genresJoinedDecade['Decade'] == decades[i]]
     ax.bar(np.arange(15), temp['SongID'].iloc[0:15])
@@ -101,7 +101,7 @@ for i, ax in enumerate(axs.flat):
     ax.set_xticks(np.arange(15))
     ax.set_xticklabels(temp['spotify_genre'][0:15], fontsize="large", rotation=45, ha="right",
                        rotation_mode="anchor")
-    ax.set_title(decades[i], fontsize="large")
+    ax.set_title(decades[i], fontsize="x-large")
 fig.tight_layout()
 fig.suptitle("Frequency of Genres of Tracks by Decade", fontsize=28)
 fig.subplots_adjust(top=0.9)

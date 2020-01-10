@@ -4,7 +4,7 @@
 
 ## Overview
 
-This is an an analysis of the Spotify features of songs on the Billboard Hot 100 Songs chart.  The objective of this project is to analyze the evolution of music trends over the past 60 years.  There are many categorical and numerical varables with characteristics of each song, from basic metrics like title/artist/album to metrics that may not even properly expressible with numbers such as danceability.
+This is an an analysis of the Spotify features of songs on the Billboard Hot 100 Songs chart.  The objective of this project is to perform exploratory data analysis on the Spotify trends of popular music over the past 60 years.  There are many categorical and numerical varables with characteristics of each song, from basic metrics such as title, artist, and album, to metrics that may not even properly expressible with numbers such as energy, danceability, and valence.
 
 &nbsp;
 
@@ -193,7 +193,7 @@ These graphs compare energy and tempo, both as a function of time and against ea
 
 ## Hypothesis Testing
 
-Hypothesis testing was done on the metrics that were closest to normally distributed, which were energy, danceability, loudness, valence, and tempo.  The two-sample t-test and Mann-Whitney U-test were both used.  
+Hypothesis testing was done on the metrics that were closest to normally distributed, which were energy, danceability, loudness, valence, and tempo.  The two-sample t-test and Mann-Whitney U-test were both used.  The two-sample t-test is the standard hypothesis testing method used to compare two population means.  The Mann-Whitney U-test was used as a backup in case the original distribution was too differet from a normal distribution and hence the z-test and t-test would be inaccurate.
 
 ### Hypothesis Test Setup
 
@@ -201,28 +201,36 @@ H<sub>0</sub> = Music today has the same energy, danceability, loudness, valence
 
 H<sub>a</sub> = Music today does not have the same energy, danceability, loudness, valence, and tempo as music of 60 years ago.
 
-$\alpha$ = 0.05, can be set to 0.02 if we want an even higher level of certainty.
+\alpha = 0.05, can be set to 0.02 if we want an even higher level of certainty.
 
 ### Two-sample t-test Results
 
 Energy: u = -138.0755, p = 0.0
+
 Danceability: u = -121.4532, p = 0.0
+
 Loudness: u = -245.8457, p = 0.0
+
 Valence: u = 114.6155, p = 0.0
+
 Tempo: u = -14.3916, p = 6.559112204592384e-47
 
 ### Mann-Whitney U-test Results
 
 Energy: u = 5.6794056e8, p = 0.0
+
 Danceability: u = 6.2678145e8, p = 0.0
+
 Loudness: u = 2.5575936e8, p = 0.0
+
 Valence: u = 1.5164469e9, p = 0.0
+
 Tempo: u = 1.0079646e9, p = 2.7332407119580174e-62
 
 &nbsp;
 
-
+All of the p-values are far too low for both tests, so we reject every single null hypothesis.  We can conclude that there is a statistically significant difference between the features of the music of the 1960s and 2010s.
 
 ## Conclusion
 
-
+Music is an aspect of culture and life that has existed since the dawn of mankind.  Over the years and ages, music has evolved from primitive instruments such as logs and rocks to old-school rock bands and jazz to modern hip hop and electronic music.  At its core, most tracks can be broken down into a set of features that can be represented with either categorical or numerical variables.  This analysis is just an elementary EDA of the features of the Spotify Billboard Hot 100 dataset, and there are many other insights and data analysis techniques one can use on these expansive tables.  The ability to analyze the trends of music may one day just become an aspect of the analysis of human cultural evolution itself.
