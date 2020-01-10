@@ -145,49 +145,49 @@ This graph shows the mean tempo of songs in a time series over the time period. 
 ![Energy and Loudness](/images/energyandloudness.png)
 ![Energy vs Loudness](/images/energyvsloudnessScatter.png)
 
-These graphs compare energy and loudness, both as a function of time and against each other.  There is a definitive positive correlation between the two variables.  The Pearson r^2 correlation coefficient is 0.6861.  This makes sense because as more energy is put into a song, it also tends to be louder and push up the decibel level.
+These graphs compare energy and loudness, both as a function of time and against each other.  There is a definitive positive correlation between the two variables.  The Pearson r<sup>2</sup> correlation coefficient is 0.6861.  This makes sense because as more energy is put into a song, it also tends to be louder and push up the decibel level.
 
 ### Energy and Danceability
 
 ![Energy and Danceability](/images/energyanddanceability.png)
 ![Energy and Danceability](/images/energyvsdanceabilityScatter.png)
 
-These graphs compare energy and danceability, both as a function of time and against each other.  There is a slight positive correlation between the two variables.  The Pearson r^2 correlation coefficient is 0.2044.  This was slightly surprising since I expected the correlation to be higher since logically one of the key factors in seeing whether a song is danceable is how much energy it has.
+These graphs compare energy and danceability, both as a function of time and against each other.  There is a slight positive correlation between the two variables.  The Pearson r<sup>2</sup> correlation coefficient is 0.2044.  This was slightly surprising since I expected the correlation to be higher since logically one of the key factors in seeing whether a song is danceable is how much energy it has.
 
 ### Acousticness and Energy
 
 ![Acousticness and Energy](/images/acousticnessandenergy.png)
 ![Acousticness vs Energy](/images/acousticnessvsenergyScatter.png)
 
-These graphs compare acousticness and energy, both as a function of time and against each other.  There is a definitive negative correlation between the two variables.  The Pearson r^2 correlation coefficient is -0.5875.  This was slightly surprising since I did not expect the correlation to be that high, since these 2 metrics seem to only be loosely related in the big picture and other metrics seem like they would be more closely related.
+These graphs compare acousticness and energy, both as a function of time and against each other.  There is a definitive negative correlation between the two variables.  The Pearson r<sup>2</sup> correlation coefficient is -0.5875.  This was slightly surprising since I did not expect the correlation to be that high, since these 2 metrics seem to only be loosely related in the big picture and other metrics seem like they would be more closely related.
 
 ### Acousticness and Loudness
 
 ![Acousticness and Loudness](/images/acousticnessandloudness.png)
 ![Acousticness vs Loudness](/images/acousticnessvsloudnessScatter.png)
 
-These graphs compare acousticness and loudness, both as a function of time and against each other.  There is a definitive negative correlation between the two variables.  The Pearson r^2 correlation coefficient is -0.4059.  Similar to the previous graph, this makes sense because as a song because as there is more acousticness and less electronic-ness, there is less potential to create loud sounds.
+These graphs compare acousticness and loudness, both as a function of time and against each other.  There is a definitive negative correlation between the two variables.  The Pearson r<sup>2</sup> correlation coefficient is -0.4059.  Similar to the previous graph, this makes sense because as a song because as there is more acousticness and less electronic-ness, there is less potential to create loud sounds.
 
 ### Energy and Valence
 
 ![Energy and Valence](/images/energyandvalence.png)
 ![Energy vs Valence](/images/energyvsvalenceScatter.png)
 
-These graphs compare energy and valence, both as a function of time and against each other.  There is a slight positive correlation between the two variables.  The Pearson r^2 correlation coefficient is 0.3560.  This makes sense because high energy songs tend to elicit higher levels of positive feelings.
+These graphs compare energy and valence, both as a function of time and against each other.  There is a slight positive correlation between the two variables.  The Pearson r<sup>2</sup> correlation coefficient is 0.3560.  This makes sense because high energy songs tend to elicit higher levels of positive feelings.
 
 ### Danceability and Valence
 
 ![Danceability and Valence](/images/danceabilityandvalence.png)
 ![Danceability vs Valence](/images/danceabilityvsvalenceScatter.png)
 
-These graphs compare danceability and valence, both as a function of time and against each other.  There is a definitive positive correlation between the two variables.  The Pearson r^2 correlation coefficient is 0.3963.  Similar to the previous graph, this makes sense because songs that people are more likely to dance to also elicit higher levels of positive feelings.
+These graphs compare danceability and valence, both as a function of time and against each other.  There is a definitive positive correlation between the two variables.  The Pearson r<sup>2</sup> correlation coefficient is 0.3963.  Similar to the previous graph, this makes sense because songs that people are more likely to dance to also elicit higher levels of positive feelings.
 
 ### Energy and Tempo
 
 ![Energy and Tempo](/images/energyandtempo.png)
 ![Energy vs Tempo](/images/energyvstempoScatter.png)
 
-These graphs compare energy and tempo, both as a function of time and against each other.  There is a slight positive correlation between the two variables.  The Pearson r^2 correlation coefficient is 0.1620.  This was slightly surprising since I expected the correlation to be higher since logically a high or low energy level in a track would be reflected in how fast the song is.
+These graphs compare energy and tempo, both as a function of time and against each other.  There is a slight positive correlation between the two variables.  The Pearson r<sup>2</sup> correlation coefficient is 0.1620.  This was slightly surprising since I expected the correlation to be higher since logically a high or low energy level in a track would be reflected in how fast the song is.
 
 &nbsp;
 
