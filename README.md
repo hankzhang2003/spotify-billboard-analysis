@@ -63,7 +63,7 @@ Since the spotify genre column in the features table had the genres in the form 
 
 &nbsp;
 
-## Plots
+## Plots and Analysis
 
 ### Frequency of Genres
 
@@ -82,6 +82,8 @@ This graph shows the frequency of the top 30 genres over the time period.  This 
 ![Genres by decade](/images/genresJoinedDecade.png)
 
 This graph shows the frequency of the top 15 genres during each decade.  Here one can see the clear evolution of the popularity of certain genres.  Most notably, genres like rock and soul were quite popular up until the 1980s.  In the 1990s and 2000s, pop, dance, and hip hop started taking over as the most popular genres. 
+
+&nbsp;
 
 ### Explicitness
 
@@ -134,6 +136,8 @@ This graph shows the mean valence of songs in a time series over the time period
 
 This graph shows the mean tempo of songs in a time series over the time period.  Interestingly, since the danceability, energy, and loudness of songs had a definitive increase, one would expect tempo to have an increase as well.  However, the average tempo had little net change over the years; it went up and down many times.
 
+&nbsp;
+
 ### Energy and Loudness
 
 ![Energy and Loudness](/images/energyandloudness.png)
@@ -182,3 +186,9 @@ These graphs compare danceability and valence, both as a function of time and ag
 ![Energy vs Tempo](/images/energyvstempoScatter.png)
 
 These graphs compare energy and tempo, both as a function of time and against each other.  There is a slight positive correlation between the two variables.  The Pearson r^2 correlation coefficient is 0.1620.  This was slightly surprising since I expected the correlation to be higher since logically a high or low energy level in a track would be reflected in how fast the song is.
+
+&nbsp;
+
+## Conclusion
+
+
