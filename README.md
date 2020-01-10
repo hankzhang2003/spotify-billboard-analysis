@@ -4,11 +4,13 @@
 
 ## Overview
 
-This is an an analysis of the Spotify features of songs on the Billboard Hot 100 Songs chart.  The objective of this project is to analyze the evolution of music over the years
+This is an an analysis of the Spotify features of songs on the Billboard Hot 100 Songs chart.  The objective of this project is to analyze the evolution of music trends over the past 60 years.  There are many categorical and numerical varables with characteristics of each song, from basic metrics like title/artist/album to metrics that may not even properly expressible with numbers such as danceability.
+
+&nbsp;
 
 ## Description of Dataset
 
-The dataset contains information about the Billboard Hot 100 Songs chart between August 1958 and January 2020.  The data was taken from data.world.  The first data table (hot-stuff.csv, also known as weeks) contains data about the position of each song on the chart over the time period and has 320,000 rows.  The second data table (hot-100-audio features.csv, also known as features) contains data about the features of each song and has 28,500 rows.
+The dataset contains information about the Billboard Hot 100 Songs chart between August 1958 and January 2020.  This dataset was taken from data.world but all of this data is obtainable by scraping Spotify's API using Selenium and BeautifulSoup.  The first data table (hot-stuff.csv, also known as weeks) contains data about the position of each song on the chart over the time period and has 320,000 rows.  The second data table (hot-100-audio features.csv, also known as features) contains data about the features of each song and has 28,500 rows.  There are both categorical and numerical variables.
 
 &nbsp;
 
