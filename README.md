@@ -201,7 +201,7 @@ H<sub>0</sub> = Music today has the same energy, danceability, loudness, valence
 
 H<sub>a</sub> = Music today does not have the same energy, danceability, loudness, valence, and tempo as music of 60 years ago.
 
-\alpha = 0.05, can be set to 0.02 if we want an even higher level of certainty.
+&alpha; = 0.05, can be set to 0.02 if we want an even higher level of certainty.
 
 ### Two-sample t-test Results
 
@@ -229,7 +229,7 @@ Tempo: u = 1.0079646e9, p = 2.7332407119580174e-62
 
 &nbsp;
 
-All of the p-values are far too low for both tests, so we reject every single null hypothesis.  We can conclude that there is a statistically significant difference between the features of the music of the 1960s and 2010s.
+All of the p-values are far too low for both tests, so we reject every single null hypothesis.  Therefore, we can accept the alternative hypotheses and conclude that there is a statistically significant difference between the features of the music of the 1960s and 2010s.
 
 ## Conclusion
 
