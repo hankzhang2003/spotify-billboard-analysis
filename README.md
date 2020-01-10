@@ -63,6 +63,18 @@ The spotify track duration was given in milliseconds.  A new column named Track_
 
 Since the spotify genre column in the features table had the genres in the form of a list, the dataframe was stripped of its endings, expanded with explode(), and stripped again of quotes in order to analyze the individual genres of each song and the frequency of each genre.
 
+### Data types (features)
+
+Categorical: URL, weekID, year, decade, song, songID
+
+Numeric: week position, instance, previous week, peak position, weeks on chart
+
+### Data types (weeks)
+
+Categorical: songID, performer, song, spotify genre, spotify track ID, spotify track album, spotify track explicit, mode, time signature
+
+Numeric: spotify track duration ms, track duration, spotify track popularity, danceability, key, energy, loudness, speechiness, acousticness, instrumentalness, liveness, valence, tempo
+
 &nbsp;
 
 ## Plots and Analysis
