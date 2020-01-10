@@ -160,10 +160,10 @@ for metric in numericalMetrics.columns.tolist()[1:]:
 
 # Test all pairs of columns for correlation coefficient R^2 and select most relevant ones
 correlations = list(itertools.combinations(features.columns.tolist()[7:16], 2))
-for t in correlations:
-    r2 = stats.pearsonr(featuresScatter[t[0]], featuresScatter[t[1]])[0]
+for pair in correlations:
+    r2 = stats.pearsonr(featuresScatter[pair[0]], featuresScatter[pair[1]])[0]
     if abs(r2) > 0.15:
-        print("\nR^2 of " + t[0] + " and " + t[1] + " is " + str(r2))
+        print("\nR^2 of " + pair[0] + " and " + pair[1] + " is " + str(r2))
 
 
 # Dual plots with same y-axis
@@ -208,6 +208,8 @@ for pair in scatterplots:
     fig.suptitle("{} vs {} of Billboard Songs".format(pair[0].capitalize(), pair[1].capitalize()),
                  fontsize=14)
     fig.savefig("images/{}vs{}Scatter.png".format(pair[0], pair[1]))
+    r2 = stats.pearsonr(featuresScatter[pair[0]], featuresScatter[pair[1]])[0]
+    print("\nR^2 of " + pair[0] + " and " + pair[1] + " is " + str(r2))
 
 
 # Hypothesis test
