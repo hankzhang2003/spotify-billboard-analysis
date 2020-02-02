@@ -61,7 +61,7 @@ The week ID from the weeks table was parsed into a datetime during the import.  
 
 The spotify track duration was given in milliseconds.  A new column named Track_duration was created that contains the duration in seconds.
 
-Since the spotify genre column in the features table had the genres in the form of a list, the dataframe was stripped of its endings, expanded with explode(), and stripped again of quotes in order to analyze the individual genres of each song and the frequency of each genre.
+Since the spotify genre column in the features table had the genres in the form of a list, the dataframe was stripped of its endings, expanded with explode(), and stripped again of quotes in order to analyze the individual genres of each song and the frequency of each genre.  The resulting data frame was 1.4 million rows when expanded.
 
 ### Data types (features)
 
