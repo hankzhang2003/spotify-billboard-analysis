@@ -171,6 +171,10 @@ for pair in correlations:
 # Dual plots with same y-axis
 dualPlotsNormal = [('acousticness', 'energy'), ('energy', 'danceability'), ('energy', 'valence'),
                    ('danceability', 'valence')]
+
+def MakeDualPlotSame(pair, ax):
+    pass
+
 for pair in dualPlotsNormal:
     fig, ax = plt.subplots()
     ax.plot(numericalMetrics['Year'], numericalMetrics[pair[0]])
@@ -186,6 +190,10 @@ for pair in dualPlotsNormal:
 # Dual plots with mixed y-axes:
 dualPlotsMixed = [('energy', 'loudness'), ('acousticness', 'loudness'), ('energy', 'tempo')]
 legendLocations = [(0.35, 0.87), (0.55, 0.87), (0.32, 0.87)]
+
+def MakeDualPlotDiff(pair, ax):
+    pass
+
 for i, pair in enumerate(dualPlotsMixed):
     fig, ax = plt.subplots()
     l1 = ax.plot(numericalMetrics['Year'], numericalMetrics[pair[0]])
@@ -204,6 +212,10 @@ for i, pair in enumerate(dualPlotsMixed):
 
 
 # Scatterplots
+
+def MakeScatter(pair, ax):
+    pass
+
 scatterplots = dualPlotsNormal + dualPlotsMixed
 for pair in scatterplots:
     fig, ax = plt.subplots()
