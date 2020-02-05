@@ -15,7 +15,7 @@ weeks.drop(weeksFilter, axis=1, inplace=True)
 features = pd.read_csv("data/hot-100-audio-features.csv", converters={'spotify_genre':
                        lambda s: s[1:-1].split(', ')}, encoding="latin-1")
 features['spotify_genre'] = features['spotify_genre'].apply(lambda l: [s[1:-1] for s in l])
-features.dropna(subset=['spotify_genre'])
+features.dropna(subset=['spotify_genre'], inplace=True)
 featuresFilter = ["spotify_track_id", "spotify_track_preview_url", "spotify_track_album",
                   "spotify_track_popularity", "key", "mode", "time_signature"]
 features.drop(featuresFilter, axis=1, inplace=True)
