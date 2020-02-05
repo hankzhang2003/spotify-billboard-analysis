@@ -3,13 +3,13 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import scipy.stats as stats
 import itertools
-from scipy.linalg import svd
-from sklearn.metrics import log_loss, make_scorer, silhouette_score
-from sklearn.model_selection import cross_val_score, train_test_split, GridSearchCV
+from collections import Counter
 from sklearn.cluster import KMeans, AgglomerativeClustering
+from sklearn.metrics import log_loss, make_scorer, silhouette_score
 from sklearn.linear_model import LinearRegression, LogisticRegression
 from sklearn.ensemble import (RandomForestRegressor, RandomForestClassifier,
                               GradientBoostingRegressor, GradientBoostingClassifier)
+from sklearn.model_selection import cross_val_score, train_test_split, GridSearchCV
 from statsmodels.tsa.arima_model import ARIMA
 
 
@@ -71,8 +71,8 @@ joinedGenres = joinedGenres.dropna()
 explicitness = joined[['Year', 'spotify_track_explicit']].dropna()
 explicitness = explicitness.groupby(['Year']).aggregate(np.nanmean).reset_index()
 
-numericals = joined.columns.tolist()[13:24]
-numericalMetrics = joined[['Year'] + numericals].groupby(['Year']).aggregate(np.nanmean).reset_index()
+numericalMetrics = [joined.columns.tolist()[11]] + joined.columns.tolist()[13:24]
+numericals = joined[['Year'] + numericalMetrics].groupby(['Year']).aggregate(np.nanmean).reset_index()
 
 
 # Create grouped tables
@@ -90,8 +90,8 @@ topGenres = list(genres['spotify_genre'].iloc[0:200])
 featuresCulled = featureGenres.loc[featureGenres['spotify_genre'].isin(topGenres), :]
 joinedCulled = joinedGenres.loc[joinedGenres['spotify_genre'].isin(topGenres), :]
 
-genreFeatures = featureGenres.groupby(['spotify_genre'])[numericals].mean().reset_index()
-genreFeaturesCulled = featuresCulled.groupby(['spotify_genre'])[numericals].mean().reset_index()
+genreFeatures = featureGenres.groupby(['spotify_genre'])[numericalMetrics].mean().reset_index()
+genreFeaturesCulled = featuresCulled.groupby(['spotify_genre'])[numericalMetrics].mean().reset_index()
 
 # print(len(pd.unique(features['SongID'])))
 # print(len(pd.unique(featuresCulled['SongID'])))
@@ -154,9 +154,9 @@ def make_line_plot(df: pd.DataFrame, col: str, ax: plt.axes) -> None:
     ax.set_xlabel("Year", fontsize=14)
     ax.set_ylabel("{}".format(col.capitalize()), fontsize=14)
 
-for metric in numericalMetrics.columns.tolist()[1:]:
+for metric in numericalMetrics:
     fig, ax = plt.subplots()
-    make_line_plot(numericalMetrics, metric, ax)
+    make_line_plot(numericals, metric, ax)
     fig.suptitle("Mean {} of Tracks by Year".format(metric.capitalize()), fontsize=20)
     fig.savefig("images/{}.png".format(metric))
 
@@ -182,7 +182,7 @@ def make_dual_plot_same(df: pd.DataFrame, pair: tuple, ax: plt.axes) -> None:
 
 for pair in dualPlotsNormal:
     fig, ax = plt.subplots()
-    make_dual_plot_same(numericalMetrics, pair, ax)
+    make_dual_plot_same(numericals, pair, ax)
     ax.legend([pair[0].capitalize(), pair[1].capitalize()])
     fig.suptitle("{} and {} of Tracks by Year".format(pair[0].capitalize(),
                  pair[1].capitalize()), fontsize=18)
@@ -194,9 +194,9 @@ dualPlotsMixed = [("energy", "loudness"), ("acousticness", "loudness"), ("energy
 legendLocations = [(0.35, 0.87), (0.55, 0.87), (0.32, 0.87)]
 
 def make_dual_plot_mixed(df: pd.DataFrame, pair: tuple, ax: plt.axes) -> None:
-    ax.plot(numericalMetrics['Year'], numericalMetrics[pair[0]])
+    ax.plot(numericals['Year'], numericals[pair[0]])
     ax2 = ax.twinx()
-    ax2.plot(numericalMetrics['Year'], numericalMetrics[pair[1]], color="C1")
+    ax2.plot(numericals['Year'], numericals[pair[1]], color="C1")
     ax.set_xlabel("Year", fontsize=14)
     ax.set_ylabel(pair[0].capitalize(), fontsize=14)
     if pair[1] == 'loudness':
@@ -208,7 +208,7 @@ def make_dual_plot_mixed(df: pd.DataFrame, pair: tuple, ax: plt.axes) -> None:
 
 for i, pair in enumerate(dualPlotsMixed):
     fig, ax = plt.subplots()
-    make_dual_plot_mixed(numericalMetrics, pair, ax)
+    make_dual_plot_mixed(numericals, pair, ax)
     fig.legend([pair[0].capitalize(), pair[1].capitalize()], bbox_to_anchor=legendLocations[i])
     fig.suptitle("{} and {} of Tracks by Year".format(pair[0].capitalize(),
                  pair[1].capitalize()), fontsize=18)
@@ -232,9 +232,21 @@ for pair in scatterplots:
 
     fig.savefig("images/{}vs{}Scatter.png".format(pair[0], pair[1]))
 
+
 # Find genres that are closest to each other using table of means
-genreGroups = {}
-numericals = numericals.insert(0, "")
+Xcluster = genreFeatures.set_index('spotify_genre')
+genreGroupCounts = []
+wcss = []
+for k in range(5, 41):
+    km = KMeans(k)
+    Ygroup = km.fit_predict(Xcluster)
+    counts = Counter(Ygroup)
+    genreGroupCounts.append(dict(counts))
+    wcss.append(km.inertia_)
+
+print(genreGroupCounts)
+print(wcss)
+
 
 def manhattan_distance(l1: list, l2: list) -> float:
     if len(l1) != len(l2):
@@ -243,14 +255,4 @@ def manhattan_distance(l1: list, l2: list) -> float:
     for i in range(len(l1)):
         dist += abs(l1[i], l2[i])
     return dist
-
-
-initialClusters = np.random.random((featureGenres))
-for k in range(5, 20):
-    km = KMeans(k)
-    labels = km.fit_predict
-#X = featureGenres[featureGenres.columns.difference(['genre_group'])]
-#Y = featureGenres['genre_group']
-
-
 
