@@ -16,8 +16,8 @@ features = pd.read_csv("data/hot-100-audio-features.csv", converters={'spotify_g
                        lambda s: s[1:-1].split(', ')}, encoding="latin-1")
 features['spotify_genre'] = features['spotify_genre'].apply(lambda l: [s[1:-1] for s in l])
 features.dropna(subset=['spotify_genre'])
-featuresFilter = ['spotify_track_id', 'spotify_track_preview_url', 'spotify_track_album',
-                  'spotify_track_popularity', 'key', 'mode', 'time_signature']
+featuresFilter = ["spotify_track_id", "spotify_track_preview_url", "spotify_track_album",
+                  "spotify_track_popularity", "key", "mode", "time_signature"]
 features.drop(featuresFilter, axis=1, inplace=True)
 
 # Derived dataframes
@@ -40,10 +40,10 @@ def decade(year: int) -> str:
     else:
         return None
 
-weeks.insert(1, 'Year', weeks['WeekID'].dt.year)
-weeks.insert(2, 'Decade', weeks['Year'].apply(decade))
+weeks.insert(1, "Year", weeks['WeekID'].dt.year)
+weeks.insert(2, "Decade", weeks['Year'].apply(decade))
 
-features.insert(7, 'track_duration', features['spotify_track_duration_ms'] / 1000)
+features.insert(7, "track_duration", features['spotify_track_duration_ms'] / 1000)
 featuresNoNulls = features.dropna()
 
 joined = weeks.merge(features, on='SongID')
@@ -167,8 +167,8 @@ for pair in correlations:
 
 
 # Dual plots with same y-axis
-dualPlotsNormal = [('acousticness', 'energy'), ('energy', 'danceability'), ('energy', 'valence'),
-                   ('danceability', 'valence')]
+dualPlotsNormal = [("acousticness", "energy"), ("energy", "danceability"), ("energy", "valence"),
+                   ("danceability", "valence")]
 for pair in dualPlotsNormal:
     fig, ax = plt.subplots()
     ax.plot(numericalMetrics['Year'], numericalMetrics[pair[0]])
@@ -182,7 +182,7 @@ for pair in dualPlotsNormal:
 
 
 # Dual plots with mixed y-axes:
-dualPlotsMixed = [('energy', 'loudness'), ('acousticness', 'loudness'), ('energy', 'tempo')]
+dualPlotsMixed = [("energy", "loudness"), ("acousticness", "loudness"), ("energy", "tempo")]
 legendLocations = [(0.35, 0.87), (0.55, 0.87), (0.32, 0.87)]
 for i, pair in enumerate(dualPlotsMixed):
     fig, ax = plt.subplots()
