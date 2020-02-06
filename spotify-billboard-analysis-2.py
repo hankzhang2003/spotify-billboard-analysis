@@ -22,11 +22,17 @@ weeks.drop(weeksFilter, axis=1, inplace=True)
 
 features = pd.read_csv("data/hot-100-audio-features.csv", converters={'spotify_genre':
                        lambda s: s[1:-1].split(', ')}, encoding="latin-1")
-features['spotify_genre'] = features['spotify_genre'].apply(lambda l: [s[1:-1] for s in l])
 featuresFilter = ["spotify_track_id", "spotify_track_preview_url", "spotify_track_album",
                   "spotify_track_popularity", "key", "time_signature"]
 features.drop(featuresFilter, axis=1, inplace=True)
+emptyGenreRows = []
+for row in range(len(features['spotify_genre'])):
+    if features['spotify_genre'][row] == ['']:
+        emptyGenreRows.append(row)
+features.drop(emptyGenreRows, axis=0, inplace=True)
+features = features[features['tempo'] != 0]
 features.dropna(inplace=True)
+features['spotify_genre'] = features['spotify_genre'].apply(lambda l: [s[1:-1] for s in l])
 
 
 # Column insertion
@@ -55,18 +61,17 @@ weeks.insert(3, "Decade", weeks['Year'].apply(decade))
 features['spotify_track_explicit'] = features['spotify_track_explicit'].astype(float)
 features.insert(6, "track_duration", features['spotify_track_duration_ms'] / 1000)
 
+
 # Join tables
 joined = weeks.merge(features, on='SongID')
-joined.to_csv("data/joined.csv", index=False)
+#joined.to_csv("data/joined.csv", index=False)
 
 # Expand genres into individual components
 featureGenres = features.explode('spotify_genre')
-featureGenres = featureGenres[featureGenres.spotify_genre != '']
-featureGenres = featureGenres.dropna()
+featureGenres = featureGenres.loc[featureGenres['spotify_genre'] != '']
 
 joinedGenres = joined.explode('spotify_genre')
-joinedGenres = joinedGenres[joinedGenres.spotify_genre != '']
-joinedGenres = joinedGenres.dropna()
+joinedGenres = joinedGenres[joinedGenres['spotify_genre'] != '']
 
 explicitness = joined[['Year', 'spotify_track_explicit']].dropna()
 explicitness = explicitness.groupby(['Year']).aggregate(np.nanmean).reset_index()
@@ -76,29 +81,18 @@ numericals = joined[['Year'] + numericalMetrics].groupby(['Year']).aggregate(np.
 
 
 # Create grouped tables
-genresJoined = joinedGenres.groupby(['spotify_genre'])['SongID'].count().reset_index(). \
-                   sort_values(by=['SongID'], ascending=False)
-genres = featureGenres.groupby(['spotify_genre'])['SongID'].count().reset_index(). \
-            sort_values(by=['SongID'], ascending=False)
+genresJoined = joinedGenres.groupby(['spotify_genre'])['SongID'].count().reset_index()
+genresJoinedSorted = genresJoined.sort_values(by=['SongID'], ascending=False)
+genres = featureGenres.groupby(['spotify_genre'])['SongID'].count().reset_index()
+genresSorted = genres.sort_values(by=['SongID'], ascending=False)
 genresJoinedDecade = joinedGenres.groupby(['spotify_genre', 'Decade'])['SongID'].count(). \
                         reset_index().sort_values(by=['SongID'], ascending=False)
 
-
-# Only keep top 200 recorded genres
-temp = np.diff(genres['SongID'])
-topGenres = list(genres['spotify_genre'].iloc[0:200])
-featuresCulled = featureGenres.loc[featureGenres['spotify_genre'].isin(topGenres), :]
-joinedCulled = joinedGenres.loc[joinedGenres['spotify_genre'].isin(topGenres), :]
-
 genreFeatures = featureGenres.groupby(['spotify_genre'])[numericalMetrics].mean().reset_index()
-genreFeaturesCulled = featuresCulled.groupby(['spotify_genre'])[numericalMetrics].mean().reset_index()
-
-# print(len(pd.unique(features['SongID'])))
-# print(len(pd.unique(featuresCulled['SongID'])))
 
 
 def make_frequency_plot(df: pd.DataFrame, top: int, ax: plt.axes) -> None:
-    ax.bar(np.arange(top), genresJoined['SongID'].iloc[0:top])
+    ax.bar(np.arange(top), df['SongID'].iloc[0:top])
     ax.set_xticks(np.arange(top))
     ax.set_xticklabels(df['spotify_genre'][0:top], rotation=45, ha="right", rotation_mode="anchor")
     ax.set_xlabel("Genre", fontsize=14)
@@ -106,20 +100,20 @@ def make_frequency_plot(df: pd.DataFrame, top: int, ax: plt.axes) -> None:
 
 # Frequency of genres
 fig, ax = plt.subplots(figsize=(12, 6))
-make_frequency_plot(genresJoined, 30, ax)
+make_frequency_plot(genresJoinedSorted, 30, ax)
 fig.tight_layout()
 fig.suptitle("Frequency of Genres of Tracks", fontsize=20)
 fig.subplots_adjust(top=0.9)
-fig.savefig("images/genresJoined.png")
+#fig.savefig("images/genresJoined.png")
 
 
 # Frequency of genres (unique)
 fig, ax = plt.subplots(figsize=(12, 6))
-make_frequency_plot(genres, 30, ax)
+make_frequency_plot(genresSorted, 30, ax)
 fig.tight_layout()
 fig.suptitle("Frequency of Genres of Tracks (Unique)", fontsize=20)
 fig.subplots_adjust(top=0.9)
-fig.savefig("images/genres.png")
+#fig.savefig("images/genres.png")
 
 
 # Frequency of genres by decade
@@ -136,7 +130,7 @@ for i, ax in enumerate(axs.flat):
 fig.tight_layout()
 fig.suptitle("Frequency of Genres of Tracks by Decade", fontsize=28)
 fig.subplots_adjust(top=0.9)
-fig.savefig("images/genresJoinedDecade.png")
+#fig.savefig("images/genresJoinedDecade.png")
 
 
 # Explicitness
@@ -145,7 +139,7 @@ ax.plot(explicitness['Year'], explicitness['spotify_track_explicit'])
 ax.set_xlabel("Year", fontsize=14)
 ax.set_ylabel("Proportion of explicit songs", fontsize=14)
 fig.suptitle("Explicitness of Tracks", fontsize=20)
-fig.savefig("images/explicitness.png")
+#fig.savefig("images/explicitness.png")
 
 
 # Mean of each numerical metric by year
@@ -158,7 +152,7 @@ for metric in numericalMetrics:
     fig, ax = plt.subplots()
     make_line_plot(numericals, metric, ax)
     fig.suptitle("Mean {} of Tracks by Year".format(metric.capitalize()), fontsize=20)
-    fig.savefig("images/{}.png".format(metric))
+    #fig.savefig("images/{}.png".format(metric))
 
 
 # Test all pairs of columns for correlation coefficient R^2 and select most relevant ones
@@ -186,7 +180,7 @@ for pair in dualPlotsNormal:
     ax.legend([pair[0].capitalize(), pair[1].capitalize()])
     fig.suptitle("{} and {} of Tracks by Year".format(pair[0].capitalize(),
                  pair[1].capitalize()), fontsize=18)
-    fig.savefig("images/{}and{}.png".format(pair[0], pair[1]))
+    #fig.savefig("images/{}and{}.png".format(pair[0], pair[1]))
 
 
 # Dual plots with mixed y-axes:
@@ -212,7 +206,7 @@ for i, pair in enumerate(dualPlotsMixed):
     fig.legend([pair[0].capitalize(), pair[1].capitalize()], bbox_to_anchor=legendLocations[i])
     fig.suptitle("{} and {} of Tracks by Year".format(pair[0].capitalize(),
                  pair[1].capitalize()), fontsize=18)
-    fig.savefig("images/{}and{}.png".format(pair[0], pair[1]))
+    #fig.savefig("images/{}and{}.png".format(pair[0], pair[1]))
 
 
 # Scatterplots
@@ -229,30 +223,77 @@ for pair in scatterplots:
     make_scatter(features, pair, ax)
     fig.suptitle("{} vs {} of Tracks".format(pair[0].capitalize(), pair[1].capitalize()),
                  fontsize=20)
-
-    fig.savefig("images/{}vs{}Scatter.png".format(pair[0], pair[1]))
+    #fig.savefig("images/{}vs{}Scatter.png".format(pair[0], pair[1]))
 
 
 # Find genres that are closest to each other using table of means
 Xcluster = genreFeatures.set_index('spotify_genre')
+Ygroups = []
 genreGroupCounts = []
 wcss = []
-for k in range(5, 41):
+silhouettes = []
+for k in range(4, 41):
     km = KMeans(k)
     Ygroup = km.fit_predict(Xcluster)
     counts = Counter(Ygroup)
-    genreGroupCounts.append(dict(counts))
+    Ygroups.append(Ygroup)
+    genreGroupCounts.append(counts)
     wcss.append(km.inertia_)
-
-print(genreGroupCounts)
-print(wcss)
+    silhouettes.append(silhouette_score(Xcluster, Ygroup))
 
 
-def manhattan_distance(l1: list, l2: list) -> float:
-    if len(l1) != len(l2):
-        return -1
-    dist = 0
-    for i in range(len(l1)):
-        dist += abs(l1[i], l2[i])
-    return dist
+# Remove clusters with barely anything in them and mark them for removal
+def find_small_clusters(d: dict, threshold: int) -> list:
+    result = []
+    for k, v in d.items():
+        if v <= threshold:
+            result.append(k)
+    return result
+
+def find_genre_indices(lst: list, row: int) -> list:
+    return list(np.where(np.isin(Ygroups[row], lst))[0])
+
+smallClusters = []
+smallGenres = []
+genreLists = []
+for i, d in enumerate(genreGroupCounts):
+    sc = find_small_clusters(d, 3)
+    smallClusters.append(sc)
+    smallGenres.append(find_genre_indices(sc, i))
+
+
+# Rerun clustering after genres that are too far out
+culledGenres = genres['spotify_genre'][[344, 557, 590, 664]]
+featuresCulled = featureGenres[~featureGenres['spotify_genre'].isin(culledGenres)]
+genreFeaturesCulled = genreFeatures[~genreFeatures['spotify_genre'].isin(culledGenres)]
+
+Xcluster = genreFeaturesCulled.set_index('spotify_genre')
+Ygroups = []
+genreGroupCounts = []
+wcss = []
+silhouettes = []
+for k in range(4, 41):
+    km = KMeans(k)
+    Ygroup = km.fit_predict(Xcluster)
+    counts = Counter(Ygroup)
+    Ygroups.append(Ygroup)
+    genreGroupCounts.append(counts)
+    wcss.append(km.inertia_)
+    silhouettes.append(silhouette_score(Xcluster, Ygroup))
+
+# Visualize with elbow method
+#print(wcss)
+#print(np.diff(wcss))
+fig, ax = plt.subplots()
+ax.plot(np.arange(4, 41), wcss)
+ax.set_xlabel("Number of clusters")
+ax.set_ylabel("WCSS")
+fig.savefig("images/elbow.png")
+
+# Final clustering model: k=15
+km = KMeans(15)
+labels = km.fit_predict(Xcluster)
+
+
+
 
