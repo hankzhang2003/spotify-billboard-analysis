@@ -65,45 +65,44 @@ featureGenres = featureGenres[featureGenres.spotify_genre != '']
 joinedGenres = joined.explode('spotify_genre')
 joinedGenres = joinedGenres[joinedGenres.spotify_genre != '']
 
+# Create grouped tables
+genres = featureGenres.groupby(['spotify_genre'])['SongID'].count().reset_index()
+genresJoined = joinedGenres.groupby(['spotify_genre'])['SongID'].count().reset_index()
+genresJoinedDecade = joinedGenres.groupby(['spotify_genre', 'Decade'])['SongID'].count(). \
+                        reset_index().sort_values(by=['Decade'])
+
+
+def make_frequency_plot(df: pd.DataFrame, top: int, ax: plt.axes) -> None:
+    ax.bar(np.arange(top), df['SongID'].iloc[0:top])
+    ax.set_xticks(np.arange(top))
+    ax.set_xticklabels(df['spotify_genre'][0:top], rotation=45, ha="right", rotation_mode="anchor")
+    ax.set_xlabel("Genre", fontsize=14)
+    ax.set_ylabel("Frequency", fontsize=14)
 
 # Frequency of genres
-genresJoined = joinedGenres.groupby(['spotify_genre'])['SongID'].count().reset_index(). \
-                   sort_values(by=['SongID'], ascending=False)
 fig, ax = plt.subplots(figsize=(12, 6))
-ax.bar(np.arange(30), genresJoined['SongID'].iloc[0:30])
-ax.set_xticks(np.arange(30))
-ax.set_xticklabels(genresJoined['spotify_genre'][0:30], rotation=45, ha="right",
-                   rotation_mode="anchor")
-ax.set_xlabel("Genre", fontsize=14)
-ax.set_ylabel("Frequency", fontsize=14)
+make_frequency_plot(genresJoined.sort_values(by=['SongID'], ascending=False), 30, ax)
 fig.tight_layout()
 fig.suptitle("Frequency of Genres of Tracks", fontsize=20)
 fig.subplots_adjust(top=0.9)
-fig.savefig("images/genresJoined.png")
+#fig.savefig("images/genresJoined.png")
 
 
 # Frequency of genres (unique)
-genres = featureGenres.groupby(['spotify_genre'])['SongID'].count().reset_index(). \
-             sort_values(by=['SongID'], ascending=False)
 fig, ax = plt.subplots(figsize=(12, 6))
-ax.bar(np.arange(30), genres['SongID'].iloc[0:30])
-ax.set_xticks(np.arange(30))
-ax.set_xticklabels(genres['spotify_genre'][0:30], rotation=45, ha="right", rotation_mode="anchor")
-ax.set_xlabel("Genre", fontsize=14)
-ax.set_ylabel("Frequency", fontsize=14)
+make_frequency_plot(genresJoined.sort_values(by=['SongID'], ascending=False), 30, ax)
 fig.tight_layout()
 fig.suptitle("Frequency of Genres of Tracks (Unique)", fontsize=20)
 fig.subplots_adjust(top=0.9)
-fig.savefig("images/genres.png")
+#fig.savefig("images/genres.png")
 
 
 # Frequency of genres by decade
-genresJoinedDecade = joinedGenres.groupby(['spotify_genre', 'Decade'])['SongID'].count(). \
-                         reset_index().sort_values(by=['SongID'], ascending=False)
 decades = ["1960s", "1970s", "1980s", "1990s", "2000s","2010s"]
 fig, axs = plt.subplots(2, 3, figsize=(20, 10))
 for i, ax in enumerate(axs.flat):
-    temp = genresJoinedDecade.loc[genresJoinedDecade['Decade'] == decades[i]]
+    temp = genresJoinedDecade.loc[genresJoinedDecade['Decade'] == decades[i]] \
+            .sort_values(by=['SongID'], ascending=False)
     ax.bar(np.arange(15), temp['SongID'].iloc[0:15])
     ax.set_ylim((0, 24000))
     ax.set_xticks(np.arange(15))
@@ -113,7 +112,7 @@ for i, ax in enumerate(axs.flat):
 fig.tight_layout()
 fig.suptitle("Frequency of Genres of Tracks by Decade", fontsize=28)
 fig.subplots_adjust(top=0.9)
-fig.savefig("images/genresJoinedDecade.png")
+#fig.savefig("images/genresJoinedDecade.png")
 
 
 # Explicitness
@@ -130,13 +129,17 @@ fig.savefig("images/explicitness.png")
 # Mean of each numerical metric by year
 numericals = ['Year'] + joined.columns.tolist()[11:22]
 numericalMetrics = joined[numericals].groupby(['Year']).aggregate(np.nanmean).reset_index()
-for metric in numericalMetrics.columns.tolist()[1:]:
-    fig, ax = plt.subplots()
-    ax.plot(numericalMetrics['Year'], numericalMetrics[metric])
+
+def make_line_plot(df: pd.DataFrame, col: str, ax: plt.axes) -> None:
+    ax.plot(df['Year'], df[col])
     ax.set_xlabel("Year", fontsize=14)
-    ax.set_ylabel("{}".format(metric.capitalize()), fontsize=14)
+    ax.set_ylabel("{}".format(col.capitalize()), fontsize=14)
+
+for metric in numericalMetrics:
+    fig, ax = plt.subplots()
+    make_line_plot(numericals, metric, ax)
     fig.suptitle("Mean {} of Tracks by Year".format(metric.capitalize()), fontsize=20)
-    fig.savefig("images/{}.png".format(metric))
+    #fig.savefig("images/{}.png".format(metric))
 
 
 # Test all pairs of columns for correlation coefficient R^2 and select most relevant ones
@@ -144,56 +147,71 @@ correlations = list(itertools.combinations(features.columns.tolist()[6:16], 2))
 for pair in correlations:
     r2 = stats.pearsonr(featuresNoNulls[pair[0]], featuresNoNulls[pair[1]])[0]
     if abs(r2) > 0.15:
-        print("R^2 of " + pair[0] + " and " + pair[1] + " is " + str(r2))
+        pass
+        #print("R^2 of " + pair[0] + " and " + pair[1] + " is " + str(r2))
 
 
 # Dual plots with same y-axis
 dualPlotsNormal = [("acousticness", "energy"), ("energy", "danceability"), ("energy", "valence"),
                    ("danceability", "valence")]
-for pair in dualPlotsNormal:
-    fig, ax = plt.subplots()
-    ax.plot(numericalMetrics['Year'], numericalMetrics[pair[0]])
-    ax.plot(numericalMetrics['Year'], numericalMetrics[pair[1]])
+
+def make_dual_plot_same(df: pd.DataFrame, pair: tuple, ax: plt.axes) -> None:
+    ax.plot(df['Year'], df[pair[0]])
+    ax.plot(df['Year'], df[pair[1]])
     ax.set_xlabel("Year", fontsize=12)
     ax.set_ylabel("{}".format("Value"), fontsize=12)
+
+for pair in dualPlotsNormal:
+    fig, ax = plt.subplots()
+    make_dual_plot_same(numericals, pair, ax)
     ax.legend([pair[0].capitalize(), pair[1].capitalize()])
     fig.suptitle("{} and {} of Tracks by Year".format(pair[0].capitalize(),
                  pair[1].capitalize()), fontsize=18)
-    fig.savefig("images/{}and{}.png".format(pair[0], pair[1]))
+    #fig.savefig("images/{}and{}.png".format(pair[0], pair[1]))
 
 
 # Dual plots with mixed y-axes:
 dualPlotsMixed = [("energy", "loudness"), ("acousticness", "loudness"), ("energy", "tempo")]
 legendLocations = [(0.35, 0.87), (0.55, 0.87), (0.32, 0.87)]
-for i, pair in enumerate(dualPlotsMixed):
-    fig, ax = plt.subplots()
-    l1 = ax.plot(numericalMetrics['Year'], numericalMetrics[pair[0]])
+
+def make_dual_plot_mixed(df: pd.DataFrame, pair: tuple, ax: plt.axes) -> None:
+    ax.plot(numericals['Year'], numericals[pair[0]])
     ax2 = ax.twinx()
-    l2 = ax2.plot(numericalMetrics['Year'], numericalMetrics[pair[1]], color="C1")
+    ax2.plot(numericals['Year'], numericals[pair[1]], color="C1")
     ax.set_xlabel("Year", fontsize=14)
     ax.set_ylabel(pair[0].capitalize(), fontsize=14)
-    if pair[1] == 'Loudness':
+    if pair[1] == 'loudness':
         ax2.set_ylabel("Loudness (dB)", fontsize=14)
     elif pair[1] == 'tempo':
         ax2.set_ylabel("Tempo (bpm)", fontsize=14)
+    else:
+        ax2.set_ylabel("{}".format("Value"), fontsize=14)
+
+for i, pair in enumerate(dualPlotsMixed):
+    fig, ax = plt.subplots()
+    make_dual_plot_mixed(numericals, pair, ax)
     fig.legend([pair[0].capitalize(), pair[1].capitalize()], bbox_to_anchor=legendLocations[i])
     fig.suptitle("{} and {} of Tracks by Year".format(pair[0].capitalize(),
                  pair[1].capitalize()), fontsize=18)
-    fig.savefig("images/{}and{}.png".format(pair[0], pair[1]))
+    #fig.savefig("images/{}and{}.png".format(pair[0], pair[1]))
+
 
 
 # Scatterplots
+def make_scatter(df: pd.DataFrame, pair: tuple, ax: plt.axes) -> None:
+    ax.scatter(df[pair[0]], df[pair[1]])
+    ax.set_xlabel(pair[0].capitalize(), fontsize=14)
+    ax.set_ylabel(pair[1].capitalize(), fontsize=14)
+    r2 = stats.pearsonr(df[pair[0]], df[pair[1]])[0]
+    print("\nR^2 of " + pair[0] + " and " + pair[1] + " is " + str(r2))
+
 scatterplots = dualPlotsNormal + dualPlotsMixed
 for pair in scatterplots:
     fig, ax = plt.subplots()
-    ax.scatter(featuresNoNulls[pair[0]], featuresNoNulls[pair[1]])
-    ax.set_xlabel(pair[0].capitalize(), fontsize=14)
-    ax.set_ylabel(pair[1].capitalize(), fontsize=14)
+    make_scatter(features, pair, ax)
     fig.suptitle("{} vs {} of Tracks".format(pair[0].capitalize(), pair[1].capitalize()),
                  fontsize=20)
-    fig.savefig("images/{}vs{}Scatter.png".format(pair[0], pair[1]))
-    r2 = stats.pearsonr(featuresNoNulls[pair[0]], featuresNoNulls[pair[1]])[0]
-    print("R^2 of " + pair[0] + " and " + pair[1] + " is " + str(r2))
+    #fig.savefig("images/{}vs{}Scatter.png".format(pair[0], pair[1]))
 
 
 # Hypothesis test
