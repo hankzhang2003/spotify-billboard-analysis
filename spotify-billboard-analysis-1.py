@@ -8,12 +8,12 @@ import itertools
 # Import csvs and remove null rows and unnecessary columns
 weeks = pd.read_csv("data/hot-stuff.csv", converters={'WeekID': lambda d: pd.to_datetime(d, \
                     format="%m/%d/%Y", errors="coerce")})
-weeksFilter = ['url', 'Instance', 'Previous Week Position', 'Peak Position',
-               'Weeks on Chart']
+weeksFilter = ["url", "Instance", "Previous Week Position", "Peak Position",
+               "Weeks on Chart"]
 weeks.drop(weeksFilter, axis=1, inplace=True)
 
 features = pd.read_csv("data/hot-100-audio-features.csv", converters={'spotify_genre':
-                       lambda s: s[1:-1].split(', ')}, encoding="latin-1")
+                       lambda s: s[1:-1].split(", ")}, encoding="latin-1")
 featuresFilter = ["spotify_track_id", "spotify_track_preview_url", "spotify_track_album",
                   "spotify_track_popularity", "key", "time_signature"]
 features.drop(featuresFilter, axis=1, inplace=True)
@@ -68,8 +68,8 @@ joinedGenres = joinedGenres[joinedGenres.spotify_genre != '']
 # Create grouped tables
 genres = featureGenres.groupby(['spotify_genre'])['SongID'].count().reset_index()
 genresJoined = joinedGenres.groupby(['spotify_genre'])['SongID'].count().reset_index()
-genresJoinedDecade = joinedGenres.groupby(['spotify_genre', 'Decade'])['SongID'].count(). \
-                        reset_index().sort_values(by=['Decade'])
+genresJoinedDecade = joinedGenres.groupby(['spotify_genre", "Decade'])['SongID'].count(). \
+                        reset_index().sort_values(by="Decade")
 
 
 def make_frequency_plot(df: pd.DataFrame, top: int, ax: plt.axes) -> None:
@@ -81,7 +81,7 @@ def make_frequency_plot(df: pd.DataFrame, top: int, ax: plt.axes) -> None:
 
 # Frequency of genres
 fig, ax = plt.subplots(figsize=(12, 6))
-make_frequency_plot(genresJoined.sort_values(by=['SongID'], ascending=False), 30, ax)
+make_frequency_plot(genresJoined.sort_values(by="SongID", ascending=False), 30, ax)
 fig.tight_layout()
 fig.suptitle("Frequency of Genres of Tracks", fontsize=20)
 fig.subplots_adjust(top=0.9)
@@ -90,7 +90,7 @@ fig.subplots_adjust(top=0.9)
 
 # Frequency of genres (unique)
 fig, ax = plt.subplots(figsize=(12, 6))
-make_frequency_plot(genresJoined.sort_values(by=['SongID'], ascending=False), 30, ax)
+make_frequency_plot(genresJoined.sort_values(by="SongID", ascending=False), 30, ax)
 fig.tight_layout()
 fig.suptitle("Frequency of Genres of Tracks (Unique)", fontsize=20)
 fig.subplots_adjust(top=0.9)
@@ -116,7 +116,7 @@ fig.subplots_adjust(top=0.9)
 
 
 # Explicitness
-explicitness = joined[['Year', 'spotify_track_explicit']].dropna()
+explicitness = joined[['Year", "spotify_track_explicit']].dropna()
 explicitness = explicitness.groupby(['Year']).mean().reset_index()
 fig, ax = plt.subplots()
 ax.plot(explicitness['Year'], explicitness['num'])
@@ -215,7 +215,7 @@ for pair in scatterplots:
 
 
 # Hypothesis test
-hypothesisTests = ['energy', 'danceability', 'loudness', 'valence', 'tempo']
+hypothesisTests = ['energy", "danceability", "loudness", "valence", "tempo']
 hypothesisTestMetrics = joinedNoNulls[['Decade'] + hypothesisTests]
 # Ho = Music today has the same energy, danceability, loudness, valence, and
 #       tempo as music of 60 years ago.
@@ -229,7 +229,6 @@ for metric in hypothesisTests:
     l2 = hypothesisTestMetrics[metric].loc[hypothesisTestMetrics['Decade'] == "2010s"]
     t, p = stats.ttest_ind(l1, l2, nan_policy="omit")
     print("{}: u = {}, p = {}".format(metric, t, p))
-
 print("\n")
 
 for metric in hypothesisTests:
