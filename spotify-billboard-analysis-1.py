@@ -116,7 +116,7 @@ fig.subplots_adjust(top=0.9)
 
 
 # Explicitness
-explicitness = joined[['Year", "spotify_track_explicit']].dropna()
+explicitness = joined[['Year', 'spotify_track_explicit']].dropna()
 explicitness = explicitness.groupby(['Year']).mean().reset_index()
 fig, ax = plt.subplots()
 ax.plot(explicitness['Year'], explicitness['num'])

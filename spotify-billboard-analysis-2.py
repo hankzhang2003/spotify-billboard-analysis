@@ -76,7 +76,7 @@ featureGenres = featureGenres[featureGenres['spotify_genre'] != '']
 joinedGenres = joined.explode('spotify_genre')
 joinedGenres = joinedGenres[joinedGenres['spotify_genre'] != '']
 
-explicitness = joined[['Year", "spotify_track_explicit']]
+explicitness = joined[['Year', 'spotify_track_explicit']]
 explicitness = explicitness.groupby(['Year']).mean().reset_index()
 
 numericalMetrics = joined.columns.tolist()[11:23]
@@ -262,7 +262,7 @@ fig, ax = plt.subplots()
 ax.plot(np.arange(56), np.abs(np.diff(wcss)), color="C1")
 ax2 = ax.twinx()
 ax2.plot(np.arange(56), np.abs(np.diff(silhouettes)))
-fig.savefig("wcssandsilhouettes.png")
+fig.savefig("images/wcssandsilhouettes.png")
 
 
 # Final clustering model: k=25
@@ -286,7 +286,22 @@ featureBuckets['genre_bucket'] = featureBuckets['spotify_genre'].apply(lambda g:
 
 
 # Lower number of genres bc this is too complicated
-topGenres = genres.sort_values(by="SongID", ascending=False)[0:200]
+# Initial model: classify song as upbeat or chill
+topGenres = list(genres.sort_values(by="SongID", ascending=False)['spotify_genre'][0:200])
+featuresTopGenres = featureGenres[featureGenres['spotify_genre'].isin(topGenres)]
+def upbeat_chill_classifier(genre: str):
+    if "pop" in genre:
+        return "chill"
+    elif "hip hop" in genre:
+        return "upbeat"
+    elif "rap" in genre:
+        return "upbeat"
+    elif "metal" in genre:
+        return "upbeat"
+    elif "rock" in genre:
+        return "chill"
+    else:
+        return "unclassified"
 
 
 # Logistic Regression
