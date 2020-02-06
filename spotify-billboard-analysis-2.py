@@ -4,14 +4,17 @@ import matplotlib.pyplot as plt
 import scipy.stats as stats
 import itertools
 from collections import Counter
-from sklearn.cluster import KMeans, AgglomerativeClustering
-from sklearn.metrics import log_loss, make_scorer, silhouette_score
-from sklearn.linear_model import LinearRegression, LogisticRegression
+from sklearn.preprocessing import MinMaxScaler
+from sklearn.cluster import KMeans
+from sklearn.metrics import silhouette_score
+from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import (RandomForestRegressor, RandomForestClassifier,
                               GradientBoostingRegressor, GradientBoostingClassifier)
 from sklearn.model_selection import cross_val_score, train_test_split, GridSearchCV
 from statsmodels.tsa.arima_model import ARIMA
 
+
+# Pipeline
 
 # Import csvs and remove null rows and unnecessary columns
 weeks = pd.read_csv("data/hot-stuff.csv", converters={'WeekID': lambda d: pd.to_datetime(d, \
@@ -54,12 +57,12 @@ def decade(year: int) -> str:
     else:
         return None
 
-weeks.insert(1, "Month", weeks['WeekID'].dt.month)
-weeks.insert(2, "Year", weeks['WeekID'].dt.year)
-weeks.insert(3, "Decade", weeks['Year'].apply(decade))
+weeks.insert(1, "Year", weeks['WeekID'].dt.year)
+weeks.insert(2, "Decade", weeks['Year'].apply(decade))
 
 features['spotify_track_explicit'] = features['spotify_track_explicit'].astype(float)
-features.insert(6, "track_duration", features['spotify_track_duration_ms'] / 1000)
+features['spotify_track_duration_ms'] = features['spotify_track_duration_ms'] / 1000
+features.rename(columns={"spotify_track_duration_ms": "track_duration"}, inplace=True)
 
 
 # Join tables
@@ -68,29 +71,33 @@ joined = weeks.merge(features, on='SongID')
 
 # Expand genres into individual components
 featureGenres = features.explode('spotify_genre')
-featureGenres = featureGenres.loc[featureGenres['spotify_genre'] != '']
+featureGenres = featureGenres[featureGenres['spotify_genre'] != '']
 
 joinedGenres = joined.explode('spotify_genre')
 joinedGenres = joinedGenres[joinedGenres['spotify_genre'] != '']
 
-explicitness = joined[['Year', 'spotify_track_explicit']].dropna()
-explicitness = explicitness.groupby(['Year']).aggregate(np.nanmean).reset_index()
+explicitness = joined[['Year', 'spotify_track_explicit']]
+explicitness = explicitness.groupby(['Year']).mean().reset_index()
 
-numericalMetrics = [joined.columns.tolist()[11]] + joined.columns.tolist()[13:24]
+numericalMetrics = joined.columns.tolist()[11:23]
 numericals = joined[['Year'] + numericalMetrics].groupby(['Year']).aggregate(np.nanmean).reset_index()
 
+# Normalize columns
+featureGenresNorm = featureGenres.copy()
+scaled = ['track_duration', ]
+mms = MinMaxScaler()
+featureGenresNorm['track_duration'] = mms.fit_transform(featureGenresNorm['track_duration'])
 
 # Create grouped tables
 genresJoined = joinedGenres.groupby(['spotify_genre'])['SongID'].count().reset_index()
-genresJoinedSorted = genresJoined.sort_values(by=['SongID'], ascending=False)
 genres = featureGenres.groupby(['spotify_genre'])['SongID'].count().reset_index()
-genresSorted = genres.sort_values(by=['SongID'], ascending=False)
 genresJoinedDecade = joinedGenres.groupby(['spotify_genre', 'Decade'])['SongID'].count(). \
-                        reset_index().sort_values(by=['SongID'], ascending=False)
+                        reset_index().sort_values(by=['Decade'])
+genreFeatures = featureGenresNorm.groupby(['spotify_genre'])[numericalMetrics].mean().reset_index()
 
-genreFeatures = featureGenres.groupby(['spotify_genre'])[numericalMetrics].mean().reset_index()
 
 
+'''
 def make_frequency_plot(df: pd.DataFrame, top: int, ax: plt.axes) -> None:
     ax.bar(np.arange(top), df['SongID'].iloc[0:top])
     ax.set_xticks(np.arange(top))
@@ -100,7 +107,7 @@ def make_frequency_plot(df: pd.DataFrame, top: int, ax: plt.axes) -> None:
 
 # Frequency of genres
 fig, ax = plt.subplots(figsize=(12, 6))
-make_frequency_plot(genresJoinedSorted, 30, ax)
+make_frequency_plot(genresJoined.sort_values(by=['SongID'], ascending=False), 30, ax)
 fig.tight_layout()
 fig.suptitle("Frequency of Genres of Tracks", fontsize=20)
 fig.subplots_adjust(top=0.9)
@@ -109,7 +116,7 @@ fig.subplots_adjust(top=0.9)
 
 # Frequency of genres (unique)
 fig, ax = plt.subplots(figsize=(12, 6))
-make_frequency_plot(genresSorted, 30, ax)
+make_frequency_plot(genresJoined.sort_values(by=['SongID'], ascending=False), 30, ax)
 fig.tight_layout()
 fig.suptitle("Frequency of Genres of Tracks (Unique)", fontsize=20)
 fig.subplots_adjust(top=0.9)
@@ -120,7 +127,8 @@ fig.subplots_adjust(top=0.9)
 decades = ["1960s", "1970s", "1980s", "1990s", "2000s","2010s"]
 fig, axs = plt.subplots(2, 3, figsize=(20, 10))
 for i, ax in enumerate(axs.flat):
-    temp = genresJoinedDecade.loc[genresJoinedDecade['Decade'] == decades[i]]
+    temp = genresJoinedDecade.loc[genresJoinedDecade['Decade'] == decades[i]] \
+            .sort_values(by=['SongID'], ascending=False)
     ax.bar(np.arange(15), temp['SongID'].iloc[0:15])
     ax.set_ylim((0, 24000))
     ax.set_xticks(np.arange(15))
@@ -224,9 +232,8 @@ for pair in scatterplots:
     fig.suptitle("{} vs {} of Tracks".format(pair[0].capitalize(), pair[1].capitalize()),
                  fontsize=20)
     #fig.savefig("images/{}vs{}Scatter.png".format(pair[0], pair[1]))
+'''
 
-
-# Find genres that are closest to each other using table of means
 Xcluster = genreFeatures.set_index('spotify_genre')
 Ygroups = []
 genreGroupCounts = []
