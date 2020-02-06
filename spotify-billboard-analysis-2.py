@@ -291,9 +291,19 @@ ax.set_ylabel("WCSS")
 fig.savefig("images/elbow.png")
 
 # Final clustering model: k=15
-km = KMeans(15)
+km = KMeans(20)
 labels = km.fit_predict(Xcluster)
+genreBuckets = {i: [] for i in range(20)}
+for j in range(len(labels)):
+    bucket = labels[j]
+    genreBuckets[bucket].append(genres['spotify_genre'][j])
 
 
+# Logistic Regression
+lr = LogisticRegression()
 
+# Random Forest
+rf = RandomForestClassifier()
 
+# Gradient Boosting
+gbr = GradientBoostingClassifier()
