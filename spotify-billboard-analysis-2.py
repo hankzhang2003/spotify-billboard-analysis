@@ -97,7 +97,6 @@ genresJoinedDecade = joinedGenres.groupby(['spotify_genre', 'Decade'])['SongID']
 genreFeatures = featureGenresNorm.groupby(['spotify_genre'])[numericalMetrics].mean().reset_index()
 
 
-'''
 def make_frequency_plot(df: pd.DataFrame, top: int, ax: plt.axes) -> None:
     ax.bar(np.arange(top), df['SongID'].iloc[0:top])
     ax.set_xticks(np.arange(top))
@@ -217,6 +216,7 @@ for i, pair in enumerate(dualPlotsMixed):
     #fig.savefig("images/{}and{}.png".format(pair[0], pair[1]))
 
 
+
 # Scatterplots
 def make_scatter(df: pd.DataFrame, pair: tuple, ax: plt.axes) -> None:
     ax.scatter(df[pair[0]], df[pair[1]])
@@ -232,10 +232,10 @@ for pair in scatterplots:
     fig.suptitle("{} vs {} of Tracks".format(pair[0].capitalize(), pair[1].capitalize()),
                  fontsize=20)
     #fig.savefig("images/{}vs{}Scatter.png".format(pair[0], pair[1]))
-'''
 
 
 Xcluster = genreFeatures.set_index('spotify_genre')
+'''
 Ygroups = []
 genreGroupCounts = []
 wcss = []
@@ -262,6 +262,7 @@ ax.plot(np.arange(41-2), np.abs(np.diff(wcss)), color="C1")
 ax2 = ax.twinx()
 ax2.plot(np.arange(41-2), np.abs(np.diff(silhouettes)))
 fig.savefig("images/wcssandsilhouettes.png")
+'''
 
 
 # Dual clustering model: k = 2
@@ -286,39 +287,18 @@ featureBuckets = featureBuckets.groupby(['SongID']).mean()
 featureBuckets['genre_bucket'] = (featureBuckets['genre_bucket']+0.1).round()
 
 
-# Lower number of genres bc this is too complicated
-# Initial model: classify song as upbeat or chill
-'''
+# Create binary classfier for each genre group (pop, rock, hip hop, etc)
 topGenres = list(genres.sort_values(by="SongID", ascending=False)['spotify_genre'][0:100])
 featuresTopGenres = featureGenres[featureGenres['spotify_genre'].isin(topGenres)]
 
-def upbeat_chill_classifier(genre: str):
-    if "country" in genre:
-        return "chill"
-    elif "hip hop" in genre:
-        return "upbeat"
-    elif "rap" in genre:
-        return "upbeat"
-    elif "metal" in genre:
-        return "upbeat"
-    elif "rock" in genre:
-        return "chill"
-    elif "pop" in genre:
-        return "chill"
-    else:
-        return "unclassified"
+def genre_type_classifier(genre: str, genre_types: list) -> int:
+    for g in genre_types:
+        if g in genre:
+            return 1
+    return 0
 
-classifiedGenres = list(map(upbeat_chill_classifier, topGenres))
-print(len(featuresTopGenres))
-print(len(pd.unique(featuresTopGenres['SongID'])))
-'''
-
-X = featureBuckets[featureBuckets.columns.difference(['genre_bucket'])]
-y = featureBuckets['genre_bucket']
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
-
-def create_confusion_matrix(y_test: np.array, y_pred: np.array) -> (int, int, int, int):
-    cm = confusion_matrix(y_test, y_pred)
+def create_confusion_matrix(ytest: np.array, ypred: np.array) -> (int, int, int, int):
+    cm = confusion_matrix(ytest, ypred)
     tp = cm[0, 0]
     fp = cm[0, 1]
     fn = cm[1, 0]
@@ -331,62 +311,163 @@ def get_precision_recall(tp: int, fp: int, fn: int, tn: int) -> float:
     return precision, recall
 
 
-# Logistic Regression
-lr = LogisticRegression(C=1000, max_iter=1000).fit(X_train, y_train)
-y_pred = lr.predict(X_test)
-print("Logistic regression accuracy", lr.score(X_test, y_test))
-# 0.8490
-
-tp, fp, fn, tn = create_confusion_matrix(y_test, y_pred)
-print("Logistic regression precision/recall ", get_precision_recall(tp, fp, fn, tn))
-# 0.9425, 0.8541
-
-
-# Random Forest
-numTrees = np.arange(50, 201, 20)
-numFeatures = np.arange(4, 11)
-parameters = {"n_estimators": numTrees, "max_features": numFeatures}
-
-# Find optimal number of trees
-'''accuracy_t = []
-for n in numTrees:
-    a = 0
-    for i in range(5):
-        rf = RandomForestClassifier(n, oob_score=True, n_jobs=-1).fit(X_train, y_train)
-        # y_pred = rf.predict(X_test)
-        a += rf.score(X_test, y_test) / 5
-    accuracy_t.append(a)
-
-fig, ax = plt.subplots()
-ax.plot(numTrees, accuracy_t)
-ax.set_title("RF accuracy by number of trees")
-plt.savefig("images/accuracyTrees.png")
-
-# Find optimal number of features
-accuracy_f = []
-for n in numFeatures:
-    a = 0
-    for i in range(5):
-        rf = RandomForestClassifier(150, max_features=n, oob_score=True, n_jobs=-1).fit(X_train, y_train)
-        # y_pred = rf.predict(X_test)
-        a += rf.score(X_test, y_test) / 5
-    accuracy_f.append(a)
-
-fig, ax = plt.subplots()
-ax.plot(np.arange(4, 11), accuracy_f)
-ax.set_title("RF accuracy by max features")
-plt.savefig("images/accuracyFeatures.png")'''
-
-# Final model
-rf = RandomForestClassifier(150, max_features=7, oob_score=True, n_jobs=-1).fit(X_train, y_train)
-y_pred = rf.predict(X_test)
-print("Random forest accuracy ", rf.score(X_test, y_test))
-# 0.8647
-
-tp, fp, fn, tn = create_confusion_matrix(y_test, y_pred)
-print("Random forest precision/recall ", get_precision_recall(tp, fp, fn, tn))
-# 0.9474, 0.8686
+# Logistic Regression wrapper function
+def get_logistic_regression_results(xtrain: np.array, xtest: np.array, ytrain: np.array, \
+                                    ytest: np.array) -> (float, float, float):
+    lr = LogisticRegression(C=1000, max_iter=1000).fit(xtrain, ytrain)
+    y_pred = lr.predict(xtest)
+    accuracy = lr.score(xtest, ytest)
+    tp, fp, fn, tn = create_confusion_matrix(ytest, y_pred)
+    precision, recall = get_precision_recall(tp, fp, fn, tn)
+    return accuracy, precision, recall
 
 
-# Gradient Boosting
-gbr = GradientBoostingClassifier()
+def plot_random_forest_hyperparameters(xtrain: np.array, xtest: np.array, ytrain: np.array, \
+                                       ytest: np.array, genre_type: str) -> None:
+    # Find optimal number of trees
+    numTrees = np.arange(50, 201, 30)
+    accuracy_t = []
+    for n in numTrees:
+        a = 0
+        for i in range(5):
+            rf = RandomForestClassifier(n, oob_score=True, n_jobs=-1).fit(xtrain, ytrain)
+            # y_pred = rf.predict(xtest)
+            a += rf.score(xtest, ytest) / 5
+        accuracy_t.append(a)
+    fig, ax = plt.subplots()
+    ax.plot(numTrees, accuracy_t)
+    ax.set_title("RF accuracy by number of trees ({})".format(genre_type))
+
+    # Find optimal max depth
+    maxDepth = np.arange(3, 13)
+    accuracy_d = []
+    for d in maxDepth:
+        a = 0
+        for i in range(5):
+            rf = RandomForestClassifier(max_depth=d, oob_score=True, n_jobs=-1). \
+                    fit(xtrain, ytrain)
+            # y_pred = rf.predict(xtest)
+            a += rf.score(xtest, ytest) / 5
+        accuracy_d.append(a)
+    fig, ax = plt.subplots()
+    ax.plot(maxDepth, accuracy_d)
+    ax.set_title("RF accuracy by max depth ({})".format(genre_type))
+
+    # Find optimal number of features
+    maxFeatures = np.arange(5, 11)
+    accuracy_f = []
+    for f in maxFeatures:
+        a = 0
+        for i in range(5):
+            rf = RandomForestClassifier(max_features=f, oob_score=True, n_jobs=-1). \
+                    fit(xtrain, ytrain)
+            # y_pred = rf.predict(xtest)
+            a += rf.score(xtest, ytest) / 5
+        accuracy_f.append(a)
+    fig, ax = plt.subplots()
+    ax.plot(maxFeatures, accuracy_f)
+    ax.set_title("RF accuracy by max features ({})".format(genre_type))
+
+
+# Random Forest wrapper function
+def get_random_forest_results(num_trees: int, max_depth: int, max_features: int, \
+                              xtrain: np.array, xtest: np.array, ytrain: np.array, \
+                              ytest: np.array) -> (float, float, float):
+    rf = RandomForestClassifier(num_trees, max_features=max_features, oob_score=True,\
+                                n_jobs=-1).fit(xtrain, ytrain)
+    y_pred = rf.predict(xtest)
+    accuracy = rf.score(xtest, ytest)
+    tp, fp, fn, tn = create_confusion_matrix(ytest, y_pred)
+    precision, recall = get_precision_recall(tp, fp, fn, tn)
+    return (accuracy, precision, recall)
+
+
+def plot_gradient_boosting_hyperparameters(xtrain: np.array, xtest: np.array, ytrain: np.array, \
+                                           ytest: np.array, genre_type: str) -> None:
+    # Find optimal learning rate
+    learningRate = [0.01, 0.025, 0.05, 0.1, 0.25, 0.5]
+    accuracy_l = []
+    for l in learningRate:
+        gbr = GradientBoostingClassifier(learning_rate=l).fit(xtrain, ytrain)
+        # y_pred = gbr.predict(xtest)
+        a = gbr.score(xtest, ytest)
+        accuracy_l.append(a)
+    fig, ax = plt.subplots()
+    ax.plot(learningRate, accuracy_l)
+    ax.set_title("GBR accuracy by learning rate ({})".format(genre_type))
+
+    # Find optimal number of trees
+    numTrees = np.arange(50, 201, 30)
+    accuracy_t = []
+    for n in numTrees:
+        gbr = GradientBoostingClassifier(n_estimators=n).fit(xtrain, ytrain)
+        # y_pred = gbr.predict(xtest)
+        a = gbr.score(xtest, ytest)
+        accuracy_t.append(a)
+    fig, ax = plt.subplots()
+    ax.plot(numTrees, accuracy_t)
+    ax.set_title("GBR accuracy by number of trees ({})".format(genre_type))
+
+    # Find optimal subsample rate
+    subsampleRate = np.arange(0.2, 1.1, 0.2)
+    accuracy_s = []
+    for s in subsampleRate:
+        gbr = GradientBoostingClassifier(subsample=s).fit(xtrain, ytrain)
+        # y_pred = gbr.predict(xtest)
+        a = gbr.score(xtest, ytest)
+        accuracy_s.append(a)
+    fig, ax = plt.subplots()
+    ax.plot(subsampleRate, accuracy_s)
+    ax.set_title("GBR accuracy by subsample rate ({})".format(genre_type))
+
+    # Find optimal max depth
+    maxDepth = np.arange(3, 13)
+    accuracy_d = []
+    for d in maxDepth:
+        gbr = GradientBoostingClassifier(max_depth=d).fit(xtrain, ytrain)
+        # y_pred = gbr.predict(xtest)
+        a = gbr.score(xtest, ytest)
+        accuracy_d.append(a)
+    fig, ax = plt.subplots()
+    ax.plot(maxDepth, accuracy_d)
+    ax.set_title("GBR accuracy by max depth ({})".format(genre_type))
+
+
+# Gradient boosting wrapper function
+def get_gradient_boosting_results(learning_rate: float, num_trees: int, subsample_rate: float, \
+                                  max_features: int, xtrain: np.array, xtest: np.array, \
+                                  ytrain: np.array, ytest: np.array) -> (float, float, float):
+    gbr = GradientBoostingClassifier(learning_rate=learning_rate, n_estimators=num_trees, \
+                                     subsample=subsample_rate, max_features=max_features).fit(xtrain, ytrain)
+    y_pred = gbr.predict(xtest)
+    accuracy = gbr.score(xtest, ytest)
+    tp, fp, fn, tn = create_confusion_matrix(ytest, y_pred)
+    precision, recall = get_precision_recall(tp, fp, fn, tn)
+    return (accuracy, precision, recall)
+
+
+# Initial model with 2 buckets
+X = featureBuckets[featureBuckets.columns.difference(['genre_bucket'])]
+y = featureBuckets['genre_bucket']
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
+
+# Logistic regression model
+logistic_regression_results = get_logistic_regression_results(X_train, X_test, y_train, y_test)
+print(logistic_regression_results)
+# 0.8490, 0.9425, 0.8541
+
+
+# Random forest model
+plot_random_forest_hyperparameters(X_train, X_test, y_train, y_test, "binary buckets")
+
+random_forest_results = get_random_forest_results(150, 10, 8, X_train, X_test, y_train, y_test)
+print(random_forest_results)
+# 0.8653, 0.9481, 0.8690
+
+
+# Gradient boosting model
+plot_gradient_boosting_hyperparameters(X_train, X_test, y_train, y_test, "binary buckets")
+
+gradient_boosting_results = get_gradient_boosting_results(0.2, 150, 1.0, 9, X_train, X_test, y_train, y_test)
+print(gradient_boosting_results)
+
