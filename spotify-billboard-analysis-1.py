@@ -24,7 +24,7 @@ for row in range(len(features['spotify_genre'])):
 features.drop(emptyGenreRows, axis=0, inplace=True)
 features = features[features['tempo'] != 0]
 features.dropna(inplace=True)
-features['spotify_genre'] = features['spotify_genre'].apply(lambda l: [s[1:-1] for s in l])
+features['spotify_genre'] = features['spotify_genre'].map(lambda l: [s[1:-1] for s in l])
 
 
 # Derived dataframes

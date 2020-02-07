@@ -6,12 +6,11 @@ import itertools
 from collections import Counter
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.cluster import KMeans
-from sklearn.metrics import silhouette_score, confusion_matrix
+from sklearn.metrics import silhouette_score, confusion_matrix, make_scorer
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import (RandomForestRegressor, RandomForestClassifier,
                               GradientBoostingRegressor, GradientBoostingClassifier)
-from sklearn.model_selection import cross_val_score, train_test_split, GridSearchCV
-from statsmodels.tsa.arima_model import ARIMA
+from sklearn.model_selection import train_test_split, GridSearchCV
 
 
 # Pipeline
@@ -35,7 +34,7 @@ for row in range(len(features['spotify_genre'])):
 features.drop(emptyGenreRows, axis=0, inplace=True)
 features = features[features['tempo'] != 0]
 features.dropna(inplace=True)
-features['spotify_genre'] = features['spotify_genre'].apply(lambda l: [s[1:-1] for s in l])
+features['spotify_genre'] = features['spotify_genre'].map(lambda l: [s[1:-1] for s in l])
 
 
 # Column insertion
@@ -241,7 +240,7 @@ Ygroups = []
 genreGroupCounts = []
 wcss = []
 silhouettes = []
-for k in range(4, 61):
+for k in range(2, 41):
     km = KMeans(k, n_init=100)
     Ygroup = km.fit_predict(Xcluster)
     counts = Counter(Ygroup)
@@ -253,22 +252,22 @@ for k in range(4, 61):
 
 # Visualize with elbow method
 fig, ax = plt.subplots()
-ax.plot(np.arange(4, 61), wcss)
+ax.plot(np.arange(2, 41), wcss)
 ax.set_xlabel("Number of clusters")
 ax.set_ylabel("WCSS")
 fig.savefig("images/elbow.png")
 
 fig, ax = plt.subplots()
-ax.plot(np.arange(56), np.abs(np.diff(wcss)), color="C1")
+ax.plot(np.arange(41-2), np.abs(np.diff(wcss)), color="C1")
 ax2 = ax.twinx()
-ax2.plot(np.arange(56), np.abs(np.diff(silhouettes)))
+ax2.plot(np.arange(41-2), np.abs(np.diff(silhouettes)))
 fig.savefig("images/wcssandsilhouettes.png")
 
 
-# Final clustering model: k=25
-km = KMeans(25, n_init=100)
+# Dual clustering model: k = 2
+km = KMeans(2, n_init=100)
 labels = km.fit_predict(Xcluster)
-genreBuckets = {i: [] for i in range(25)}
+genreBuckets = {i: [] for i in range(2)}
 for j in range(len(labels)):
     bucket = labels[j]
     genreBuckets[bucket].append(genres['spotify_genre'][j])
@@ -281,16 +280,20 @@ def get_bucket(genre: str, buckets: dict) -> int:
             return key
     return float("nan")
 
-featureBuckets = features.copy()
-featureBuckets['genre_bucket'] = featureBuckets['spotify_genre'].apply(lambda g: get_bucket(g, genreBuckets))
+featureBuckets = featureGenres.copy()
+featureBuckets['genre_bucket'] = [get_bucket(g, genreBuckets) for g in featureBuckets['spotify_genre']]
+featureBuckets = featureBuckets.groupby(['SongID']).mean()
+featureBuckets['genre_bucket'] = (featureBuckets['genre_bucket']+0.1).round()
 
 
 # Lower number of genres bc this is too complicated
 # Initial model: classify song as upbeat or chill
-topGenres = list(genres.sort_values(by="SongID", ascending=False)['spotify_genre'][0:200])
+'''
+topGenres = list(genres.sort_values(by="SongID", ascending=False)['spotify_genre'][0:100])
 featuresTopGenres = featureGenres[featureGenres['spotify_genre'].isin(topGenres)]
+
 def upbeat_chill_classifier(genre: str):
-    if "pop" in genre:
+    if "country" in genre:
         return "chill"
     elif "hip hop" in genre:
         return "upbeat"
@@ -300,16 +303,66 @@ def upbeat_chill_classifier(genre: str):
         return "upbeat"
     elif "rock" in genre:
         return "chill"
+    elif "pop" in genre:
+        return "chill"
     else:
         return "unclassified"
 
+classifiedGenres = list(map(upbeat_chill_classifier, topGenres))
+print(len(featuresTopGenres))
+print(len(pd.unique(featuresTopGenres['SongID'])))
+'''
+
+X = featureBuckets[featureBuckets.columns.difference(['genre_bucket'])]
+y = featureBuckets['genre_bucket']
+Xtrain, Xtest, ytrain, ytest = train_test_split(X, y, test_size=0.2, random_state=0)
+
+def create_confusion_matrix(y_test: np.array, y_pred: np.array) -> (int, int, int, int):
+    cm = confusion_matrix(y_test, y_pred)
+    tp = cm[0, 0]
+    fp = cm[0, 1]
+    fn = cm[1, 0]
+    tn = cm[1, 1]
+    return tp, fp, fn, tn
+
+def get_precision_recall(tp: int, fp: int, fn: int, tn: int) -> float:
+    precision = tp / (tp + fp)
+    recall = tp / (tp + fn)
+    return precision, recall
+
 
 # Logistic Regression
-lr = LogisticRegression()
+lr = LogisticRegression(C=1000, max_iter=1000).fit(Xtrain, ytrain)
+ypred = lr.predict(Xtest)
+print(lr.score(X, y))
+
+tp, fp, fn, tn = create_confusion_matrix(ytest, ypred)
+print(get_precision_recall(tp, fp, fn, tn))
 
 
 # Random Forest
+numTrees = np.arange(50, 201, 10)
+numFeatures = np.arange(4, 11)
+parameters = {"n_estimators": numTrees, "max_features": numFeatures}
+#scorer = make_scorer(log_loss, greater_is_better = False)
+accuracy = []
+
 rf = RandomForestClassifier()
+cv = GridSearchCV(rf, parameters, n_jobs=-1).fit(Xtrain, ytrain)
+print(cv.best_params_)
+
+for n in numTrees:
+    a = 0
+    for i in range(5):
+        rf = RandomForestClassifier(n, oob_score=True, n_jobs=-1).fit(Xtrain, ytrain)
+        # y_predict = rf.predict(X_test)
+        a += rf.score(Xtest, ytest) / 5
+    accuracy.append(a)
+
+fig, ax = plt.subplots()
+ax.plot(numTrees, accuracy)
+ax.set_title("RF accuracy by number of trees")
+plt.savefig("images/accuracyTrees.png")
 
 
 # Gradient Boosting
