@@ -281,21 +281,11 @@ def get_bucket(genre: str, buckets: dict) -> int:
             return key
     return float("nan")
 
-featureBuckets = featureGenres.copy()
-featureBuckets['genre_bucket'] = [get_bucket(g, genreBuckets) for g in featureBuckets['spotify_genre']]
-featureBuckets = featureBuckets.groupby(['SongID']).mean()
-featureBuckets['genre_bucket'] = (featureBuckets['genre_bucket']+0.1).round()
 
-
-# Create binary classfier for each genre group (pop, rock, hip hop, etc)
+# Keep only top 200 genres if applicable (eliminates 80% of genres for only 10% loss of data)
 topGenres = list(genres.sort_values(by="SongID", ascending=False)['spotify_genre'][0:100])
 featuresTopGenres = featureGenres[featureGenres['spotify_genre'].isin(topGenres)]
 
-def genre_type_classifier(genre: str, genre_types: list) -> int:
-    for g in genre_types:
-        if g in genre:
-            return 1
-    return 0
 
 def create_confusion_matrix(ytest: np.array, ypred: np.array) -> (int, int, int, int):
     cm = confusion_matrix(ytest, ypred)
@@ -446,10 +436,16 @@ def get_gradient_boosting_results(learning_rate: float, num_trees: int, subsampl
     return (accuracy, precision, recall)
 
 
-# Initial model with 2 buckets
+# Initial model with 2 simple buckets
+featureBuckets = featureGenres.copy()
+featureBuckets['genre_bucket'] = [get_bucket(g, genreBuckets) for g in featureBuckets['spotify_genre']]
+featureBuckets = featureBuckets.groupby(['SongID']).mean()
+featureBuckets['genre_bucket'] = (featureBuckets['genre_bucket']+0.1).round()
+
 X = featureBuckets[featureBuckets.columns.difference(['genre_bucket'])]
 y = featureBuckets['genre_bucket']
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
+
 
 # Logistic regression model
 logistic_regression_results = get_logistic_regression_results(X_train, X_test, y_train, y_test)
@@ -471,3 +467,75 @@ plot_gradient_boosting_hyperparameters(X_train, X_test, y_train, y_test, "binary
 gradient_boosting_results = get_gradient_boosting_results(0.2, 150, 1.0, 9, X_train, X_test, y_train, y_test)
 print(gradient_boosting_results)
 
+
+# Create binary classfier for each genre group (rock, pop, hip hop/rap, jazz, etc)
+def genre_type_classifier(genre: str, genre_types: list) -> int:
+    for g in genre_types:
+        if g in genre:
+            return 1
+    return 0
+
+def create_df_with_genres(genres: list):
+    df = featureGenres.copy()
+    df['genre_bucket'] = [genre_type_classifier(g, genres) for g in df['spotify_genre']]
+    df = df.groupby(['SongID']).mean()
+    df['genre_bucket'] = (df['genre_bucket']+0.1).round()
+    return df
+
+
+# Run models for rock genre
+featureRock = create_df_with_genres(["rock"])
+X = featureRock[featureRock.columns.difference(['genre_bucket'])]
+y = featureRock['genre_bucket']
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
+
+
+# Logistic regression model
+logistic_regression_results = get_logistic_regression_results(X_train, X_test, y_train, y_test)
+print(logistic_regression_results)
+# 0.8002, 0.9894, 0.8037
+
+
+# Random forest model
+plot_random_forest_hyperparameters(X_train, X_test, y_train, y_test, "rock")
+
+random_forest_results = get_random_forest_results(150, 10, 8, X_train, X_test, y_train, y_test)
+print(random_forest_results)
+# 0.8097, 0.9596, 0.8274
+
+
+# Gradient boosting model
+plot_gradient_boosting_hyperparameters(X_train, X_test, y_train, y_test, "binary buckets")
+
+gradient_boosting_results = get_gradient_boosting_results(0.2, 150, 1.0, 9, X_train, X_test, y_train, y_test)
+print(gradient_boosting_results)
+# 0.8084, 0.9570, 0.8279
+
+
+# Run models for pop genre
+featureRock = create_df_with_genres(["pop"])
+X = featureRock[featureRock.columns.difference(['genre_bucket'])]
+y = featureRock['genre_bucket']
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
+
+
+# Logistic regression model
+logistic_regression_results = get_logistic_regression_results(X_train, X_test, y_train, y_test)
+print(logistic_regression_results)
+# 0.8034, 0.9960, 0.8056
+
+
+# Random forest model
+plot_random_forest_hyperparameters(X_train, X_test, y_train, y_test, "rock")
+
+random_forest_results = get_random_forest_results(150, 10, 8, X_train, X_test, y_train, y_test)
+print(random_forest_results)
+# 0.8183, 0.9786, 0.8273
+
+
+# Gradient boosting model
+plot_gradient_boosting_hyperparameters(X_train, X_test, y_train, y_test, "binary buckets")
+
+gradient_boosting_results = get_gradient_boosting_results(0.2, 150, 1.0, 9, X_train, X_test, y_train, y_test)
+print(gradient_boosting_results)
+#
