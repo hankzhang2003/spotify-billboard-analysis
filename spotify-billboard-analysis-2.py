@@ -315,7 +315,7 @@ print(len(pd.unique(featuresTopGenres['SongID'])))
 
 X = featureBuckets[featureBuckets.columns.difference(['genre_bucket'])]
 y = featureBuckets['genre_bucket']
-Xtrain, Xtest, ytrain, ytest = train_test_split(X, y, test_size=0.2, random_state=0)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
 
 def create_confusion_matrix(y_test: np.array, y_pred: np.array) -> (int, int, int, int):
     cm = confusion_matrix(y_test, y_pred)
@@ -332,37 +332,60 @@ def get_precision_recall(tp: int, fp: int, fn: int, tn: int) -> float:
 
 
 # Logistic Regression
-lr = LogisticRegression(C=1000, max_iter=1000).fit(Xtrain, ytrain)
-ypred = lr.predict(Xtest)
-print(lr.score(X, y))
+lr = LogisticRegression(C=1000, max_iter=1000).fit(X_train, y_train)
+y_pred = lr.predict(X_test)
+print("Logistic regression accuracy", lr.score(X_test, y_test))
+# 0.8490
 
-tp, fp, fn, tn = create_confusion_matrix(ytest, ypred)
-print(get_precision_recall(tp, fp, fn, tn))
+tp, fp, fn, tn = create_confusion_matrix(y_test, y_pred)
+print("Logistic regression precision/recall ", get_precision_recall(tp, fp, fn, tn))
+# 0.9425, 0.8541
 
 
 # Random Forest
-numTrees = np.arange(50, 201, 10)
+numTrees = np.arange(50, 201, 20)
 numFeatures = np.arange(4, 11)
 parameters = {"n_estimators": numTrees, "max_features": numFeatures}
-#scorer = make_scorer(log_loss, greater_is_better = False)
-accuracy = []
 
-rf = RandomForestClassifier()
-cv = GridSearchCV(rf, parameters, n_jobs=-1).fit(Xtrain, ytrain)
-print(cv.best_params_)
-
+# Find optimal number of trees
+'''accuracy_t = []
 for n in numTrees:
     a = 0
     for i in range(5):
-        rf = RandomForestClassifier(n, oob_score=True, n_jobs=-1).fit(Xtrain, ytrain)
-        # y_predict = rf.predict(X_test)
-        a += rf.score(Xtest, ytest) / 5
-    accuracy.append(a)
+        rf = RandomForestClassifier(n, oob_score=True, n_jobs=-1).fit(X_train, y_train)
+        # y_pred = rf.predict(X_test)
+        a += rf.score(X_test, y_test) / 5
+    accuracy_t.append(a)
 
 fig, ax = plt.subplots()
-ax.plot(numTrees, accuracy)
+ax.plot(numTrees, accuracy_t)
 ax.set_title("RF accuracy by number of trees")
 plt.savefig("images/accuracyTrees.png")
+
+# Find optimal number of features
+accuracy_f = []
+for n in numFeatures:
+    a = 0
+    for i in range(5):
+        rf = RandomForestClassifier(150, max_features=n, oob_score=True, n_jobs=-1).fit(X_train, y_train)
+        # y_pred = rf.predict(X_test)
+        a += rf.score(X_test, y_test) / 5
+    accuracy_f.append(a)
+
+fig, ax = plt.subplots()
+ax.plot(np.arange(4, 11), accuracy_f)
+ax.set_title("RF accuracy by max features")
+plt.savefig("images/accuracyFeatures.png")'''
+
+# Final model
+rf = RandomForestClassifier(150, max_features=7, oob_score=True, n_jobs=-1).fit(X_train, y_train)
+y_pred = rf.predict(X_test)
+print("Random forest accuracy ", rf.score(X_test, y_test))
+# 0.8647
+
+tp, fp, fn, tn = create_confusion_matrix(y_test, y_pred)
+print("Random forest precision/recall ", get_precision_recall(tp, fp, fn, tn))
+# 0.9474, 0.8686
 
 
 # Gradient Boosting
