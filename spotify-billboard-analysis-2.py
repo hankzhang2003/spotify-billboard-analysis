@@ -6,11 +6,12 @@ import itertools
 from collections import Counter
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.cluster import KMeans
-from sklearn.metrics import silhouette_score, confusion_matrix, make_scorer
+from sklearn.metrics import silhouette_score, confusion_matrix, roc_curve
+from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import (RandomForestRegressor, RandomForestClassifier,
                               GradientBoostingRegressor, GradientBoostingClassifier)
-from sklearn.model_selection import train_test_split, GridSearchCV
+
 
 
 # Pipeline
@@ -140,15 +141,6 @@ fig.subplots_adjust(top=0.9)
 #fig.savefig("images/genresJoinedDecade.png")
 
 
-# Explicitness
-fig, ax = plt.subplots()
-ax.plot(explicitness['Year'], explicitness['spotify_track_explicit'])
-ax.set_xlabel("Year", fontsize=14)
-ax.set_ylabel("Proportion of explicit songs", fontsize=14)
-fig.suptitle("Explicitness of Tracks", fontsize=20)
-#fig.savefig("images/explicitness.png")
-
-
 # Mean of each numerical metric by year
 def make_line_plot(df: pd.DataFrame, col: str, ax: plt.axes) -> None:
     ax.plot(df['Year'], df[col])
@@ -235,7 +227,7 @@ for pair in scatterplots:
 
 
 Xcluster = genreFeatures.set_index('spotify_genre')
-'''
+
 Ygroups = []
 genreGroupCounts = []
 wcss = []
@@ -255,14 +247,20 @@ fig, ax = plt.subplots()
 ax.plot(np.arange(2, 41), wcss)
 ax.set_xlabel("Number of clusters")
 ax.set_ylabel("WCSS")
+fig.suptitle("Number of Clusters vs. WCSS")
 fig.savefig("images/elbow.png")
 
 fig, ax = plt.subplots()
-ax.plot(np.arange(41-2), np.abs(np.diff(wcss)), color="C1")
+ax.plot(np.arange(2, 40), np.abs(np.diff(wcss)), color="C1")
 ax2 = ax.twinx()
-ax2.plot(np.arange(41-2), np.abs(np.diff(silhouettes)))
+ax2.plot(np.arange(2, 40), np.abs(np.diff(silhouettes)))
+ax.set_xlabel("Number of clusters")
+ax.set_ylabel("WCSS")
+ax2.set_ylabel("Silhouette score")
+fig.legend(["WCSS", "Silhouette"], bbox_to_anchor=(0.8, 0.8))
+fig.suptitle("WCSS and Silhouette Score Difference")
 fig.savefig("images/wcssandsilhouettes.png")
-'''
+# Ideally use 17 clusters
 
 
 # Dual clustering model: k = 2
@@ -466,6 +464,7 @@ plot_gradient_boosting_hyperparameters(X_train, X_test, y_train, y_test, "binary
 
 gradient_boosting_results = get_gradient_boosting_results(0.2, 150, 1.0, 9, X_train, X_test, y_train, y_test)
 print(gradient_boosting_results)
+# 0.8617, 0.9364, 0.8726
 
 
 # Create binary classfier for each genre group (rock, pop, hip hop/rap, jazz, etc)
@@ -526,7 +525,7 @@ print(logistic_regression_results)
 
 
 # Random forest model
-plot_random_forest_hyperparameters(X_train, X_test, y_train, y_test, "rock")
+plot_random_forest_hyperparameters(X_train, X_test, y_train, y_test, "pop")
 
 random_forest_results = get_random_forest_results(150, 10, 8, X_train, X_test, y_train, y_test)
 print(random_forest_results)
@@ -538,4 +537,4 @@ plot_gradient_boosting_hyperparameters(X_train, X_test, y_train, y_test, "binary
 
 gradient_boosting_results = get_gradient_boosting_results(0.2, 150, 1.0, 9, X_train, X_test, y_train, y_test)
 print(gradient_boosting_results)
-#
+# 0.8174, 0.9786, 0.8265
