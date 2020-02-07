@@ -303,13 +303,14 @@ def get_precision_recall(tp: int, fp: int, fn: int, tn: int) -> float:
 def get_logistic_regression_results(xtrain: np.array, xtest: np.array, ytrain: np.array, \
                                     ytest: np.array) -> (float, float, float):
     lr = LogisticRegression(C=1000, max_iter=1000).fit(xtrain, ytrain)
-    y_pred = lr.predict(xtest)
+    ypred = lr.predict(xtest)
     accuracy = lr.score(xtest, ytest)
-    tp, fp, fn, tn = create_confusion_matrix(ytest, y_pred)
+    tp, fp, fn, tn = create_confusion_matrix(ytest, ypred)
     precision, recall = get_precision_recall(tp, fp, fn, tn)
-    return accuracy, precision, recall
+    return ypred, (accuracy, precision, recall)
 
 
+# Function for random forest hyperparameter tuning
 def plot_random_forest_hyperparameters(xtrain: np.array, xtest: np.array, ytrain: np.array, \
                                        ytest: np.array, genre_type: str) -> None:
     # Find optimal number of trees
@@ -319,7 +320,7 @@ def plot_random_forest_hyperparameters(xtrain: np.array, xtest: np.array, ytrain
         a = 0
         for i in range(5):
             rf = RandomForestClassifier(n, oob_score=True, n_jobs=-1).fit(xtrain, ytrain)
-            # y_pred = rf.predict(xtest)
+            # ypred = rf.predict(xtest)
             a += rf.score(xtest, ytest) / 5
         accuracy_t.append(a)
     fig, ax = plt.subplots()
@@ -334,7 +335,7 @@ def plot_random_forest_hyperparameters(xtrain: np.array, xtest: np.array, ytrain
         for i in range(5):
             rf = RandomForestClassifier(max_depth=d, oob_score=True, n_jobs=-1). \
                     fit(xtrain, ytrain)
-            # y_pred = rf.predict(xtest)
+            # ypred = rf.predict(xtest)
             a += rf.score(xtest, ytest) / 5
         accuracy_d.append(a)
     fig, ax = plt.subplots()
@@ -349,7 +350,7 @@ def plot_random_forest_hyperparameters(xtrain: np.array, xtest: np.array, ytrain
         for i in range(5):
             rf = RandomForestClassifier(max_features=f, oob_score=True, n_jobs=-1). \
                     fit(xtrain, ytrain)
-            # y_pred = rf.predict(xtest)
+            # ypred = rf.predict(xtest)
             a += rf.score(xtest, ytest) / 5
         accuracy_f.append(a)
     fig, ax = plt.subplots()
@@ -363,13 +364,14 @@ def get_random_forest_results(num_trees: int, max_depth: int, max_features: int,
                               ytest: np.array) -> (float, float, float):
     rf = RandomForestClassifier(num_trees, max_features=max_features, oob_score=True,\
                                 n_jobs=-1).fit(xtrain, ytrain)
-    y_pred = rf.predict(xtest)
+    ypred = rf.predict(xtest)
     accuracy = rf.score(xtest, ytest)
-    tp, fp, fn, tn = create_confusion_matrix(ytest, y_pred)
+    tp, fp, fn, tn = create_confusion_matrix(ytest, ypred)
     precision, recall = get_precision_recall(tp, fp, fn, tn)
-    return (accuracy, precision, recall)
+    return ypred, (accuracy, precision, recall)
 
 
+# Function for gradient boosting hyperparameter tuning
 def plot_gradient_boosting_hyperparameters(xtrain: np.array, xtest: np.array, ytrain: np.array, \
                                            ytest: np.array, genre_type: str) -> None:
     # Find optimal learning rate
@@ -377,7 +379,7 @@ def plot_gradient_boosting_hyperparameters(xtrain: np.array, xtest: np.array, yt
     accuracy_l = []
     for l in learningRate:
         gbr = GradientBoostingClassifier(learning_rate=l).fit(xtrain, ytrain)
-        # y_pred = gbr.predict(xtest)
+        # ypred = gbr.predict(xtest)
         a = gbr.score(xtest, ytest)
         accuracy_l.append(a)
     fig, ax = plt.subplots()
@@ -389,7 +391,7 @@ def plot_gradient_boosting_hyperparameters(xtrain: np.array, xtest: np.array, yt
     accuracy_t = []
     for n in numTrees:
         gbr = GradientBoostingClassifier(n_estimators=n).fit(xtrain, ytrain)
-        # y_pred = gbr.predict(xtest)
+        # ypred = gbr.predict(xtest)
         a = gbr.score(xtest, ytest)
         accuracy_t.append(a)
     fig, ax = plt.subplots()
@@ -401,7 +403,7 @@ def plot_gradient_boosting_hyperparameters(xtrain: np.array, xtest: np.array, yt
     accuracy_s = []
     for s in subsampleRate:
         gbr = GradientBoostingClassifier(subsample=s).fit(xtrain, ytrain)
-        # y_pred = gbr.predict(xtest)
+        # ypred = gbr.predict(xtest)
         a = gbr.score(xtest, ytest)
         accuracy_s.append(a)
     fig, ax = plt.subplots()
@@ -413,7 +415,7 @@ def plot_gradient_boosting_hyperparameters(xtrain: np.array, xtest: np.array, yt
     accuracy_d = []
     for d in maxDepth:
         gbr = GradientBoostingClassifier(max_depth=d).fit(xtrain, ytrain)
-        # y_pred = gbr.predict(xtest)
+        # ypred = gbr.predict(xtest)
         a = gbr.score(xtest, ytest)
         accuracy_d.append(a)
     fig, ax = plt.subplots()
@@ -427,11 +429,22 @@ def get_gradient_boosting_results(learning_rate: float, num_trees: int, subsampl
                                   ytrain: np.array, ytest: np.array) -> (float, float, float):
     gbr = GradientBoostingClassifier(learning_rate=learning_rate, n_estimators=num_trees, \
                                      subsample=subsample_rate, max_features=max_features).fit(xtrain, ytrain)
-    y_pred = gbr.predict(xtest)
+    ypred = gbr.predict(xtest)
     accuracy = gbr.score(xtest, ytest)
-    tp, fp, fn, tn = create_confusion_matrix(ytest, y_pred)
+    tp, fp, fn, tn = create_confusion_matrix(ytest, ypred)
     precision, recall = get_precision_recall(tp, fp, fn, tn)
-    return (accuracy, precision, recall)
+    return ypred, (accuracy, precision, recall)
+
+
+# Function for plotting ROC curve
+def plot_roc_curve(ytest: np.array, ypred: np.array, ax: plt.axes) -> None:
+    tpr, fpr, thresholds = roc_curve(ytest, ypred)
+    ax.plot([0, 1], [0, 1])
+    #ax.plot()
+    ax.set_xlim(0, 1)
+    ax.set_ylim(0, 1)
+    ax.set_xlabel("False positive rate")
+    ax.set_ylabel("True positive rate")
 
 
 # Initial model with 2 simple buckets
@@ -446,7 +459,7 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 
 
 # Logistic regression model
-logistic_regression_results = get_logistic_regression_results(X_train, X_test, y_train, y_test)
+y_pred, logistic_regression_results = get_logistic_regression_results(X_train, X_test, y_train, y_test)
 print(logistic_regression_results)
 # 0.8490, 0.9425, 0.8541
 
@@ -454,7 +467,7 @@ print(logistic_regression_results)
 # Random forest model
 plot_random_forest_hyperparameters(X_train, X_test, y_train, y_test, "binary buckets")
 
-random_forest_results = get_random_forest_results(150, 10, 8, X_train, X_test, y_train, y_test)
+y_pred, random_forest_results = get_random_forest_results(150, 10, 8, X_train, X_test, y_train, y_test)
 print(random_forest_results)
 # 0.8653, 0.9481, 0.8690
 
@@ -462,7 +475,7 @@ print(random_forest_results)
 # Gradient boosting model
 plot_gradient_boosting_hyperparameters(X_train, X_test, y_train, y_test, "binary buckets")
 
-gradient_boosting_results = get_gradient_boosting_results(0.2, 150, 1.0, 9, X_train, X_test, y_train, y_test)
+y_pred, gradient_boosting_results = get_gradient_boosting_results(0.2, 150, 1.0, 9, X_train, X_test, y_train, y_test)
 print(gradient_boosting_results)
 # 0.8617, 0.9364, 0.8726
 
@@ -490,7 +503,7 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 
 
 # Logistic regression model
-logistic_regression_results = get_logistic_regression_results(X_train, X_test, y_train, y_test)
+y_pred, logistic_regression_results = get_logistic_regression_results(X_train, X_test, y_train, y_test)
 print(logistic_regression_results)
 # 0.8002, 0.9894, 0.8037
 
@@ -498,7 +511,7 @@ print(logistic_regression_results)
 # Random forest model
 plot_random_forest_hyperparameters(X_train, X_test, y_train, y_test, "rock")
 
-random_forest_results = get_random_forest_results(150, 10, 8, X_train, X_test, y_train, y_test)
+y_pred, random_forest_results = get_random_forest_results(150, 10, 8, X_train, X_test, y_train, y_test)
 print(random_forest_results)
 # 0.8097, 0.9596, 0.8274
 
@@ -506,7 +519,7 @@ print(random_forest_results)
 # Gradient boosting model
 plot_gradient_boosting_hyperparameters(X_train, X_test, y_train, y_test, "binary buckets")
 
-gradient_boosting_results = get_gradient_boosting_results(0.2, 150, 1.0, 9, X_train, X_test, y_train, y_test)
+y_pred, gradient_boosting_results = get_gradient_boosting_results(0.2, 150, 1.0, 9, X_train, X_test, y_train, y_test)
 print(gradient_boosting_results)
 # 0.8084, 0.9570, 0.8279
 
@@ -519,7 +532,7 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 
 
 # Logistic regression model
-logistic_regression_results = get_logistic_regression_results(X_train, X_test, y_train, y_test)
+y_pred, logistic_regression_results = get_logistic_regression_results(X_train, X_test, y_train, y_test)
 print(logistic_regression_results)
 # 0.8034, 0.9960, 0.8056
 
@@ -527,7 +540,7 @@ print(logistic_regression_results)
 # Random forest model
 plot_random_forest_hyperparameters(X_train, X_test, y_train, y_test, "pop")
 
-random_forest_results = get_random_forest_results(150, 10, 8, X_train, X_test, y_train, y_test)
+y_pred, random_forest_results = get_random_forest_results(150, 10, 8, X_train, X_test, y_train, y_test)
 print(random_forest_results)
 # 0.8183, 0.9786, 0.8273
 
@@ -535,6 +548,6 @@ print(random_forest_results)
 # Gradient boosting model
 plot_gradient_boosting_hyperparameters(X_train, X_test, y_train, y_test, "binary buckets")
 
-gradient_boosting_results = get_gradient_boosting_results(0.2, 150, 1.0, 9, X_train, X_test, y_train, y_test)
+y_pred, gradient_boosting_results = get_gradient_boosting_results(0.2, 150, 1.0, 9, X_train, X_test, y_train, y_test)
 print(gradient_boosting_results)
 # 0.8174, 0.9786, 0.8265
