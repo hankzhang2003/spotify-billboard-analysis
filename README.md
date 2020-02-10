@@ -52,16 +52,16 @@ The dataset contains information about the Billboard Hot 100 Songs chart between
 * **Tempo:** The overall estimated speed of a track in beats per minute (BPM).  Corresponds to the average beat duration within the track.
 * **Time signature:** An estimate of how many beats are in each measure.  Also known as meter.
 
-### Edits
+### Pipeline
 
 The columns "url", "Instance", "Previous Week Position", "Peak Position", "Weeks on Chart", "spotify_track_id", "spotify_track_preview_url", 
-"spotify_track_album", and "spotify_track_popularity" were dropped as they were not needed for this analysis.
+"spotify_track_album", and "spotify_track_popularity" were dropped as they were not needed for this analysis.  For the models that only use numerical data, all the null rows were dropped too.
 
-The week ID from the weeks table was parsed into a datetime during the import.  Two new columns named Year and Decade were created; Year is the year gathered from the datetime and Decade is a string that describes the decade of that year, obtained by passing the year into a custom-made function.
-
-The spotify track duration was given in milliseconds.  A new column named Track_duration was created that contains the duration in seconds.
+Some feature engineering was done too.  The week ID from the weeks table was parsed into a datetime during the import.  Two new columns named Year and Decade were created; Year is the year gathered from the datetime and Decade is a string that describes the decade of that year, obtained by passing the year into a custom-made function.  The spotify track duration was given in milliseconds, so a new column named Track_duration was created that contains the duration in seconds.
 
 Since the spotify genre column in the features table had the genres in the form of a list, the dataframe was stripped of its endings, expanded with explode(), and stripped again of quotes in order to analyze the individual genres of each song and the frequency of each genre.  The resulting data frame was 1.4 million rows when expanded.
+
+I created labels, or buckets, for each genre group.  This was done in various ways, such as k-means clustering on a number of groups or string parsing into binary groups based on "pop," "rock," "hip hop"/"rap," "jazz," etc.
 
 ### Data types (features)
 
@@ -77,7 +77,7 @@ Numeric: spotify track duration ms, track duration, spotify track popularity, da
 
 &nbsp;
 
-## Plots and Analysis
+## Plots and Analysis: Single Plots
 
 ### Frequency of Genres
 
@@ -150,7 +150,7 @@ This graph shows the mean valence of songs in a time series over the time period
 
 This graph shows the mean tempo (beats per minute) of songs in a time series over the time period.  Interestingly, since the danceability, energy, and loudness of songs had a definitive increase, one would expect tempo to have an increase as well.  However, the average tempo had little net change over the years; it went up and down many times but only ended up a little bit above the initial values in the 1950s.
 
-&nbsp;
+## Plots and Analysis: Dual Plots and Scatterplots
 
 ### Energy and Loudness
 
@@ -243,8 +243,111 @@ Tempo: u = 1.0079646e9, p = 2.7332407119580174e-62
 
 All of the p-values are far too low for both tests, so we reject every single null hypothesis.  Therefore, we can accept the alternative hypotheses and conclude that there is a statistically significant difference between the features of the music of the 1960s and 2010s.
 
-## Conclusion
+&nbsp;
 
-This analysis is just an elementary EDA of the features of the Spotify Billboard Hot 100 dataset, and there are many other insights and data analysis techniques one can use on these expansive tables.  One possible direction is to compare the data from the United States to the data of another country, such as the Billboard Korea K-Pop 100, and see the differences in the audio features between the popular songs in each country.  It would be helpful to see what people from different countries like in their music.  Another possible direction is to group genres into several clusters and predict the overall genre of a song given its set of features.  This would be helpful for categorizing songs based on their features and recommending songs to people, in a manner similar to Spotify Radio or a "Songs You May Like" list.
+## Pipeline + Model
+
+### K-Means Clustering
+
+I applied k-means clustering to grouped genres to find which genres were most similar to one another.  There are a total of 1014 genres, which is far too many to do normal classification on.  I made a separate dataframe of all normalized numerical data (everything [0, 1]).  The normalized dataframe was used to calculate the mean of each genre and create clusters of genre groups based on the average value of their audio features.  The intention of this is to classify genres into buckets and then manually label each bucket based on how similar the genres are.  Then, supervised learning can be applied to classify songs into one of these buckets.  I visualized the curve and difference curve to see the point of diminishing returns using the elbow method and seeing the differences of the WCSS (within-cluster sum of squares) and silhouette score.  The original plan was to ideally use 18 clusters.
+
+![Elbow](/images/elbow.png)
+
+![WCSS and Silhouettes](/images/wcssandsilhouettes.png)
+
+&nbsp;
+
+## Models: Logistic Regression
+
+Simple logistic regression.  It predicts labeling for the binary case, and can predict probabilities if designed as a multi-class model.
+
+### Binary
+
+Accuracy: 0.8490
+
+Precision: 0.9425
+
+Recall: 0.8541
+
+### Rock
+
+Accuracy: 0.8002
+
+Precision: 0.9894
+
+Recall: 0.8037
+
+### Pop
+
+Accuracy: 0.8034
+
+Precision: 0.9894
+
+Recall: 0.8056
+
+## Models: Random Forest Classifier
+
+Did hyperparameter tuning on number of trees, max depth, and max features.  Bootstrapped with 5 trees and took average of each during tuning.  Final model uses 150 trees, 10 max depth, and 8 max features.
+
+### Binary
+
+Accuracy: 0.8653
+
+Precision: 0.9481
+
+Recall: 0.8690
+
+### Rock
+
+Accuracy: 0.8097
+
+Precision: 0.9596
+
+Recall: 0.8274
+
+### Pop
+
+Accuracy: 0.8183
+
+Precision: 0.9786
+
+Recall: 0.8273
+
+## Models: Gradient Boosting Classifier
+
+Did hyperparameter tuning on learning rate, number of trees, subsample rate, and max depth.
+Final model uses 0.2 learning rate, 150 trees, 1.0 subsample rate, and 7 max depth.
+
+### Binary
+
+Accuracy: 0.8617
+
+Precision: 0.9364
+
+Recall: 0.8726
+
+### Rock
+
+Accuracy: 0.8084
+
+Precision: 0.9570
+
+Recall: 0.8279
+
+### Pop
+
+Accuracy: 0.8174
+
+Precision: 0.9786
+
+Recall: 0.8265
+
+## Thoughts/Possible Improvements on Models
+
+This analysis is not completely concrete because the initial classification is a little far-fetched; there is inherent bias in the partitioning of the buckets in the 0-1 case.  The train/test split of the data is not stratified by decade, so there may be bias in proportions of songs in the training set due to differences in genre distribution over time.  For the models themselves, the precisions seem quite a bit higher than the recalls, so the models can try to be more aggressive (predict more true positives) when determining hyperparameters to slightly reduce precision for recall, even though precision is generally better than recall (better to miss a good song than to recommend a bad song).  Grid search can be used to comprehensively explore all hyperparameters for better model tuning.  Finally, I can plot the ROC curve to help visualize comparison of model effectiveness.
+
+## Conclusion and Future Directions
+
+There are many insights and data analysis techniques one can use on these expansive tables.  The main future direction here is to create a multi-label classifier where the model would be able to find which class a song belongs to.  Specifically, each bucket (cluster) would contain the group of genres most similar to each other and the model would classify songs into the most appropriate bucket.  This would be helpful for categorizing songs based on their features and recommending songs to people based on the previous few listened songs, in a manner similar to Pandora or Spotify Radio.  It can also eliminate the need to manually tag songs, which would be helpful for automatically generating a "Songs You May Like" pre-made list for people.
 
 Music is an aspect of culture and life that has existed since the dawn of mankind.  Over the years and ages, music has evolved from primitive instruments such as logs and rocks to old-school rock bands and jazz to modern hip hop and electronic music.  At its core, most tracks can be broken down into a set of features that can be represented with either words or numbers.  The ability to analyze the trends of music is only one of many factors in the analysis of human cultural evolution itself.
