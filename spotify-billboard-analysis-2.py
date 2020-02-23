@@ -13,7 +13,8 @@ from sklearn.ensemble import (RandomForestRegressor, RandomForestClassifier,
                               GradientBoostingRegressor, GradientBoostingClassifier)
 from clean_features import clean_features
 from clean_weeks import clean_weeks
-from make_plots import *
+from make_plots import (make_frequency_plot, make_line_plot, make_dual_plot_same,
+                        make_dual_plot_mixed, make_scatter)
 
 
 # Pipeline
@@ -21,25 +22,6 @@ from make_plots import *
 # Import csvs and remove null rows and unnecessary columns
 features = clean_features()
 weeks = clean_weeks()
-
-features = pd.read_csv("data/hot-100-audio-features.csv", converters={'spotify_genre':
-                       lambda s: s[1:-1].split(", ")}, encoding="latin-1")
-featuresFilter = ["spotify_track_id", "spotify_track_preview_url", "spotify_track_album",
-                  "spotify_track_popularity", "key", "time_signature"]
-features.drop(featuresFilter, axis=1, inplace=True)
-emptyGenreRows = []
-for row in range(len(features['spotify_genre'])):
-    if features['spotify_genre'][row] == ['']:
-        emptyGenreRows.append(row)
-features.drop(emptyGenreRows, axis=0, inplace=True)
-features = features[features['tempo'] != 0]
-features.dropna(inplace=True)
-features['spotify_genre'] = features['spotify_genre'].map(lambda l: [s[1:-1] for s in l])
-
-
-features['spotify_track_explicit'] = features['spotify_track_explicit'].astype(float)
-features['spotify_track_duration_ms'] = features['spotify_track_duration_ms'] / 1000
-features.rename(columns={"spotify_track_duration_ms": "track_duration"}, inplace=True)
 
 
 # Join tables

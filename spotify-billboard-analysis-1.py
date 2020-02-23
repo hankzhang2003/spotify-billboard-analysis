@@ -5,7 +5,8 @@ import scipy.stats as stats
 import itertools
 from clean_features import clean_features
 from clean_weeks import clean_weeks
-from make_plots import *
+from make_plots import (make_frequency_plot, make_line_plot, make_dual_plot_same,
+                        make_dual_plot_mixed, make_scatter)
 
 
 # Import csvs and remove null rows and unnecessary columns
