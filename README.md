@@ -4,7 +4,7 @@
 
 ## Overview
 
-This is an an analysis of the Spotify features of songs on the Billboard Hot 100 Songs chart.  The objective of this project is to perform exploratory data analysis on the Spotify trends of popular music over the past 60 years.  There are many categorical and numerical varables with characteristics of each song, from basic metrics such as title, artist, and album, to metrics that may not even properly expressible with numbers such as energy, danceability, and valence.
+This is an an analysis of the Spotify audio features of songs on the Billboard Hot 100 Songs chart.  The objective of this project is to perform exploratory data analysis on and make models for the Spotify trends of popular music over the past 60 years.  There are many categorical and numerical varables with characteristics of each song, from basic metrics such as title, artist, and album, to metrics that may not even properly expressible with numbers such as energy, danceability, and valence.
 
 &nbsp;
 
