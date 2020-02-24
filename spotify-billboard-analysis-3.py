@@ -4,6 +4,9 @@ import matplotlib.pyplot as plt
 import scipy.stats as stats
 import itertools
 from collections import Counter
+import ssl
+from urllib.request import Request, urlopen
+from bs4 import BeautifulSoup
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.cluster import KMeans
 from sklearn.metrics import silhouette_score, confusion_matrix, roc_curve
@@ -16,6 +19,7 @@ from clean_features import clean_features
 from clean_weeks import clean_weeks
 from make_plots import (make_frequency_plot, make_line_plot, make_dual_plot_same,
                         make_dual_plot_mixed, make_scatter)
+from web_scraping import parse_page
 
 
 features = clean_features()
@@ -36,6 +40,24 @@ explicitness = explicitness.groupby(['Year']).mean().reset_index()
 
 numericalMetrics = joined.columns.tolist()[11:23]
 numericals = joined[['Year'] + numericalMetrics].groupby(['Year']).mean().reset_index()
+
+
+# Web scrape lyrics
+ctx = ssl.create_default_context()
+ctx.check_hostname = False
+ctx.verify_mode = ssl.CERT_NONE
+
+test = parse_page("Dance the Night Away", "Twice")
+test2 = parse_page("7 rings", "Ariana Grande")
+
+from web_scraping import parse_page
+allLyrics = {}
+for i in range(len(features)):
+    print(features['Song'][i], ", ", features['Performer'][i])
+    songLyrics = parse_page(features['Song'][i], features['Performer'][i])
+    allLyrics[features['SongID'][i]] = songLyrics
+    print("Finished row {}".format(i))
+
 
 # Normalize numerical features not between 0 and 1
 featureGenresNorm = featureGenres.copy()

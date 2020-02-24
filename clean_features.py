@@ -17,6 +17,8 @@ def clean_features():
     features.drop(emptyGenreRows, axis=0, inplace=True)
     features = features[features['tempo'] != 0]
     features.dropna(inplace=True)
+    features.drop_duplicates("SongID", inplace=True)
+    features.reset_index(inplace=True)
     features['spotify_genre'] = features['spotify_genre'].map(lambda l: [s[1:-1] for s in l])
     features['spotify_track_explicit'] = features['spotify_track_explicit'].astype(float)
     features['spotify_track_duration_ms'] = features['spotify_track_duration_ms'] / 1000
