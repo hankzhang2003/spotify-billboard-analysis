@@ -47,16 +47,17 @@ ctx = ssl.create_default_context()
 ctx.check_hostname = False
 ctx.verify_mode = ssl.CERT_NONE
 
-test = parse_page("Dance the Night Away", "Twice")
-test2 = parse_page("7 rings", "Ariana Grande")
+features = clean_features()
+weeks = clean_weeks()
 
 from web_scraping import parse_page
+test = parse_page("Dance the Night Away", "Twice")
+
 allLyrics = {}
-for i in range(len(features)):
-    print(features['Song'][i], ", ", features['Performer'][i])
+for i in range(100):
+#for i in range(len(features)):
     songLyrics = parse_page(features['Song'][i], features['Performer'][i])
     allLyrics[features['SongID'][i]] = songLyrics
-    print("Finished row {}".format(i))
 
 
 # Normalize numerical features not between 0 and 1
