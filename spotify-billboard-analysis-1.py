@@ -130,7 +130,6 @@ for i, pair in enumerate(dualPlotsMixed):
     #fig.savefig("images/{}and{}.png".format(pair[0], pair[1]))
 
 
-
 # Scatterplots
 scatterplots = dualPlotsNormal + dualPlotsMixed
 for pair in scatterplots:

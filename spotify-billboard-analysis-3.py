@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import scipy.stats as stats
 import itertools
 from collections import Counter
+import string
 import ssl
 from urllib.request import Request, urlopen
 from bs4 import BeautifulSoup
@@ -50,12 +51,13 @@ ctx.verify_mode = ssl.CERT_NONE
 features = clean_features()
 weeks = clean_weeks()
 
+
 from web_scraping import parse_page
 test = parse_page("Dance the Night Away", "Twice")
 
 allLyrics = {}
-for i in range(100):
-#for i in range(len(features)):
+#for i in range(200):
+for i in range(len(features)):
     songLyrics = parse_page(features['Song'][i], features['Performer'][i])
     allLyrics[features['SongID'][i]] = songLyrics
 
