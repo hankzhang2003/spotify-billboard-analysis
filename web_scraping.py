@@ -14,13 +14,14 @@ def parse_page(title: str, artist: str) -> list:
     titleFixed = title.lower()
     artistFixed = artist.lower()
     if "(" in titleFixed:
-        titleFixed = titleFixed.split("(", 1)[0]
+        #titleFixed = titleFixed.split("(", 1)[0]
+        pass
     if "," in artistFixed:
         artistFixed = artistFixed.split(",", 1)[0]
     if "feat" in artistFixed:
         artistFixed = artistFixed.split("feat", 1)[0]
-    titleFixed = titleFixed.replace("&", "and").translate(str.maketrans(" !", "--", "',.?+"))
-    artistFixed = artistFixed.replace("&", "and").translate(str.maketrans(" !", "--", "'.?+"))
+    titleFixed = titleFixed.replace("&", "and").translate(str.maketrans(" !$/()", "------", "',.?+"))
+    artistFixed = artistFixed.replace("&", "and").translate(str.maketrans(" !$/", "----", "'.?+"))
     titleFixed = titleFixed.replace("--", "-")
     artistFixed = artistFixed.replace("--", "-")
     url = "https://genius.com/{}-{}-lyrics".format(artistFixed, titleFixed)

@@ -64,50 +64,50 @@ genreFeatures = featureGenresNorm.groupby(['spotify_genre'])[numericalMetrics].m
 
 
 # Web scrape lyrics
-from web_scraping import parse_page, store_lyrics
 ctx = ssl.create_default_context()
 ctx.check_hostname = False
 ctx.verify_mode = ssl.CERT_NONE
 
+
+from web_scraping import parse_page, store_lyrics
 test = parse_page("Dance the Night Away", "Twice")
 
 featureRock = features.loc[[contains_genre_type(g, "rock") for g in features['spotify_genre']]]
-start = time.time()
+featureRock.reset_index(drop=True, inplace=True)
 allLyrics = {}
 threads = []
 temp = 0
-for i in range(temp, temp+200):
+start = time.time()
+for i in range(temp, temp+500):
 #for i in range(len(featureRock)):
-    t = Thread(target=store_lyrics, args=(features['Song'][i], features['Performer'][i], allLyrics))
+    t = Thread(target=store_lyrics, args=(featureRock['Song'][i], featureRock['Performer'][i], allLyrics))
     threads.append(t)
     t.start()
 for t in threads:
     t.join()
 end = time.time()
 print(end - start)
-
 problemSongsRock = []
 for k, v in allLyrics.items():
     if v[0][0] == "*":
         problemSongsRock.append([k] + v[2:5])
 print(len(problemSongsRock))
 
-
 featurePop = features.loc[[contains_genre_type(g, "pop") for g in features['spotify_genre']]]
-start = time.time()
+featurePop.reset_index(drop=True, inplace=True)
 allLyrics = {}
 threads = []
 temp = 0
-for i in range(temp, temp+200):
+start = time.time()
+for i in range(temp, temp+500):
 #for i in range(len(featurePop)):
-    t = Thread(target=store_lyrics, args=(features['Song'][i], features['Performer'][i], allLyrics))
+    t = Thread(target=store_lyrics, args=(featurePop['Song'][i], featurePop['Performer'][i], allLyrics))
     threads.append(t)
     t.start()
 for t in threads:
     t.join()
 end = time.time()
 print(end - start)
-
 problemSongsPop = []
 for k, v in allLyrics.items():
     if v[0][0] == "*":
