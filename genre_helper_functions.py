@@ -9,11 +9,12 @@ def get_bucket(genre: str, buckets: dict) -> int:
             return key
     return float("nan")
 
-# Returns true if song has that genre type
-def contains_genre_type(genre_list: list, genre_type: str) -> bool:
+# Returns true if song has any of those genre types
+def contains_genre_type(genre_list: list, genre_type: list) -> bool:
     for g in genre_list:
-        if genre_type in g:
-            return True
+        for t in genre_type:
+            if t in g:
+                return True
     return False
 
 # Add column to data frame

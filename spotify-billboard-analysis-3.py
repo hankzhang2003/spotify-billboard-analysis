@@ -73,15 +73,14 @@ ctx.verify_mode = ssl.CERT_NONE
 from web_scraping import parse_page, store_lyrics
 test = parse_page("Dance the Night Away", "Twice")
 
-featureRock = features.loc[[contains_genre_type(g, "rock") for g in features['spotify_genre']]]
-featureRock.reset_index(drop=True, inplace=True)
+featureScrape= features.loc[[contains_genre_type(genre, ["pop", "rock", "metal"]) for genre in features['spotify_genre']]].reset_index(drop=True)
 allLyrics = {}
 threads = []
 temp = 0
 start = time.time()
 for i in range(temp, temp+1000):
-#for i in range(len(featureRock)):
-    t = Thread(target=store_lyrics, args=(featureRock['Song'][i], featureRock['Performer'][i], allLyrics))
+#for i in range(len(featureScrape)):
+    t = Thread(target=store_lyrics, args=(featureScrape['Song'][i], featureScrape['Performer'][i], allLyrics))
     threads.append(t)
     t.start()
 for t in threads:
@@ -89,45 +88,16 @@ for t in threads:
 end = time.time()
 print(end - start)
 rockLyrics = pd.DataFrame(allLyrics.items(), columns=["SongID", "Lyrics"])
-rockLyrics.to_csv("data/rockLyrics.csv", index=False)
+rockLyrics.to_csv("data/scrapedLyrics.csv", index=False)
 
-problemSongsRock = []
+problemSongs = []
 for k, v in allLyrics.items():
     if v[0][0] == "*":
-        problemSongsRock.append([k] + v[2:5])
-print(len(problemSongsRock))
+        problemSongs.append([k] + v[2:5])
+print(len(problemSongs))
 
-with open("problemSongsRock.txt", "w") as file:
-    for s in problemSongsRock:
-        file.write("{}\n".format(s))
-
-        
-featurePop = features.loc[[contains_genre_type(g, "pop") for g in features['spotify_genre']]]
-featurePop.reset_index(drop=True, inplace=True)
-allLyrics = {}
-threads = []
-temp = 0
-start = time.time()
-for i in range(temp, temp+1000):
-#for i in range(len(featurePop)):
-    t = Thread(target=store_lyrics, args=(featurePop['Song'][i], featurePop['Performer'][i], allLyrics))
-    threads.append(t)
-    t.start()
-for t in threads:
-    t.join()
-end = time.time()
-print(end - start)
-popLyrics = pd.DataFrame(allLyrics.items(), columns=["SongID", "Lyrics"])
-popLyrics.to_csv("data/popLyrics.csv", index=False)
-
-problemSongsPop = []
-for k, v in allLyrics.items():
-    if v[0][0] == "*":
-        problemSongsPop.append([k] + v[2:5])
-print(len(problemSongsPop))
-
-with open("problemSongsPop.txt", "w") as file:
-    for s in problemSongsPop:
+with open("data/problemSongs.txt", "w") as file:
+    for s in problemSongs:
         file.write("{}\n".format(s))
 
 
