@@ -10,6 +10,8 @@ from sklearn.metrics import silhouette_score, confusion_matrix, roc_curve
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import (RandomForestClassifier, GradientBoostingClassifier)
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense, Activation
 
 
 def create_confusion_matrix(ytest: np.array, ypred: np.array) -> (int, int, int, int):

@@ -16,7 +16,8 @@ from sklearn.metrics import silhouette_score, confusion_matrix, roc_curve
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import (RandomForestClassifier, GradientBoostingClassifier)
-import tensorflow as tf
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense, Activation
 from clean_features import clean_features
 from clean_weeks import clean_weeks
 from web_scraping import parse_page, store_lyrics
@@ -24,7 +25,6 @@ from genre_helper_functions import get_bucket, contains_genre_type, create_genre
 from make_plots import (make_frequency_plot, make_line_plot, make_dual_plot_same,
                         make_dual_plot_mixed, make_scatter)
 import modeling_functions as mf
-
 
 
 features = clean_features()
@@ -71,11 +71,13 @@ ctx.verify_mode = ssl.CERT_NONE
 
 test = parse_page("Dance the Night Away", "Twice")
 
+featureRock = features.loc[[contains_genre_type(g, "rock") for g in features['spotify_genre']]]
 start = time.time()
 allLyrics = {}
 threads = []
 temp = 0
-for i in range(temp, temp+500):
+for i in range(temp, temp+200):
+#for i in range(len(featureRock)):
     t = Thread(target=store_lyrics, args=(features['Song'][i], features['Performer'][i], allLyrics))
     threads.append(t)
     t.start()
@@ -84,8 +86,33 @@ for t in threads:
 end = time.time()
 print(end - start)
 
-problemsongs = []
+problemSongsRock = []
 for k, v in allLyrics.items():
     if v[0][0] == "*":
-        problemsongs.append([k] + v[2:5])
-print(len(problemsongs))
+        problemSongsRock.append([k] + v[2:5])
+print(len(problemSongsRock))
+
+
+featurePop = features.loc[[contains_genre_type(g, "pop") for g in features['spotify_genre']]]
+start = time.time()
+allLyrics = {}
+threads = []
+temp = 0
+for i in range(temp, temp+200):
+#for i in range(len(featurePop)):
+    t = Thread(target=store_lyrics, args=(features['Song'][i], features['Performer'][i], allLyrics))
+    threads.append(t)
+    t.start()
+for t in threads:
+    t.join()
+end = time.time()
+print(end - start)
+
+problemSongsPop = []
+for k, v in allLyrics.items():
+    if v[0][0] == "*":
+        problemSongsPop.append([k] + v[2:5])
+print(len(problemSongsPop))
+
+
+model = Sequential()
