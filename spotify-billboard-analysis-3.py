@@ -30,6 +30,7 @@ import modeling_functions as mf
 features = clean_features()
 weeks = clean_weeks()
 
+'''
 joined = weeks.merge(features, on='SongID')
 #joined.to_csv("data/joined.csv", index=False)
 
@@ -61,7 +62,7 @@ genresJoined = joinedGenres.groupby(['spotify_genre'])['SongID'].count().reset_i
 genresJoinedDecade = joinedGenres.groupby(['spotify_genre', 'Decade'])['SongID'].count(). \
                         reset_index().sort_values(by="Decade")
 genreFeatures = featureGenresNorm.groupby(['spotify_genre'])[numericalMetrics].mean().reset_index()
-
+'''
 
 # Web scrape lyrics
 ctx = ssl.create_default_context()
@@ -77,16 +78,15 @@ featureRock.reset_index(drop=True, inplace=True)
 allLyrics = {}
 threads = []
 temp = 0
-start = time.time()
-for i in range(temp, temp+500):
-#for i in range(len(featureRock)):
+#for i in range(temp, temp+500):
+for i in range(len(featureRock)):
     t = Thread(target=store_lyrics, args=(featureRock['Song'][i], featureRock['Performer'][i], allLyrics))
     threads.append(t)
     t.start()
 for t in threads:
     t.join()
-end = time.time()
-print(end - start)
+rockLyrics = pd.DataFrame(allLyrics.items(), columns=["SongID", "Lyrics"])
+rockLyrics.to_csv("data/rockLyrics.csv")
 problemSongsRock = []
 for k, v in allLyrics.items():
     if v[0][0] == "*":
@@ -98,16 +98,15 @@ featurePop.reset_index(drop=True, inplace=True)
 allLyrics = {}
 threads = []
 temp = 0
-start = time.time()
-for i in range(temp, temp+500):
-#for i in range(len(featurePop)):
+#for i in range(temp, temp+500):
+for i in range(len(featurePop)):
     t = Thread(target=store_lyrics, args=(featurePop['Song'][i], featurePop['Performer'][i], allLyrics))
     threads.append(t)
     t.start()
 for t in threads:
     t.join()
-end = time.time()
-print(end - start)
+popLyrics = pd.DataFrame(allLyrics.items(), columns=["SongID", "Lyrics"])
+popLyrics.to_csv("data/popLyrics.csv")
 problemSongsPop = []
 for k, v in allLyrics.items():
     if v[0][0] == "*":
