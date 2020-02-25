@@ -89,7 +89,7 @@ for t in threads:
 end = time.time()
 print(end - start)
 rockLyrics = pd.DataFrame(allLyrics.items(), columns=["SongID", "Lyrics"])
-rockLyrics.to_csv("data/rockLyrics.csv")
+rockLyrics.to_csv("data/rockLyrics.csv", index=False)
 
 problemSongsRock = []
 for k, v in allLyrics.items():
@@ -118,7 +118,7 @@ for t in threads:
 end = time.time()
 print(end - start)
 popLyrics = pd.DataFrame(allLyrics.items(), columns=["SongID", "Lyrics"])
-popLyrics.to_csv("data/popLyrics.csv")
+popLyrics.to_csv("data/popLyrics.csv", index=False)
 
 problemSongsPop = []
 for k, v in allLyrics.items():
