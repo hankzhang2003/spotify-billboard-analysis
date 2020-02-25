@@ -33,10 +33,18 @@ def parse_page(title: str, artist: str) -> list:
     except:
         # googleurl = "https://www.google.com/asdf"
         # search "{} {} lyrics genius".format(title, artist)
-        return ["*********************", "Error: URL not valid", titleFixed, artistFixed, url]
+        return ["*********************", titleFixed, artistFixed, url]
 
 def store_lyrics(title: str, artist: str, d: dict) -> dict:
     songID = title + artist
     lyrics = parse_page(title, artist)
     d[songID] = lyrics
     return d
+
+def read_and_clean_lyrics() -> list:
+    lyrics = pd.read_csv("data/scrapedLyrics.csv", converters={'Lyrics': lambda s: s[1:-1].split(", ")})
+    lyrics['Lyrics'] = lyrics['Lyrics'].map(lambda l: [s[1:-1] for s in l])
+    return lyrics
+
+def filter_lyrics(lyrics: list) -> bool:
+    pass

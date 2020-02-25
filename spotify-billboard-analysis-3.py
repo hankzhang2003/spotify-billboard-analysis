@@ -20,7 +20,7 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Activation
 from clean_features import clean_features
 from clean_weeks import clean_weeks
-from web_scraping import parse_page, store_lyrics
+from web_scraping import parse_page, store_lyrics, read_and_clean_lyrics, filter_lyrics
 from genre_helper_functions import get_bucket, contains_genre_type, create_genre_column
 from make_plots import (make_frequency_plot, make_line_plot, make_dual_plot_same,
                         make_dual_plot_mixed, make_scatter)
@@ -64,15 +64,16 @@ genresJoinedDecade = joinedGenres.groupby(['spotify_genre', 'Decade'])['SongID']
 genreFeatures = featureGenresNorm.groupby(['spotify_genre'])[numericalMetrics].mean().reset_index()
 '''
 
+
 # Web scrape lyrics
 ctx = ssl.create_default_context()
 ctx.check_hostname = False
 ctx.verify_mode = ssl.CERT_NONE
 
 
-from web_scraping import parse_page, store_lyrics
 test = parse_page("Dance the Night Away", "Twice")
 
+'''
 featureScrape= features.loc[[contains_genre_type(genre, ["pop", "rock", "metal"]) for genre \
                             in features['spotify_genre']]].reset_index(drop=True)
 allLyrics = {}
@@ -90,16 +91,20 @@ end = time.time()
 print(end - start)
 rockLyrics = pd.DataFrame(allLyrics.items(), columns=["SongID", "Lyrics"])
 rockLyrics.to_csv("data/scrapedLyrics.csv", index=False)
+'''
 
+'''
 problemSongs = []
 for k, v in allLyrics.items():
     if v[0][0] == "*":
         problemSongs.append([k] + v[2:5])
 print(len(problemSongs))
+'''
 
+'''
 with open("data/problemSongs.txt", "w") as file:
     for s in problemSongs:
         file.write("{}\n".format(s))
-
+'''
 
 model = Sequential()

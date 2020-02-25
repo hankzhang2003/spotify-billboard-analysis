@@ -15,9 +15,9 @@ def clean_features() -> pd.DataFrame:
         if features['spotify_genre'][row] == ['']:
             emptyGenreRows.append(row)
     features.drop(emptyGenreRows, axis=0, inplace=True)
-    features = features[features['tempo'] != 0]
-    features = features.dropna().drop_duplicates("SongID").reset_index(drop=True)
     features['spotify_genre'] = features['spotify_genre'].map(lambda l: [s[1:-1] for s in l])
+    features = features.dropna().drop_duplicates("SongID").reset_index(drop=True)
+    features = features[features['tempo'] != 0]
     features['spotify_track_explicit'] = features['spotify_track_explicit'].astype(float)
     features['spotify_track_duration_ms'] = features['spotify_track_duration_ms'] / 1000
     features.rename(columns={"spotify_track_duration_ms": "track_duration"}, inplace=True)
