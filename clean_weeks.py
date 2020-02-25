@@ -4,14 +4,14 @@ import pandas as pd
 
 # Functions to import and clean
 
-def clean_weeks():
-    weeks = pd.read_csv("data/hot-stuff.csv", converters={'WeekID': lambda d: pd.to_datetime(d, \
-                    format="%m/%d/%Y", errors="coerce")})
+def clean_weeks() -> pd.DataFrame:
+    weeks = pd.read_csv("data/hot-stuff.csv", converters={'WeekID': lambda d:
+                        pd.to_datetime(d, format="%m/%d/%Y", errors="coerce")})
     weeksFilter = ["url", "Instance", "Previous Week Position", "Peak Position",
                    "Weeks on Chart"]
     weeks.drop(weeksFilter, axis=1, inplace=True)
     weeks.drop_duplicates(inplace=True)
-    weeks.reset_index(inplace=True)
+    weeks.reset_index(drop=True, inplace=True)
     if "Year" not in weeks.columns:
         weeks.insert(1, "Year", weeks['WeekID'].dt.year)
     if "Decade" not in weeks.columns:

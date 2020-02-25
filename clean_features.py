@@ -4,9 +4,9 @@ import pandas as pd
 
 # Functions to import and clean data
 
-def clean_features():
+def clean_features() -> pd.DataFrame:
     features = pd.read_csv("data/hot-100-audio-features.csv", converters={'spotify_genre':
-                       lambda s: s[1:-1].split(", ")}, encoding="latin-1")
+                            lambda s: s[1:-1].split(", ")}, encoding="latin-1")
     featuresFilter = ["spotify_track_id", "spotify_track_preview_url", "spotify_track_album",
                       "spotify_track_popularity", "key", "time_signature"]
     features.drop(featuresFilter, axis=1, inplace=True)
@@ -18,7 +18,7 @@ def clean_features():
     features = features[features['tempo'] != 0]
     features.dropna(inplace=True)
     features.drop_duplicates("SongID", inplace=True)
-    features.reset_index(inplace=True)
+    features.reset_index(drop=True, inplace=True)
     features['spotify_genre'] = features['spotify_genre'].map(lambda l: [s[1:-1] for s in l])
     features['spotify_track_explicit'] = features['spotify_track_explicit'].astype(float)
     features['spotify_track_duration_ms'] = features['spotify_track_duration_ms'] / 1000

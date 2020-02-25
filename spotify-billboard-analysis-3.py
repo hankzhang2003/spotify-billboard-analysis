@@ -6,21 +6,25 @@ import itertools
 from collections import Counter
 import string
 import ssl
+import time
 from urllib.request import Request, urlopen
+from threading import Thread
 from bs4 import BeautifulSoup
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.cluster import KMeans
 from sklearn.metrics import silhouette_score, confusion_matrix, roc_curve
-from sklearn.model_selection import train_test_split, GridSearchCV
+from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
-from sklearn.ensemble import (RandomForestRegressor, RandomForestClassifier,
-                              GradientBoostingRegressor, GradientBoostingClassifier)
+from sklearn.ensemble import (RandomForestClassifier, GradientBoostingClassifier)
 import tensorflow as tf
 from clean_features import clean_features
 from clean_weeks import clean_weeks
+from web_scraping import parse_page, store_lyrics
+from genre_helper_functions import get_bucket, contains_genre_type, create_genre_column
 from make_plots import (make_frequency_plot, make_line_plot, make_dual_plot_same,
                         make_dual_plot_mixed, make_scatter)
-from web_scraping import parse_page
+import modeling_functions as mf
+
 
 
 features = clean_features()
@@ -43,25 +47,6 @@ numericalMetrics = joined.columns.tolist()[11:23]
 numericals = joined[['Year'] + numericalMetrics].groupby(['Year']).mean().reset_index()
 
 
-# Web scrape lyrics
-ctx = ssl.create_default_context()
-ctx.check_hostname = False
-ctx.verify_mode = ssl.CERT_NONE
-
-features = clean_features()
-weeks = clean_weeks()
-
-
-from web_scraping import parse_page
-test = parse_page("Dance the Night Away", "Twice")
-
-allLyrics = {}
-#for i in range(200):
-for i in range(len(features)):
-    songLyrics = parse_page(features['Song'][i], features['Performer'][i])
-    allLyrics[features['SongID'][i]] = songLyrics
-
-
 # Normalize numerical features not between 0 and 1
 featureGenresNorm = featureGenres.copy()
 scaled = ["track_duration", "loudness", "tempo"]
@@ -76,3 +61,31 @@ genresJoined = joinedGenres.groupby(['spotify_genre'])['SongID'].count().reset_i
 genresJoinedDecade = joinedGenres.groupby(['spotify_genre', 'Decade'])['SongID'].count(). \
                         reset_index().sort_values(by="Decade")
 genreFeatures = featureGenresNorm.groupby(['spotify_genre'])[numericalMetrics].mean().reset_index()
+
+
+# Web scrape lyrics
+from web_scraping import parse_page, store_lyrics
+ctx = ssl.create_default_context()
+ctx.check_hostname = False
+ctx.verify_mode = ssl.CERT_NONE
+
+test = parse_page("Dance the Night Away", "Twice")
+
+start = time.time()
+allLyrics = {}
+threads = []
+temp = 0
+for i in range(temp, temp+500):
+    t = Thread(target=store_lyrics, args=(features['Song'][i], features['Performer'][i], allLyrics))
+    threads.append(t)
+    t.start()
+for t in threads:
+    t.join()
+end = time.time()
+print(end - start)
+
+problemsongs = []
+for k, v in allLyrics.items():
+    if v[0][0] == "*":
+        problemsongs.append([k] + v[2:5])
+print(len(problemsongs))
