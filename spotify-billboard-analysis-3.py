@@ -73,7 +73,8 @@ ctx.verify_mode = ssl.CERT_NONE
 from web_scraping import parse_page, store_lyrics
 test = parse_page("Dance the Night Away", "Twice")
 
-featureScrape= features.loc[[contains_genre_type(genre, ["pop", "rock", "metal"]) for genre in features['spotify_genre']]].reset_index(drop=True)
+featureScrape= features.loc[[contains_genre_type(genre, ["pop", "rock", "metal"]) for genre \
+                            in features['spotify_genre']]].reset_index(drop=True)
 allLyrics = {}
 threads = []
 temp = 0
