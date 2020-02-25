@@ -8,14 +8,9 @@ from bs4 import BeautifulSoup
 
 
 def parse_page(title: str, artist: str) -> list:
-    ctx = ssl.create_default_context()
-    ctx.check_hostname = False
-    ctx.verify_mode = ssl.CERT_NONE
+    print("starting scrape of {} by {}".format(title, artist))
     titleFixed = title.lower()
     artistFixed = artist.lower()
-    if "(" in titleFixed:
-        #titleFixed = titleFixed.split("(", 1)[0]
-        pass
     if "," in artistFixed:
         artistFixed = artistFixed.split(",", 1)[0]
     if "feat" in artistFixed:
@@ -35,7 +30,8 @@ def parse_page(title: str, artist: str) -> list:
             songLyrics = div.text.strip().split("\n")
         return songLyrics
     except:
-        #print(titleFixed, ", ", artistFixed, ", ", url)
+        # googleurl = "https://www.google.com/asdf"
+        # search "{} {} lyrics genius".format(title, artist)
         return ["*********************", "Error: URL not valid", titleFixed, artistFixed, url]
 
 def store_lyrics(title: str, artist: str, d: dict) -> dict:

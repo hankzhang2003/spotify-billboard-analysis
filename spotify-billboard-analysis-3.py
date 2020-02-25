@@ -78,8 +78,8 @@ featureRock.reset_index(drop=True, inplace=True)
 allLyrics = {}
 threads = []
 temp = 0
-#for i in range(temp, temp+500):
-for i in range(len(featureRock)):
+for i in range(temp, temp+200):
+#for i in range(len(featureRock)):
     t = Thread(target=store_lyrics, args=(featureRock['Song'][i], featureRock['Performer'][i], allLyrics))
     threads.append(t)
     t.start()
@@ -98,8 +98,8 @@ featurePop.reset_index(drop=True, inplace=True)
 allLyrics = {}
 threads = []
 temp = 0
-#for i in range(temp, temp+500):
-for i in range(len(featurePop)):
+for i in range(temp, temp+200):
+#for i in range(len(featurePop)):
     t = Thread(target=store_lyrics, args=(featurePop['Song'][i], featurePop['Performer'][i], allLyrics))
     threads.append(t)
     t.start()
