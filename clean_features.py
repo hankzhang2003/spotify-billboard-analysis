@@ -16,9 +16,7 @@ def clean_features() -> pd.DataFrame:
             emptyGenreRows.append(row)
     features.drop(emptyGenreRows, axis=0, inplace=True)
     features = features[features['tempo'] != 0]
-    features.dropna(inplace=True)
-    features.drop_duplicates("SongID", inplace=True)
-    features.reset_index(drop=True, inplace=True)
+    features = features.dropna().drop_duplicates("SongID").reset_index(drop=True)
     features['spotify_genre'] = features['spotify_genre'].map(lambda l: [s[1:-1] for s in l])
     features['spotify_track_explicit'] = features['spotify_track_explicit'].astype(float)
     features['spotify_track_duration_ms'] = features['spotify_track_duration_ms'] / 1000

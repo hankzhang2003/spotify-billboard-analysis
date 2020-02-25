@@ -9,9 +9,7 @@ def clean_weeks() -> pd.DataFrame:
                         pd.to_datetime(d, format="%m/%d/%Y", errors="coerce")})
     weeksFilter = ["url", "Instance", "Previous Week Position", "Peak Position",
                    "Weeks on Chart"]
-    weeks.drop(weeksFilter, axis=1, inplace=True)
-    weeks.drop_duplicates(inplace=True)
-    weeks.reset_index(drop=True, inplace=True)
+    weeks = weeks.drop(weeksFilter, axis=1).drop_duplicates().reset_index(drop=True)
     if "Year" not in weeks.columns:
         weeks.insert(1, "Year", weeks['WeekID'].dt.year)
     if "Decade" not in weeks.columns:
