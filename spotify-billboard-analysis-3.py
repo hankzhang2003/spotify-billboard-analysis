@@ -78,40 +78,57 @@ featureRock.reset_index(drop=True, inplace=True)
 allLyrics = {}
 threads = []
 temp = 0
-for i in range(temp, temp+200):
+start = time.time()
+for i in range(temp, temp+1000):
 #for i in range(len(featureRock)):
     t = Thread(target=store_lyrics, args=(featureRock['Song'][i], featureRock['Performer'][i], allLyrics))
     threads.append(t)
     t.start()
 for t in threads:
     t.join()
+end = time.time()
+print(end - start)
 rockLyrics = pd.DataFrame(allLyrics.items(), columns=["SongID", "Lyrics"])
 rockLyrics.to_csv("data/rockLyrics.csv")
+
 problemSongsRock = []
 for k, v in allLyrics.items():
     if v[0][0] == "*":
         problemSongsRock.append([k] + v[2:5])
 print(len(problemSongsRock))
 
+with open("problemSongsRock.txt", "w") as file:
+    for s in problemSongsRock:
+        file.write("{}\n".format(s))
+
+        
 featurePop = features.loc[[contains_genre_type(g, "pop") for g in features['spotify_genre']]]
 featurePop.reset_index(drop=True, inplace=True)
 allLyrics = {}
 threads = []
 temp = 0
-for i in range(temp, temp+200):
+start = time.time()
+for i in range(temp, temp+1000):
 #for i in range(len(featurePop)):
     t = Thread(target=store_lyrics, args=(featurePop['Song'][i], featurePop['Performer'][i], allLyrics))
     threads.append(t)
     t.start()
 for t in threads:
     t.join()
+end = time.time()
+print(end - start)
 popLyrics = pd.DataFrame(allLyrics.items(), columns=["SongID", "Lyrics"])
 popLyrics.to_csv("data/popLyrics.csv")
+
 problemSongsPop = []
 for k, v in allLyrics.items():
     if v[0][0] == "*":
         problemSongsPop.append([k] + v[2:5])
 print(len(problemSongsPop))
+
+with open("problemSongsPop.txt", "w") as file:
+    for s in problemSongsPop:
+        file.write("{}\n".format(s))
 
 
 model = Sequential()

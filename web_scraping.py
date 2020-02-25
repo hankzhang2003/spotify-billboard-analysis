@@ -8,7 +8,6 @@ from bs4 import BeautifulSoup
 
 
 def parse_page(title: str, artist: str) -> list:
-    print("starting scrape of {} by {}".format(title, artist))
     titleFixed = title.lower()
     artistFixed = artist.lower()
     if "," in artistFixed:
