@@ -12,7 +12,7 @@ def clean_features() -> pd.DataFrame:
     features.drop(featuresFilter, axis=1, inplace=True)
     emptyGenreRows = []
     for row in range(len(features['spotify_genre'])):
-        if features['spotify_genre'][row] == ['']:
+        if features['spotify_genre'][row] == [""]:
             emptyGenreRows.append(row)
     features.drop(emptyGenreRows, axis=0, inplace=True)
     features['spotify_genre'] = features['spotify_genre'].map(lambda l: [s[1:-1] for s in l])
