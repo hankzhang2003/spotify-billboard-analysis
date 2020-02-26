@@ -27,7 +27,8 @@ from tensorflow.keras.layers import Dense, Activation
 
 from clean_features import clean_features
 from clean_weeks import clean_weeks
-from web_scraping import parse_page, store_lyrics, read_lyrics, clean_lyrics
+from web_scraping import parse_page, store_lyrics, read_lyrics
+from nlp_pipeline import clean_lyrics, lyrics_tokenize
 from genre_helper_functions import get_bucket, contains_genre_type, create_genre_column
 from make_plots import (make_frequency_plot, make_line_plot, make_dual_plot_same,
                         make_dual_plot_mixed, make_scatter)
@@ -117,8 +118,16 @@ allLyrics = allLyrics[[valid_lyrics(l) for l in allLyrics['Lyrics']]]
 allLyrics['Lyrics'] = allLyrics['Lyrics'].map(clean_lyrics)
 
 
+testpage = [line.replace(",", "") for line in testpage]
+testpage = clean_lyrics(testpage)
+print(testpage)
 
 
+sent_tokens = sent_tokenize(input_string)
+tokens = [sent for sent in map(word_tokenize, sent_tokens)]
+tokens_lower = [[word.lower() for word in sent] for sent in tokens]
+stopwords_ = set(stopwords.words('english'))
+stemmer_snowball = SnowballStemmer('english')
 
 
 

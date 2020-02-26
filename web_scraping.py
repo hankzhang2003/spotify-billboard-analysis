@@ -48,7 +48,3 @@ def read_lyrics() -> list:
     lyrics['Lyrics'] = lyrics['Lyrics'].map(lambda l: [s[1:-1] for s in l])
     lyrics['Lyrics'] = lyrics['Lyrics'].map(lambda l: [s.replace("\\", "") for s in l])
     return lyrics
-
-def clean_lyrics(lyrics: list) -> str:
-    cleanedLyrics = [line for line in lyrics if len(line) != 0 and line[0] != "["]
-    return " ".join(cleanedLyrics)
