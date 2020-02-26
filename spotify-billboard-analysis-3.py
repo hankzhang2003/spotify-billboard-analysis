@@ -4,16 +4,14 @@ import matplotlib.pyplot as plt
 import scipy.stats as stats
 import itertools
 from collections import Counter
-import string
 import ssl
 import time
+import string
+import unicodedata
 
 from urllib.request import Request, urlopen
 from threading import Thread
 from bs4 import BeautifulSoup
-from nltk.tokenize import sent_tokenize, word_tokenize
-from nltk.corpus import stopwords
-from nltk.stem.snowball import SnowballStemmer
 
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.cluster import KMeans
@@ -21,6 +19,13 @@ from sklearn.metrics import silhouette_score, confusion_matrix, roc_curve
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import (RandomForestClassifier, GradientBoostingClassifier)
+
+import nltk
+nltk.download(["stopwords", "punkt", "averaged_perceptron_tagger", "maxent_treebank_pos_tagger"])
+from nltk.tokenize import sent_tokenize, word_tokenize
+from nltk.corpus import stopwords
+from nltk import pos_tag
+from nltk.stem.snowball import SnowballStemmer
 
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Activation
@@ -73,34 +78,37 @@ genreFeatures = featureGenresNorm.groupby(['spotify_genre'])[numericalMetrics].m
 '''
 
 
-# Web scrape lyrics
 ctx = ssl.create_default_context()
 ctx.check_hostname = False
 ctx.verify_mode = ssl.CERT_NONE
 
-
 test = parse_page("Dance the Night Away", "Twice")
 
+
+# Web scrape lyrics
 featureScrape = features.loc[[contains_genre_type(genre, ["pop", "rock", "metal"]) for genre \
                              in features['spotify_genre']]].reset_index(drop=True)
-lyricsDict = {}
+lyricsMap = {}
 threads = []
 temp = 0
 start = time.time()
+# Write scraped lyrics to hashmap, parallelize to save time (thread safe because no unique keys)
 #for i in range(temp, temp+50):
 for i in range(len(featureScrape)):
-    t = Thread(target=store_lyrics, args=(featureScrape['Song'][i], featureScrape['Performer'][i], lyricsDict))
+    t = Thread(target=store_lyrics, args=(featureScrape['Song'][i], featureScrape['Performer'][i], lyricsMap))
     threads.append(t)
     t.start()
 for t in threads:
     t.join()
 end = time.time()
 print(end - start)
-scrapedLyrics = pd.DataFrame(lyricsDict.items(), columns=["SongID", "Lyrics"])
+scrapedLyrics = pd.DataFrame(lyricsMap.items(), columns=["SongID", "Lyrics"])
 scrapedLyrics.to_csv("data/scrapedLyrics.csv", index=False)
 
+
+# Get list of all improperly formatted songs and save to file
 problemSongs = []
-for k, v in lyricsDict.items():
+for k, v in lyricsMap.items():
     if v[0][0] == "*":
         problemSongs.append([k] + v[2:5])
 print(len(problemSongs))
@@ -109,7 +117,10 @@ with open("data/problemSongs.txt", "w") as file:
     for s in problemSongs:
         file.write("{}\n".format(s))
 
-        
+
+###################
+
+# Read csv of previously outputted scraped lyrics and reformat to match original
 allLyrics = read_lyrics()
 
 def valid_lyrics(lyrics: str) -> bool:
@@ -117,18 +128,17 @@ def valid_lyrics(lyrics: str) -> bool:
 allLyrics = allLyrics[[valid_lyrics(l) for l in allLyrics['Lyrics']]]
 allLyrics['Lyrics'] = allLyrics['Lyrics'].map(clean_lyrics)
 
-
+testpage = parse_page("Thing Called Love", "Above & Beyond")
 testpage = [line.replace(",", "") for line in testpage]
 testpage = clean_lyrics(testpage)
 print(testpage)
+testpage_tokenized = lyrics_tokenize(testpage)
+print(testpage_tokenized)
 
 
-sent_tokens = sent_tokenize(input_string)
-tokens = [sent for sent in map(word_tokenize, sent_tokens)]
-tokens_lower = [[word.lower() for word in sent] for sent in tokens]
-stopwords_ = set(stopwords.words('english'))
-stemmer_snowball = SnowballStemmer('english')
-
-
+# NLP pipeline
+start = time.time()
+allLyrics['Lyrics_tokenized'] = list(map(lyrics_tokenize, allLyrics['Lyrics']))
+allLyrics.to_csv("data/allLyricsTokenized.csv", index=False)
 
 model = Sequential()

@@ -7,6 +7,7 @@ from threading import Thread
 from bs4 import BeautifulSoup
 
 
+# Scrape 1 page from Genius
 def parse_page(title: str, artist: str) -> list:
     titleFixed = title.lower()
     artistFixed = artist.lower()
@@ -35,6 +36,7 @@ def parse_page(title: str, artist: str) -> list:
         # search "{} {} lyrics genius".format(title, artist)
         return ["*******", titleFixed, artistFixed, url]
 
+# Write scraped lyrics to hashmap, parallelize to save time (thread safe because no unique keys)
 def store_lyrics(title: str, artist: str, d: dict) -> dict:
     songID = title + artist
     lyrics = parse_page(title, artist)
@@ -42,6 +44,7 @@ def store_lyrics(title: str, artist: str, d: dict) -> dict:
     d[songID] = lyrics
     return d
 
+# Read csv of previously outputted scraped lyrics and reformat to match original
 def read_lyrics() -> list:
     lyrics = pd.read_csv("data/scrapedLyrics.csv", converters={'Lyrics': lambda s: 
                             s[1:-1].split(", ")})

@@ -17,6 +17,6 @@ def contains_genre_type(genre_list: list, genre_type: list) -> bool:
                 return True
     return False
 
-# Add column to data frame
+# Create binary column that can be added to dataframe
 def create_genre_column(genre_column: list, genre_type: str) -> list:
     return [int(contains_genre_type(g, genre_type)) for g in genre_column]
