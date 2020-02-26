@@ -7,17 +7,24 @@ from collections import Counter
 import string
 import ssl
 import time
+
 from urllib.request import Request, urlopen
 from threading import Thread
 from bs4 import BeautifulSoup
+from nltk.tokenize import sent_tokenize, word_tokenize
+from nltk.corpus import stopwords
+from nltk.stem.snowball import SnowballStemmer
+
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.cluster import KMeans
 from sklearn.metrics import silhouette_score, confusion_matrix, roc_curve
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import (RandomForestClassifier, GradientBoostingClassifier)
+
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Activation
+
 from clean_features import clean_features
 from clean_weeks import clean_weeks
 from web_scraping import parse_page, store_lyrics, read_lyrics, clean_lyrics
@@ -106,6 +113,8 @@ allLyrics = read_lyrics()
 
 def valid_lyrics(lyrics: str) -> bool:
     return lyrics[0][0] != "*"
+allLyrics = allLyrics[[valid_lyrics(l) for l in allLyrics['Lyrics']]]
+allLyrics['Lyrics'] = allLyrics['Lyrics'].map(clean_lyrics)
 
 
 
