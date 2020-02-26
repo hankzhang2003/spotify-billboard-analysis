@@ -28,6 +28,7 @@ from nltk.tokenize import sent_tokenize, word_tokenize
 from nltk.corpus import stopwords
 from nltk import pos_tag
 from nltk.stem.snowball import SnowballStemmer
+from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Activation
@@ -129,8 +130,9 @@ def valid_lyrics(lyrics: str) -> bool:
     return lyrics[0][0] != "*"
 allLyrics = allLyrics[[valid_lyrics(l) for l in allLyrics['Lyrics']]]
 allLyrics['Lyrics'] = allLyrics['Lyrics'].map(clean_lyrics)
+allLyrics.reset_index(drop=True, inplace=True)
 
-testpage = parse_page("Thing Called Love", "Above & Beyond")
+testpage = parse_page("Dance the Night Away", "Twice")
 testpage = [line.replace(",", "") for line in testpage]
 testpage = clean_lyrics(testpage)
 print(testpage)
@@ -138,9 +140,22 @@ testpage_tokenized = lyrics_tokenize(testpage)
 print(testpage_tokenized)
 
 
-# NLP pipeline
+# NLP pipeline to create tokens -> bag of words -> corpus
 start = time.time()
 allLyrics['Lyrics_tokenized'] = list(map(lyrics_tokenize, allLyrics['Lyrics']))
 allLyrics.to_csv("data/allLyricsTokenized.csv", index=False)
+
+
+# TF-IDF
+
+
+
+
+
+
+
+
+
+
 
 model = Sequential()

@@ -9,13 +9,15 @@ from nltk.corpus import stopwords
 from nltk import pos_tag
 from nltk import RegexpParser
 from nltk.stem.snowball import SnowballStemmer
+from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 
 
+# Remove all invalid lines in scraped lyrics and join into 1 string
 def clean_lyrics(lyrics: list) -> str:
     cleanedLyrics = [line for line in lyrics if len(line) != 0 and line[0] != "["]
     return " ".join(cleanedLyrics)
 
-# NLP pipeline
+# NLP pipeline to create tokens -> bag of words -> corpus
 def lyrics_tokenize(lyrics: str) -> str:
     if lyrics == None or len(lyrics) == 0:
         return []
