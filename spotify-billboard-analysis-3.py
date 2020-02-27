@@ -138,6 +138,10 @@ testpage = clean_lyrics(testpage)
 print(testpage)
 testpage_tokenized = lyrics_tokenize(testpage)
 print(testpage_tokenized)
+testpage2 = parse_page("Fake Love", "BTS")
+testpage2 = [line.replace(",", "") for line in testpage2]
+testpage2 = clean_lyrics(testpage2)
+testpage2_tokenized = lyrics_tokenize(testpage2)
 
 
 # NLP pipeline to create tokens -> bag of words -> corpus
@@ -147,7 +151,11 @@ allLyrics.to_csv("data/allLyricsTokenized.csv", index=False)
 
 
 # TF-IDF
-
+corpus = [testpage_tokenized, testpage2_tokenized]
+tf = CountVectorizer()
+tf_matrix = tf.fit_transform(corpus)
+tfidf = TfidfVectorizer()
+tfidf_matrix = tfidf.fit_transform(corpus)
 
 
 
