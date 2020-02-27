@@ -98,7 +98,8 @@ start = time.time()
 # Write scraped lyrics to hashmap, parallelize to save time (thread safe because no unique keys)
 #for i in range(temp, temp+50):
 for i in range(len(featureScrape)):
-    t = Thread(target=store_lyrics, args=(featureScrape['Song'][i], featureScrape['Performer'][i], lyricsMap))
+    t = Thread(target=store_lyrics, args=(featureScrape['Song'][i],
+                featureScrape['Performer'][i], lyricsMap))
     threads.append(t)
     t.start()
 for t in threads:
