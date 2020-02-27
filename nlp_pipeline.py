@@ -29,7 +29,8 @@ def lyrics_tokenize(lyrics: str) -> str:
     
     stopwords_ = set(stopwords.words('english'))
     punctuation_ = set(string.punctuation)
-    tokens_filtered = list(map(lambda s: [w for w in s if not w in stopwords_ and not w in punctuation_], tokens))
+    tokens_filtered = list(map(lambda s: [w for w in s if not w in stopwords_ and \
+                                not w in punctuation_], tokens))
     
     sent_tags = list(map(pos_tag, tokens_filtered))
 
