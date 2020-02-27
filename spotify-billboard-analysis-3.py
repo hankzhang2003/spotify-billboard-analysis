@@ -147,6 +147,7 @@ print(tfidf_matrix.todense()[0:10])
 # Read csv of previously outputted scraped lyrics and reformat to match original
 allLyrics = clean_lyrics()
 
+
 # NLP pipeline to create tokens from lyrics
 allLyrics['Lyrics_tokenized'] = list(map(lyrics_tokenize, allLyrics['Lyrics']))
 allLyrics.to_csv("data/allLyricsTokenized.csv", index=False)
@@ -154,10 +155,9 @@ allLyrics.to_csv("data/allLyricsTokenized.csv", index=False)
 
 # Create corpus and make TF-IDF
 corpus = allLyrics['Lyrics_tokenized']
-tfidf = TfidfVectorizer(max_features=200000)
-tfidfMatrix = tfidf.fit_transform(corpus)
-print(tfidf.vocabulary_)
-print(tfidfMatrix.todense()[0:10])
+tfidf = TfidfVectorizer(max_features=50000)
+tfidfMatrix = tfidf.fit_transform(corpus).todense()
+
 
 
 

@@ -11,7 +11,8 @@ def clean_features() -> pd.DataFrame:
     featuresFilter = ["spotify_track_id", "spotify_track_preview_url", "spotify_track_album",
                       "spotify_track_popularity", "key", "time_signature"]
     features.drop(featuresFilter, axis=1, inplace=True)
-    features = features[[len(features['spotify_genre'][i][0]) != 0 for i in range(len(features['spotify_genre']))]]
+    features = features[[len(features['spotify_genre'][i][0]) != 0 for i in \
+                            range(len(features['spotify_genre']))]]
     features['spotify_genre'] = features['spotify_genre'].map(lambda l: [s[1:-1] for s in l])
     features = features.dropna().drop_duplicates("SongID").reset_index(drop=True)
     features = features[features['tempo'] != 0]
@@ -59,14 +60,16 @@ def clean_lyrics() -> pd.DataFrame:
     lyrics['Lyrics'] = lyrics['Lyrics'].map(lambda l: [s.replace("\\", "") for s in l])
     lyrics = lyrics[[valid_lyrics(l) for l in lyrics['Lyrics']]]
     lyrics['Lyrics'] = list(map(clean_line, lyrics['Lyrics']))
+    lyrics = lyrics[[len(l) != 0 for l in lyrics['Lyrics']]]
     lyrics.reset_index(drop=True, inplace=True)
     return lyrics
+
+# Remove all songs that couldn't be scraped (marked with stars)
+def valid_lyrics(lyrics: str) -> bool:
+    return lyrics[0][0] != "*"
 
 # Remove all invalid lines in scraped lyrics and join into 1 string
 def clean_line(lyrics: list) -> str:
     cleanedLyrics = [line for line in lyrics if len(line) != 0 and line[0] != "(" \
                         and line[0] != "[" and line[0] != "{"]
     return " ".join(cleanedLyrics)
-
-def valid_lyrics(lyrics: str) -> bool:
-    return lyrics[0][0] != "*"
