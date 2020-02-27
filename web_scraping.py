@@ -21,7 +21,11 @@ def parse_page(title: str, artist: str) -> list:
                     "------", "'.?+"))
     titleFixed = titleFixed.replace("--", "-")
     artistFixed = artistFixed.replace("--", "-")
-    url = "https://genius.com/{}-{}-lyrics".format(artistFixed, titleFixed)
+    if artistFixed == "bts" or artistFixed == "blackpink" or artistFixed == "twice":
+        url = "https://genius.com/genius-english-translations-{}-{}-english-" \
+                .format(artistFixed, titleFixed) + "translation-lyrics"
+    else:
+        url = "https://genius.com/{}-{}-lyrics".format(artistFixed, titleFixed)
     url = url.replace("--", "-")
     try:
         req = Request(url, headers={"User-Agent": "Mozilla/73.0"})
@@ -43,11 +47,3 @@ def store_lyrics(title: str, artist: str, d: dict) -> dict:
     lyrics = [line.replace(",", "") for line in lyrics]
     d[songID] = lyrics
     return d
-
-# Read csv of previously outputted scraped lyrics and reformat to match original
-def read_lyrics() -> list:
-    lyrics = pd.read_csv("data/scrapedLyrics.csv", converters={'Lyrics': lambda s: 
-                            s[1:-1].split(", ")})
-    lyrics['Lyrics'] = lyrics['Lyrics'].map(lambda l: [s[1:-1] for s in l])
-    lyrics['Lyrics'] = lyrics['Lyrics'].map(lambda l: [s.replace("\\", "") for s in l])
-    return lyrics

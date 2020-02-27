@@ -12,40 +12,34 @@ from nltk.stem.snowball import SnowballStemmer
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 
 
-# Remove all invalid lines in scraped lyrics and join into 1 string
-def clean_lyrics(lyrics: list) -> str:
-    cleanedLyrics = [line for line in lyrics if len(line) != 0 and line[0] != "["]
-    return " ".join(cleanedLyrics)
-
-# NLP pipeline to create tokens -> bag of words -> corpus
+# NLP pipeline to create tokens from lyrics
 def lyrics_tokenize(lyrics: str) -> str:
     if lyrics == None or len(lyrics) == 0:
         return []
     
-    nfkd_form = unicodedata.normalize("NFKD", lyrics)
-    text_input = str(nfkd_form.encode("ASCII", "ignore"))
-    sent_tokens = sent_tokenize(text_input)
-    tokens = list(map(word_tokenize, sent_tokens))
+    nfkdForm = unicodedata.normalize("NFKD", lyrics)
+    textInput = str(nfkdForm.encode("ASCII", "ignore"))
+    sentTokens = sent_tokenize(textInput)
+    tokens = list(map(word_tokenize, sentTokens))
     
     stopwords_ = set(stopwords.words('english'))
     punctuation_ = set(string.punctuation)
-    tokens_filtered = list(map(lambda s: [w for w in s if not w in stopwords_ and \
+    tokensFiltered = list(map(lambda s: [w for w in s if not w in stopwords_ and \
                                 not w in punctuation_], tokens))
     
-    sent_tags = list(map(pos_tag, tokens_filtered))
-
     grammar = r"""
-        SENT: {<(J|N).*>}                # chunk sequences of proper nouns
+        SENT: {<(J|N).*>}
     """
+    sent_tags = list(map(pos_tag, tokensFiltered))
     cp = RegexpParser(grammar)
-    lyric_tokens = []
-    stemmer_snowball = SnowballStemmer('english')
+    lyricsBOW = []
+    stemmer = SnowballStemmer('english')
     for sent in sent_tags:
         tree = cp.parse(sent)
         for subtree in tree.subtrees():
-            if subtree.label() == "SENT":
-                tokenlist = [tpos[0].lower() for tpos in subtree.leaves()]
-                tokens_stemsnowball = list(map(stemmer_snowball.stem, tokenlist))
-                lyric_tokens.extend(tokens_stemsnowball)
-
-    return lyric_tokens
+            if subtree.label() == 'SENT':
+                tokenList = [tpos[0].lower() for tpos in subtree.leaves()]
+                tokensStemmed = list(map(stemmer.stem, tokenList))
+                lyricsBOW.extend(tokensStemmed)
+    
+    return " ".join(lyricsBOW)
