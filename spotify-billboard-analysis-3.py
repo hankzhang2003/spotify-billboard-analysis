@@ -33,10 +33,9 @@ from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Activation
 
-from clean_features import clean_features
-from clean_weeks import clean_weeks
-from web_scraping import parse_page, store_lyrics, read_lyrics
-from nlp_pipeline import clean_lyrics, get_bag_of_words
+from clean_dfs import clean_features, clean_weeks, clean_lyrics
+from web_scraping import parse_page, store_lyrics
+from nlp_pipeline import lyrics_tokenize, get_tfidf_dataframe
 from genre_helper_functions import get_bucket, contains_genre_type, create_genre_column
 from make_plots import (make_frequency_plot, make_line_plot, make_dual_plot_same,
                         make_dual_plot_mixed, make_scatter)
@@ -121,42 +120,22 @@ with open("data/problemSongs.txt", "w") as file:
     for s in problemSongs:
         file.write("{}\n".format(s))
 
-
-###################
-
-testpage = parse_page("Dance the Night Away", "Twice")
-testpage = [line.replace(",", "") for line in testpage]
-testpage = clean_lyrics(testpage)
-testpage_tokenized = get_bag_of_words(testpage)
-print(testpage_tokenized)
-testpage2 = parse_page("Fake Love", "BTS")
-testpage2 = [line.replace(",", "") for line in testpage2]
-testpage2 = clean_lyrics(testpage2)
-testpage2_tokenized = get_bag_of_words(testpage2)
-print(testpage2_tokenized)
-
-testcorpus = [testpage_tokenized, testpage2_tokenized]
-tfidf = TfidfVectorizer()
-tfidf_matrix = tfidf.fit_transform(testcorpus)
-print(tfidf.vocabulary_)
-print(tfidf_matrix.todense()[0:10])
-
-
 ###################
 
 # Read csv of previously outputted scraped lyrics and reformat to match original
 allLyrics = clean_lyrics()
 
-
 # NLP pipeline to create tokens from lyrics
 allLyrics['Lyrics_tokenized'] = list(map(lyrics_tokenize, allLyrics['Lyrics']))
-allLyrics.to_csv("data/allLyricsTokenized.csv", index=False)
+allLyrics.to_csv("data/lyricsTokenized.csv", index=False)
 
+###################
 
 # Create corpus and make TF-IDF
+#allLyrics = pd.read_csv("data/lyricsTokenized.csv")
 corpus = allLyrics['Lyrics_tokenized']
 tfidf = TfidfVectorizer(max_features=50000)
-tfidfMatrix = tfidf.fit_transform(corpus).todense()
+tfidfMatrix = tfidf.fit_transform(corpus)
 
 
 

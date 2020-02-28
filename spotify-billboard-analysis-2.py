@@ -9,7 +9,8 @@ from sklearn.cluster import KMeans
 from sklearn.metrics import silhouette_score, confusion_matrix, roc_curve
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
-from sklearn.ensemble import (RandomForestClassifier, GradientBoostingClassifier)
+from sklearn.ensemble import (RandomForestClassifier, RandomForestRegressor,
+                            GradientBoostingClassifier, GradientBoostingRegressor)
 from clean_features import clean_features
 from clean_weeks import clean_weeks
 from genre_helper_functions import get_bucket, contains_genre_type, create_genre_column

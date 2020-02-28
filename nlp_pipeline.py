@@ -17,22 +17,19 @@ def lyrics_tokenize(lyrics: str) -> str:
     if lyrics == None or len(lyrics) == 0:
         return []
     
+    lyrics = lyrics.replace("\u2005", " ")
+    
     nfkdForm = unicodedata.normalize("NFKD", lyrics)
     textInput = str(nfkdForm.encode("ASCII", "ignore"))
     sentTokens = sent_tokenize(textInput)
     tokens = list(map(word_tokenize, sentTokens))
     
-    stopwords_ = set(stopwords.words('english'))
-    punctuation_ = set(string.punctuation)
-    tokensFiltered = list(map(lambda s: [w for w in s if not w in stopwords_ and \
-                                not w in punctuation_], tokens))
-    
     grammar = r"""
         SENT: {<(J|N).*>}
     """
-    sent_tags = list(map(pos_tag, tokensFiltered))
+    sent_tags = list(map(pos_tag, tokens))
     cp = RegexpParser(grammar)
-    lyricsTokens = []
+    regexTokens = []
     stemmer = SnowballStemmer('english')
     for sent in sent_tags:
         tree = cp.parse(sent)
@@ -40,6 +37,16 @@ def lyrics_tokenize(lyrics: str) -> str:
             if subtree.label() == 'SENT':
                 tokenList = [tpos[0].lower() for tpos in subtree.leaves()]
                 tokensStemmed = list(map(stemmer.stem, tokenList))
-                lyricsTokens.extend(tokensStemmed)
+                regexTokens.extend(tokensStemmed)
     
-    return " ".join(lyricsTokens)
+    tokensFiltered = regexTokens[1:]
+    stopwords_ = set(stopwords.words('english'))
+    tokensFiltered = [w for w in tokensFiltered if not w in stopwords_]
+    tokenString = " ".join(tokensFiltered)
+    punctuation_ = set(string.punctuation)
+    for p in punctuation_:
+        tokenString = tokenString.replace(p, "")
+    return tokenString
+
+def get_tfidf_dataframe(corpus: list) -> pd.DataFrame:
+    pass
