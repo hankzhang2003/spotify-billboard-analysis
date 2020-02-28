@@ -17,8 +17,6 @@ def lyrics_tokenize(lyrics: str) -> str:
     if lyrics == None or len(lyrics) == 0:
         return []
     
-    lyrics = lyrics.replace("\u2005", " ")
-    
     nfkdForm = unicodedata.normalize("NFKD", lyrics)
     textInput = str(nfkdForm.encode("ASCII", "ignore"))
     sentTokens = sent_tokenize(textInput)
@@ -46,7 +44,12 @@ def lyrics_tokenize(lyrics: str) -> str:
     punctuation_ = set(string.punctuation)
     for p in punctuation_:
         tokenString = tokenString.replace(p, "")
+    tokenString = tokenString.replace("u2005", " ")
     return tokenString
 
-def get_tfidf_dataframe(corpus: list) -> pd.DataFrame:
-    pass
+def get_tfidf_matrix(corpus: pd.Series) -> pd.DataFrame:
+    tfidf = TfidfVectorizer(max_features=10000)
+    tfidfMatrix = tfidf.fit_transform(corpus)
+    tfidfVocab = tfidf.vocabulary_
+    tfidfDF = pd.DataFrame(tfidfMatrix.todense(), columns=tfidfVocab.keys())
+    return tfidfDF

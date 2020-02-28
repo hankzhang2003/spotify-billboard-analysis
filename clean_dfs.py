@@ -61,6 +61,7 @@ def clean_lyrics() -> pd.DataFrame:
     lyrics = lyrics[[valid_lyrics(l) for l in lyrics['Lyrics']]]
     lyrics['Lyrics'] = list(map(clean_line, lyrics['Lyrics']))
     lyrics = lyrics[[len(l) != 0 for l in lyrics['Lyrics']]]
+    lyrics = lyrics[["instrumental" not in l[0].lower() for l in lyrics['Lyrics']]]
     lyrics.reset_index(drop=True, inplace=True)
     return lyrics
 
