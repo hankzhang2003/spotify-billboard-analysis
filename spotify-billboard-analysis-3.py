@@ -126,12 +126,15 @@ allLyrics.to_csv("data/lyricsTokenized.csv", index=False)
 
 ###################
 
-# Create corpus and make dataframe with TF-IDF matrix
+'''# Create corpus and make dataframe with TF-IDF matrix
 allLyrics = pd.read_csv("data/lyricsTokenized.csv")
 allLyrics.dropna(inplace=True)
 corpus = allLyrics['Lyrics_tokenized']
 tfidfLyrics = get_tfidf_matrix(corpus)
-tfidfLyrics.to_csv("data/tfidfMatrix.csv", index=False)
+tfidfLyrics.set_index(allLyrics['SongID'], inplace=True)
+tfidfLyrics.to_csv("data/tfidfMatrix.csv")'''
+
+tfidfLyrics = pd.read_csv("data/tfidfMatrix.csv", index_col=0)
 
 
 

@@ -174,3 +174,5 @@ def plot_roc_curve(ytest: np.array, ypred: np.array, ax: plt.axes) -> None:
     ax.set_ylim(0, 1)
     ax.set_xlabel("False positive rate")
     ax.set_ylabel("True positive rate")
+
+

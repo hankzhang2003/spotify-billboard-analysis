@@ -50,6 +50,5 @@ def lyrics_tokenize(lyrics: str) -> str:
 def get_tfidf_matrix(corpus: pd.Series) -> pd.DataFrame:
     tfidf = TfidfVectorizer(max_features=10000)
     tfidfMatrix = tfidf.fit_transform(corpus)
-    tfidfVocab = tfidf.vocabulary_
-    tfidfDF = pd.DataFrame(tfidfMatrix.todense(), columns=tfidfVocab.keys())
+    tfidfDF = pd.DataFrame(tfidfMatrix.toarray(), columns=tfidf.get_feature_names())
     return tfidfDF
