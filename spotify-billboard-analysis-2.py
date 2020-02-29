@@ -205,13 +205,11 @@ X = featureBuckets[featureBuckets.columns.difference(['genre_bucket'])]
 y = featureBuckets['genre_bucket']
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
 
-
 # Logistic regression model
 y_pred, logistic_regression_results = mf.get_logistic_regression_results(X_train, \
                                             X_test, y_train, y_test)
 print(logistic_regression_results)
 # 0.8490, 0.9425, 0.8541
-
 
 # Random forest model
 mf.plot_random_forest_class_hyperparameters(X_train, X_test, y_train, y_test, \
@@ -221,7 +219,6 @@ y_pred, random_forest_class_results = mf.get_random_forest_class_results(150, 10
                                             8, X_train, X_test, y_train, y_test)
 print(random_forest_class_results)
 # 0.8653, 0.9481, 0.8690
-
 
 # Gradient boosting model
 mf.plot_gradient_boost_class_hyperparameters(X_train, X_test, y_train, y_test, \
@@ -242,13 +239,11 @@ X = featureRock[featureRock.columns.difference(['is_genre'])]
 y = featureRock['is_genre']
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
 
-
 # Logistic regression model
 y_pred, logistic_regression_results = mf.get_logistic_regression_results(X_train, \
                                             X_test, y_train, y_test)
 print(logistic_regression_results)
 # 0.8002, 0.9894, 0.8037
-
 
 # Random forest model
 mf.plot_random_forest_class_hyperparameters(X_train, X_test, y_train, y_test, "rock")
@@ -261,7 +256,7 @@ print(random_forest_class_results)
 
 # Gradient boosting model
 mf.plot_gradient_boost_class_hyperparameters(X_train, X_test, y_train, y_test, \
-                                             "binary buckets")
+                                             "rock")
 
 y_pred, gradient_boost_class_results = mf.get_gradient_boost_class_results(0.2, 150, \
                                             1.0, 9, X_train, X_test, y_train, y_test)
@@ -278,13 +273,11 @@ X = featurePop[featurePop.columns.difference(['is_genre'])]
 y = featurePop['is_genre']
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
 
-
 # Logistic regression model
 y_pred, logistic_regression_results = mf.get_logistic_regression_results(X_train, \
                                             X_test, y_train, y_test)
 print(logistic_regression_results)
 # 0.8034, 0.9960, 0.8056
-
 
 # Random forest model
 mf.plot_random_forest_class_hyperparameters(X_train, X_test, y_train, y_test, "pop")
@@ -294,10 +287,9 @@ y_pred, random_forest_class_results = mf.get_random_forest_class_results(150, 10
 print(random_forest_class_results)
 # 0.8183, 0.9786, 0.8273
 
-
 # Gradient boosting model
 mf.plot_gradient_boost_class_hyperparameters(X_train, X_test, y_train, y_test, \
-                                             "binary buckets")
+                                             "pop")
 
 y_pred, gradient_boost_class_results = mf.get_gradient_boost_class_results(0.2, 150, \
                                             1.0, 9, X_train, X_test, y_train, y_test)

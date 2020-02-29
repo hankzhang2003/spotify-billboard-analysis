@@ -10,6 +10,7 @@ import ssl
 import time
 import string
 import unicodedata
+#%matplotlib inline
 
 from urllib.request import Request, urlopen
 from threading import Thread
@@ -126,23 +127,37 @@ allLyrics.to_csv("data/lyricsTokenized.csv", index=False)
 
 ###################
 
-'''# Create corpus and make dataframe with TF-IDF matrix
+# Create corpus and make dataframe with TF-IDF matrix
 allLyrics = pd.read_csv("data/lyricsTokenized.csv")
 allLyrics.dropna(inplace=True)
 corpus = allLyrics['Lyrics_tokenized']
-tfidfLyrics = get_tfidf_matrix(corpus)
-tfidfLyrics.set_index(allLyrics['SongID'], inplace=True)
-tfidfLyrics.to_csv("data/tfidfMatrix.csv")'''
+tfidfLyrics = get_tfidf_matrix(corpus, 5000)
+tfidfLyrics.insert(0, "SongID", allLyrics['SongID'])
+tfidfLyrics.to_csv("data/tfidfMatrix.csv", index=False)
 
-tfidfLyrics = pd.read_csv("data/tfidfMatrix.csv", index_col=0)
+# Join with features to get valence of songs with lyrics
+valenceOnly = pd.DataFrame({"SongID": features['SongID'], "spotify_genre": features['spotify_genre'], "valence": features['valence']})
+lyricsAndValence = tfidfLyrics.merge(valenceOnly, on='SongID')
+lyricsAndValence.set_index("SongID", inplace=True)
 
-
-
-
-
-
-
-
+# Temporary command to change model from regressor to classifier
+lyricsAndValence['valence'] = [int(v > 0.5) for v in lyricsAndValence['valence']]
 
 
-model = Sequential()
+# Run models for pop genre
+lyricsAndValencePop = lyricsAndValence[[contains_genre_type(g, ["pop"]) for g in lyricsAndValence['spotify_genre']]]
+lyricsAndValencePop.drop(["spotify_genre"], axis=1, inplace=True)
+X = lyricsAndValencePop[lyricsAndValencePop.columns.difference(['valence'])]
+y = lyricsAndValencePop['valence']
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
+
+
+# Logistic regression model
+y_pred, logistic_regression_results = mf.get_logistic_regression_results(X_train, \
+                                            X_test, y_train, y_test)
+print(logistic_regression_results)
+# 0.5559, 0.3957, 0.3917
+
+
+
+

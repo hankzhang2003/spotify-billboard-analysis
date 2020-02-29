@@ -47,8 +47,8 @@ def lyrics_tokenize(lyrics: str) -> str:
     tokenString = tokenString.replace("u2005", " ")
     return tokenString
 
-def get_tfidf_matrix(corpus: pd.Series) -> pd.DataFrame:
-    tfidf = TfidfVectorizer(max_features=10000)
+def get_tfidf_matrix(corpus: pd.Series, features: int) -> pd.DataFrame:
+    tfidf = TfidfVectorizer(max_features=features)
     tfidfMatrix = tfidf.fit_transform(corpus)
     tfidfDF = pd.DataFrame(tfidfMatrix.toarray(), columns=tfidf.get_feature_names())
     return tfidfDF
