@@ -131,7 +131,7 @@ allLyrics = pd.read_csv("data/lyricsTokenized.csv")
 allLyrics.dropna(inplace=True)
 corpus = allLyrics['Lyrics_tokenized']
 tfidfLyrics = get_tfidf_matrix(corpus)
-
+tfidfLyrics.to_csv("data/tfidfMatrix.csv", index=False)
 
 
 
