@@ -158,6 +158,16 @@ y_pred, logistic_regression_results = mf.get_logistic_regression_results(X_train
 print(logistic_regression_results)
 # 0.5559, 0.3957, 0.3917
 
+# Gradient boosting model
+start = time.time()
+mf.plot_gradient_boost_class_hyperparameters(X_train, X_test, y_train, y_test, \
+                                             "pop")
+end = time.time()
+print(end-start)
 
+y_pred, gradient_boost_class_results = mf.get_gradient_boost_class_results(0.1, 110, \
+                                            1.0, 3, X_train, X_test, y_train, y_test)
+print(gradient_boost_class_results)
+# 0.6319, 0.0483, 0.4524
 
 

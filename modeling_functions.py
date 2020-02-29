@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import scipy.stats as stats
 import itertools
 from collections import Counter
+import time
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.cluster import KMeans
 from sklearn.metrics import silhouette_score, confusion_matrix, roc_curve
@@ -44,6 +45,7 @@ def get_logistic_regression_results(xtrain: np.array, xtest: np.array, ytrain: n
 def plot_random_forest_class_hyperparameters(xtrain: np.array, xtest: np.array, ytrain: \
                         np.array, ytest: np.array, genre_type: str) -> None:
     # Find optimal number of trees
+    start = time.time()
     numTrees = np.arange(50, 201, 30)
     accuracy_t = []
     for n in numTrees:
@@ -56,8 +58,11 @@ def plot_random_forest_class_hyperparameters(xtrain: np.array, xtest: np.array, 
     fig, ax = plt.subplots()
     ax.plot(numTrees, accuracy_t)
     ax.set_title("RF accuracy by number of trees ({})".format(genre_type))
+    end = time.time()
+    print("num trees time", end-start)
 
     # Find optimal max depth
+    start = time.time()
     maxDepth = np.arange(3, 13)
     accuracy_d = []
     for d in maxDepth:
@@ -71,8 +76,11 @@ def plot_random_forest_class_hyperparameters(xtrain: np.array, xtest: np.array, 
     fig, ax = plt.subplots()
     ax.plot(maxDepth, accuracy_d)
     ax.set_title("RF accuracy by max depth ({})".format(genre_type))
+    end = time.time()
+    print("max depth time", end-start)
 
     # Find optimal number of features
+    start = time.time()
     maxFeatures = np.arange(5, 11)
     accuracy_f = []
     for f in maxFeatures:
@@ -86,6 +94,8 @@ def plot_random_forest_class_hyperparameters(xtrain: np.array, xtest: np.array, 
     fig, ax = plt.subplots()
     ax.plot(maxFeatures, accuracy_f)
     ax.set_title("RF accuracy by max features ({})".format(genre_type))
+    end = time.time()
+    print("max features time", end-start)
 
 # Random Forest classifier wrapper function
 def get_random_forest_class_results(num_trees: int, max_depth: int, max_features: int, \
@@ -104,6 +114,7 @@ def get_random_forest_class_results(num_trees: int, max_depth: int, max_features
 def plot_gradient_boost_class_hyperparameters(xtrain: np.array, xtest: np.array, ytrain: \
                             np.array, ytest: np.array, genre_type: str) -> None:
     # Find optimal learning rate
+    start = time.time()
     learningRate = [0.01, 0.025, 0.05, 0.1, 0.25, 0.5]
     accuracy_l = []
     for l in learningRate:
@@ -114,8 +125,12 @@ def plot_gradient_boost_class_hyperparameters(xtrain: np.array, xtest: np.array,
     fig, ax = plt.subplots()
     ax.plot(learningRate, accuracy_l)
     ax.set_title("GBR accuracy by learning rate ({})".format(genre_type))
+    fig.savefig("images/gradientBoostLearningRate.png")
+    end = time.time()
+    print("learning rate time", end-start)
 
     # Find optimal number of trees
+    start = time.time()
     numTrees = np.arange(50, 201, 30)
     accuracy_t = []
     for n in numTrees:
@@ -126,8 +141,12 @@ def plot_gradient_boost_class_hyperparameters(xtrain: np.array, xtest: np.array,
     fig, ax = plt.subplots()
     ax.plot(numTrees, accuracy_t)
     ax.set_title("GBR accuracy by number of trees ({})".format(genre_type))
+    fig.savefig("images/gradientBoostNumTrees.png")
+    end = time.time()
+    print("num trees time", end-start)
 
-    # Find optimal subsample rate
+    '''# Find optimal subsample rate
+    start = time.time()
     subsampleRate = np.arange(0.2, 1.1, 0.2)
     accuracy_s = []
     for s in subsampleRate:
@@ -138,8 +157,11 @@ def plot_gradient_boost_class_hyperparameters(xtrain: np.array, xtest: np.array,
     fig, ax = plt.subplots()
     ax.plot(subsampleRate, accuracy_s)
     ax.set_title("GBR accuracy by subsample rate ({})".format(genre_type))
+    end = time.time()
+    print("subsample rate time", end-start)'''
 
     # Find optimal max depth
+    start = time.time()
     maxDepth = np.arange(3, 13)
     accuracy_d = []
     for d in maxDepth:
@@ -150,13 +172,16 @@ def plot_gradient_boost_class_hyperparameters(xtrain: np.array, xtest: np.array,
     fig, ax = plt.subplots()
     ax.plot(maxDepth, accuracy_d)
     ax.set_title("GBR accuracy by max depth ({})".format(genre_type))
+    fig.savefig("images/gradientBoostMaxDepth.png")
+    end = time.time()
+    print("max depth time", end-start)
 
 # Gradient boosting classifier wrapper function
 def get_gradient_boost_class_results(learning_rate: float, num_trees: int, subsample_rate: \
-                        float, max_features: int, xtrain: np.array, xtest: np.array, \
+                        float, max_depth: int, xtrain: np.array, xtest: np.array, \
                         ytrain: np.array, ytest: np.array) -> (float, float, float):
     gbr = GradientBoostingClassifier(learning_rate=learning_rate, n_estimators=num_trees, \
-                                    subsample=subsample_rate, max_features=max_features). \
+                                    subsample=subsample_rate, max_depth=max_depth). \
                                     fit(xtrain, ytrain)
     ypred = gbr.predict(xtest)
     accuracy = gbr.score(xtest, ytest)
