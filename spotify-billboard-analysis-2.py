@@ -81,12 +81,12 @@ fig.subplots_adjust(top=0.9)
 decades = ["1960s", "1970s", "1980s", "1990s", "2000s","2010s"]
 fig, axs = plt.subplots(2, 3, figsize=(20, 10))
 for i, ax in enumerate(axs.flat):
-    temp = genresJoinedDecade.loc[genresJoinedDecade['Decade'] == decades[i]] \
-            .sort_values(by=['SongID'], ascending=False)
+    temp = genresJoinedDecade.loc[genresJoinedDecade['Decade'] == decades[i]]. \
+            sort_values(by=['SongID'], ascending=False)
     ax.bar(np.arange(15), temp['SongID'].iloc[0:15])
     ax.set_ylim((0, 24000))
     ax.set_xticks(np.arange(15))
-    ax.set_xticklabels(temp['spotify_genre'][0:15], fontsize="large", rotation=45,
+    ax.set_xticklabels(temp['spotify_genre'][0:15], fontsize="large", rotation=45, \
                        ha="right", rotation_mode="anchor")
     ax.set_title(decades[i], fontsize="x-large")
 fig.tight_layout()
