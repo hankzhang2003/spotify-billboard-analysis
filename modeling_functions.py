@@ -9,7 +9,8 @@ from sklearn.cluster import KMeans
 from sklearn.metrics import silhouette_score, confusion_matrix, roc_curve
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
-from sklearn.ensemble import (RandomForestClassifier, GradientBoostingClassifier)
+from sklearn.ensemble import (RandomForestClassifier, RandomForestRegressor,
+                            GradientBoostingClassifier, GradientBoostingRegressor)
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Activation
 
@@ -30,7 +31,7 @@ def get_precision_recall(tp: int, fp: int, fn: int, tn: int) -> float:
 
 # Logistic Regression wrapper function
 def get_logistic_regression_results(xtrain: np.array, xtest: np.array, ytrain: np.array, \
-                                    ytest: np.array) -> (float, float, float):
+                            ytest: np.array) -> (float, float, float):
     lr = LogisticRegression(C=1000, max_iter=1000).fit(xtrain, ytrain)
     ypred = lr.predict(xtest)
     accuracy = lr.score(xtest, ytest)
@@ -40,8 +41,8 @@ def get_logistic_regression_results(xtrain: np.array, xtest: np.array, ytrain: n
 
 
 # Function for random forest hyperparameter tuning
-def plot_random_forest_hyperparameters(xtrain: np.array, xtest: np.array, ytrain: np.array, \
-                                       ytest: np.array, genre_type: str) -> None:
+def plot_random_forest_class_hyperparameters(xtrain: np.array, xtest: np.array, ytrain: \
+                        np.array, ytest: np.array, genre_type: str) -> None:
     # Find optimal number of trees
     numTrees = np.arange(50, 201, 30)
     accuracy_t = []
@@ -86,11 +87,11 @@ def plot_random_forest_hyperparameters(xtrain: np.array, xtest: np.array, ytrain
     ax.plot(maxFeatures, accuracy_f)
     ax.set_title("RF accuracy by max features ({})".format(genre_type))
 
-# Random Forest wrapper function
-def get_random_forest_results(num_trees: int, max_depth: int, max_features: int, \
-                              xtrain: np.array, xtest: np.array, ytrain: np.array, \
-                              ytest: np.array) -> (float, float, float):
-    rf = RandomForestClassifier(num_trees, max_features=max_features, oob_score=True,\
+# Random Forest classifier wrapper function
+def get_random_forest_class_results(num_trees: int, max_depth: int, max_features: int, \
+                        xtrain: np.array, xtest: np.array, ytrain: np.array, ytest: \
+                        np.array) -> (float, float, float):
+    rf = RandomForestClassifier(num_trees, max_features=max_features, oob_score=True, \
                                 n_jobs=-1).fit(xtrain, ytrain)
     ypred = rf.predict(xtest)
     accuracy = rf.score(xtest, ytest)
@@ -100,8 +101,8 @@ def get_random_forest_results(num_trees: int, max_depth: int, max_features: int,
 
 
 # Function for gradient boosting hyperparameter tuning
-def plot_gradient_boosting_hyperparameters(xtrain: np.array, xtest: np.array, ytrain: np.array, \
-                                           ytest: np.array, genre_type: str) -> None:
+def plot_gradient_boost_class_hyperparameters(xtrain: np.array, xtest: np.array, ytrain: \
+                            np.array, ytest: np.array, genre_type: str) -> None:
     # Find optimal learning rate
     learningRate = [0.01, 0.025, 0.05, 0.1, 0.25, 0.5]
     accuracy_l = []
@@ -150,12 +151,13 @@ def plot_gradient_boosting_hyperparameters(xtrain: np.array, xtest: np.array, yt
     ax.plot(maxDepth, accuracy_d)
     ax.set_title("GBR accuracy by max depth ({})".format(genre_type))
 
-# Gradient boosting wrapper function
-def get_gradient_boosting_results(learning_rate: float, num_trees: int, subsample_rate: float, \
-                                  max_features: int, xtrain: np.array, xtest: np.array, \
-                                  ytrain: np.array, ytest: np.array) -> (float, float, float):
+# Gradient boosting classifier wrapper function
+def get_gradient_boost_class_results(learning_rate: float, num_trees: int, subsample_rate: \
+                        float, max_features: int, xtrain: np.array, xtest: np.array, \
+                        ytrain: np.array, ytest: np.array) -> (float, float, float):
     gbr = GradientBoostingClassifier(learning_rate=learning_rate, n_estimators=num_trees, \
-                                     subsample=subsample_rate, max_features=max_features).fit(xtrain, ytrain)
+                                    subsample=subsample_rate, max_features=max_features). \
+                                    fit(xtrain, ytrain)
     ypred = gbr.predict(xtest)
     accuracy = gbr.score(xtest, ytest)
     tp, fp, fn, tn = create_confusion_matrix(ytest, ypred)

@@ -86,8 +86,8 @@ for i, ax in enumerate(axs.flat):
     ax.bar(np.arange(15), temp['SongID'].iloc[0:15])
     ax.set_ylim((0, 24000))
     ax.set_xticks(np.arange(15))
-    ax.set_xticklabels(temp['spotify_genre'][0:15], fontsize="large", rotation=45, ha="right",
-                       rotation_mode="anchor")
+    ax.set_xticklabels(temp['spotify_genre'][0:15], fontsize="large", rotation=45,
+                       ha="right", rotation_mode="anchor")
     ax.set_title(decades[i], fontsize="x-large")
 fig.tight_layout()
 fig.suptitle("Frequency of Genres of Tracks by Decade", fontsize=28)
@@ -113,8 +113,8 @@ for pair in correlations:
 
 
 # Dual plots with same y-axis
-dualPlotsNormal = [("acousticness", "energy"), ("energy", "danceability"), ("energy", "valence"),
-                   ("danceability", "valence")]
+dualPlotsNormal = [("acousticness", "energy"), ("energy", "danceability"), ("energy", \
+                    "valence"), ("danceability", "valence")]
 
 for pair in dualPlotsNormal:
     fig, ax = plt.subplots()
@@ -196,7 +196,8 @@ for j in range(len(labels)):
 
 # Initial model with 2 simple buckets
 featureBuckets = featureGenres.copy()
-featureBuckets['genre_bucket'] = [get_bucket(g, genreBuckets) for g in featureBuckets['spotify_genre']]
+featureBuckets['genre_bucket'] = [get_bucket(g, genreBuckets) for g in \
+                                  featureBuckets['spotify_genre']]
 featureBuckets = featureBuckets.groupby(['SongID']).mean()
 featureBuckets['genre_bucket'] = (featureBuckets['genre_bucket']+0.1).round()
 
@@ -206,24 +207,29 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 
 
 # Logistic regression model
-y_pred, logistic_regression_results = mf.get_logistic_regression_results(X_train, X_test, y_train, y_test)
+y_pred, logistic_regression_results = mf.get_logistic_regression_results(X_train, \
+                                            X_test, y_train, y_test)
 print(logistic_regression_results)
 # 0.8490, 0.9425, 0.8541
 
 
 # Random forest model
-mf.plot_random_forest_hyperparameters(X_train, X_test, y_train, y_test, "binary buckets")
+mf.plot_random_forest_class_hyperparameters(X_train, X_test, y_train, y_test, \
+                                            "binary buckets")
 
-y_pred, random_forest_results = mf.get_random_forest_results(150, 10, 8, X_train, X_test, y_train, y_test)
-print(random_forest_results)
+y_pred, random_forest_class_results = mf.get_random_forest_class_results(150, 10, \
+                                            8, X_train, X_test, y_train, y_test)
+print(random_forest_class_results)
 # 0.8653, 0.9481, 0.8690
 
 
 # Gradient boosting model
-mf.plot_gradient_boosting_hyperparameters(X_train, X_test, y_train, y_test, "binary buckets")
+mf.plot_gradient_boost_class_hyperparameters(X_train, X_test, y_train, y_test, \
+                                             "binary buckets")
 
-y_pred, gradient_boosting_results = mf.get_gradient_boosting_results(0.2, 150, 1.0, 9, X_train, X_test, y_train, y_test)
-print(gradient_boosting_results)
+y_pred, gradient_boost_class_results = mf.get_gradient_boost_class_results(0.2, 150, \
+                                            1.0, 9, X_train, X_test, y_train, y_test)
+print(gradient_boost_class_results)
 # 0.8617, 0.9364, 0.8726
 
 
@@ -238,24 +244,28 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 
 
 # Logistic regression model
-y_pred, logistic_regression_results = mf.get_logistic_regression_results(X_train, X_test, y_train, y_test)
+y_pred, logistic_regression_results = mf.get_logistic_regression_results(X_train, \
+                                            X_test, y_train, y_test)
 print(logistic_regression_results)
 # 0.8002, 0.9894, 0.8037
 
 
 # Random forest model
-mf.plot_random_forest_hyperparameters(X_train, X_test, y_train, y_test, "rock")
+mf.plot_random_forest_class_hyperparameters(X_train, X_test, y_train, y_test, "rock")
 
-y_pred, random_forest_results = mf.get_random_forest_results(150, 10, 8, X_train, X_test, y_train, y_test)
-print(random_forest_results)
+y_pred, random_forest_class_results = mf.get_random_forest_class_results(150, 10, \
+                                            8, X_train, X_test, y_train, y_test)
+print(random_forest_class_results)
 # 0.8097, 0.9596, 0.8274
 
 
 # Gradient boosting model
-mf.plot_gradient_boosting_hyperparameters(X_train, X_test, y_train, y_test, "binary buckets")
+mf.plot_gradient_boost_class_hyperparameters(X_train, X_test, y_train, y_test, \
+                                             "binary buckets")
 
-y_pred, gradient_boosting_results = mf.get_gradient_boosting_results(0.2, 150, 1.0, 9, X_train, X_test, y_train, y_test)
-print(gradient_boosting_results)
+y_pred, gradient_boost_class_results = mf.get_gradient_boost_class_results(0.2, 150, \
+                                            1.0, 9, X_train, X_test, y_train, y_test)
+print(gradient_boost_class_results)
 # 0.8084, 0.9570, 0.8279
 
 
@@ -270,22 +280,26 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 
 
 # Logistic regression model
-y_pred, logistic_regression_results = mf.get_logistic_regression_results(X_train, X_test, y_train, y_test)
+y_pred, logistic_regression_results = mf.get_logistic_regression_results(X_train, \
+                                            X_test, y_train, y_test)
 print(logistic_regression_results)
 # 0.8034, 0.9960, 0.8056
 
 
 # Random forest model
-mf.plot_random_forest_hyperparameters(X_train, X_test, y_train, y_test, "pop")
+mf.plot_random_forest_class_hyperparameters(X_train, X_test, y_train, y_test, "pop")
 
-y_pred, random_forest_results = mf.get_random_forest_results(150, 10, 8, X_train, X_test, y_train, y_test)
-print(random_forest_results)
+y_pred, random_forest_class_results = mf.get_random_forest_class_results(150, 10, \
+                                            8, X_train, X_test, y_train, y_test)
+print(random_forest_class_results)
 # 0.8183, 0.9786, 0.8273
 
 
 # Gradient boosting model
-mf.plot_gradient_boosting_hyperparameters(X_train, X_test, y_train, y_test, "binary buckets")
+mf.plot_gradient_boost_class_hyperparameters(X_train, X_test, y_train, y_test, \
+                                             "binary buckets")
 
-y_pred, gradient_boosting_results = mf.get_gradient_boosting_results(0.2, 150, 1.0, 9, X_train, X_test, y_train, y_test)
-print(gradient_boosting_results)
+y_pred, gradient_boost_class_results = mf.get_gradient_boost_class_results(0.2, 150, \
+                                            1.0, 9, X_train, X_test, y_train, y_test)
+print(gradient_boost_class_results)
 # 0.8174, 0.9786, 0.8265
