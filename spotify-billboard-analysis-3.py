@@ -263,3 +263,67 @@ y_pred, gradient_boost_class_results = mf.get_gradient_boost_class_results(0.1, 
                                             1.0, 3, X_train, X_test, y_train, y_test)
 print(gradient_boost_class_results)
 # 0.6319, 0.0483, 0.4524
+
+
+# Now try adding all other numerical features to see if it improves accuracy
+
+# Join with features to get all numerical features as well as valence
+lyricsAndFeatures = tfidfLyrics.merge(features, on='SongID')
+lyricsAndFeatures.drop(["Performer", "Song"], axis=1, inplace=True)
+lyricsAndFeatures.set_index("SongID", inplace=True)
+# Temporary command to change model from regressor to classifier
+lyricsAndFeatures['valence'] = [int(v > 0.5) for v in lyricsAndFeatures['valence']]
+
+
+# Run models for pop genre
+lyricsAndFeaturesPop = lyricsAndFeatures[[contains_genre_type(g, ["pop"]) for g in lyricsAndFeatures['spotify_genre']]]
+lyricsAndFeaturesPop.drop(["spotify_genre"], axis=1, inplace=True)
+X = lyricsAndFeaturesPop[lyricsAndFeaturesPop.columns.difference(['valence'])]
+y = lyricsAndFeaturesPop['valence']
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
+
+
+# Logistic regression model
+y_pred, logistic_regression_results = mf.get_logistic_regression_results(X_train, \
+                                            X_test, y_train, y_test)
+print(logistic_regression_results)
+# 0.5559, 0.3957, 0.3917
+
+# Gradient boosting model
+start = time.time()
+mf.plot_gradient_boost_class_hyperparameters(X_train, X_test, y_train, y_test, \
+                                             "pop")
+end = time.time()
+print(end-start)
+
+y_pred, gradient_boost_class_results = mf.get_gradient_boost_class_results(0.1, 110, \
+                                            1.0, 3, X_train, X_test, y_train, y_test)
+print(gradient_boost_class_results)
+# 0.6319, 0.0483, 0.4524
+
+
+# Run models for rock/metal genres
+lyricsAndFeaturesRock = lyricsAndFeatures[[contains_genre_type(g, ["rock", "metal"]) for g in lyricsAndFeatures['spotify_genre']]]
+lyricsAndFeaturesRock.drop(["spotify_genre"], axis=1, inplace=True)
+X = lyricsAndFeaturesRock[lyricsAndFeaturesRock.columns.difference(['valence'])]
+y = lyricsAndFeaturesRock['valence']
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
+
+
+# Logistic regression model
+y_pred, logistic_regression_results = mf.get_logistic_regression_results(X_train, \
+                                            X_test, y_train, y_test)
+print(logistic_regression_results)
+# 0.5559, 0.3957, 0.3917
+
+# Gradient boosting model
+start = time.time()
+mf.plot_gradient_boost_class_hyperparameters(X_train, X_test, y_train, y_test, \
+                                             "pop")
+end = time.time()
+print(end-start)
+
+y_pred, gradient_boost_class_results = mf.get_gradient_boost_class_results(0.1, 110, \
+                                            1.0, 3, X_train, X_test, y_train, y_test)
+print(gradient_boost_class_results)
+# 0.6319, 0.0483, 0.4524
