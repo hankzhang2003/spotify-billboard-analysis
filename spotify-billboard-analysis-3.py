@@ -162,16 +162,16 @@ print(logistic_regression_results)
 # 0.5559, 0.3957, 0.3917
 
 # Gradient boosting model
-start = time.time()
+'''start = time.time()
 mf.plot_gradient_boost_class_hyperparameters(X_train, X_test, y_train, y_test, \
                                              "pop")
 end = time.time()
-print(end-start)
+print(end-start)'''
 
-y_pred, gradient_boost_class_results = mf.get_gradient_boost_class_results(0.1, 110, \
+y_pred, gradient_boost_class_results = mf.get_gradient_boost_class_results(0.1, 140, \
                                             1.0, 3, X_train, X_test, y_train, y_test)
 print(gradient_boost_class_results)
-# 0.6319, 0.0483, 0.4524
+# 0.6342, 0.0573, 0.4839
 
 
 # Run models for rock/metal genres
@@ -186,7 +186,7 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 y_pred, logistic_regression_results = mf.get_logistic_regression_results(X_train, \
                                             X_test, y_train, y_test)
 print(logistic_regression_results)
-# 0.5559, 0.3957, 0.3917
+# 0.5877, 0.4042, 0.3867
 
 # Gradient boosting model
 start = time.time()
@@ -195,10 +195,10 @@ mf.plot_gradient_boost_class_hyperparameters(X_train, X_test, y_train, y_test, \
 end = time.time()
 print(end-start)
 
-y_pred, gradient_boost_class_results = mf.get_gradient_boost_class_results(0.1, 110, \
+y_pred, gradient_boost_class_results = mf.get_gradient_boost_class_results(0.1, 140, \
                                             1.0, 3, X_train, X_test, y_train, y_test)
 print(gradient_boost_class_results)
-# 0.6319, 0.0483, 0.4524
+# 0.6644, 0.0436, 0.4630
 
 
 # Now try adding all other numerical features to see if it improves accuracy
@@ -225,17 +225,18 @@ y_pred, logistic_regression_results = mf.get_logistic_regression_results(X_train
 print(logistic_regression_results)
 # 0.5559, 0.3957, 0.3917
 
-# Gradient boosting model
-start = time.time()
+# Explore gradient boosting hyperparameters
+'''start = time.time()
 mf.plot_gradient_boost_class_hyperparameters(X_train, X_test, y_train, y_test, \
                                              "pop")
 end = time.time()
-print(end-start)
+print(end-start)'''
 
-y_pred, gradient_boost_class_results = mf.get_gradient_boost_class_results(0.1, 110, \
+# Gradient boosting model
+y_pred, gradient_boost_class_results = mf.get_gradient_boost_class_results(0.1, 140, \
                                             1.0, 3, X_train, X_test, y_train, y_test)
 print(gradient_boost_class_results)
-# 0.6319, 0.0483, 0.4524
+# 0.7830, 0.5980, 0.7556
 
 
 # Run models for rock/metal genres
@@ -250,19 +251,20 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 y_pred, logistic_regression_results = mf.get_logistic_regression_results(X_train, \
                                             X_test, y_train, y_test)
 print(logistic_regression_results)
-# 0.5559, 0.3957, 0.3917
+# 0.5877, 0.4042, 0.3867
 
-# Gradient boosting model
-start = time.time()
+# Explore gradient boosting hyperparameters
+'''start = time.time()
 mf.plot_gradient_boost_class_hyperparameters(X_train, X_test, y_train, y_test, \
                                              "pop")
 end = time.time()
-print(end-start)
+print(end-start)'''
 
-y_pred, gradient_boost_class_results = mf.get_gradient_boost_class_results(0.1, 110, \
+# Gradient boosting model
+y_pred, gradient_boost_class_results = mf.get_gradient_boost_class_results(0.1, 140, \
                                             1.0, 3, X_train, X_test, y_train, y_test)
 print(gradient_boost_class_results)
-# 0.6319, 0.0483, 0.4524
+# 0.6644, 0.0436, 0.4630
 
 
 # Now try adding all other numerical features to see if it improves accuracy
@@ -287,19 +289,20 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 y_pred, logistic_regression_results = mf.get_logistic_regression_results(X_train, \
                                             X_test, y_train, y_test)
 print(logistic_regression_results)
-# 0.5559, 0.3957, 0.3917
+# 0.6796, 0.5280, 0.5646
 
-# Gradient boosting model
-start = time.time()
+# Explore gradient boosting hyperparameters
+'''start = time.time()
 mf.plot_gradient_boost_class_hyperparameters(X_train, X_test, y_train, y_test, \
                                              "pop")
 end = time.time()
-print(end-start)
+print(end-start)'''
 
-y_pred, gradient_boost_class_results = mf.get_gradient_boost_class_results(0.1, 110, \
+# Gradient boosting model
+y_pred, gradient_boost_class_results = mf.get_gradient_boost_class_results(0.1, 140, \
                                             1.0, 3, X_train, X_test, y_train, y_test)
 print(gradient_boost_class_results)
-# 0.6319, 0.0483, 0.4524
+# 0.7821, 0.5954, 0.7548
 
 
 # Run models for rock/metal genres
@@ -314,16 +317,17 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 y_pred, logistic_regression_results = mf.get_logistic_regression_results(X_train, \
                                             X_test, y_train, y_test)
 print(logistic_regression_results)
-# 0.5559, 0.3957, 0.3917
+# 0.7294, 0.6028, 0.5925
 
-# Gradient boosting model
-start = time.time()
+# Explore gradient boosting hyperparameters
+'''start = time.time()
 mf.plot_gradient_boost_class_hyperparameters(X_train, X_test, y_train, y_test, \
                                              "pop")
 end = time.time()
-print(end-start)
+print(end-start)'''
 
-y_pred, gradient_boost_class_results = mf.get_gradient_boost_class_results(0.1, 110, \
+# Gradient boosting model
+y_pred, gradient_boost_class_results = mf.get_gradient_boost_class_results(0.1, 140, \
                                             1.0, 3, X_train, X_test, y_train, y_test)
 print(gradient_boost_class_results)
-# 0.6319, 0.0483, 0.4524
+# 0.8055, 0.6045, 0.7626
