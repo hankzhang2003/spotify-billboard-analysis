@@ -139,7 +139,8 @@ tfidfLyrics.to_csv("data/tfidfMatrix.csv", index=False)
 # Run models with only lyrics, not counting other features
 
 # Join with valence column from features to get valence of each song
-valenceOnly = pd.DataFrame({"SongID": features['SongID'], "spotify_genre": features['spotify_genre'], "valence": features['valence']})
+valenceOnly = pd.DataFrame({"SongID": features['SongID'], "spotify_genre": 
+                            features['spotify_genre'], "valence": features['valence']})
 lyricsAndValence = tfidfLyrics.merge(valenceOnly, on='SongID')
 lyricsAndValence.set_index("SongID", inplace=True)
 # Create new dataframe using classifier instead of regressor
@@ -148,7 +149,8 @@ lyricsAndValenceBin['valence'] = (lyricsAndValenceBin['valence'] > 0.5).astype(i
 
 
 # Run models for pop genre
-lyricsAndValenceBinPop = lyricsAndValenceBin[[contains_genre_type(g, ["pop"]) for g in lyricsAndValenceBin['spotify_genre']]]
+lyricsAndValenceBinPop = lyricsAndValenceBin[[contains_genre_type(g, ["pop"]) \
+                            for g in lyricsAndValenceBin['spotify_genre']]]
 lyricsAndValenceBinPop.drop(["spotify_genre"], axis=1, inplace=True)
 X = lyricsAndValenceBinPop[lyricsAndValenceBinPop.columns.difference(['valence'])]
 y = lyricsAndValenceBinPop['valence']
@@ -175,7 +177,8 @@ print(gradient_boost_class_results)
 
 
 # Run models for rock/metal genres
-lyricsAndValenceBinRock = lyricsAndValenceBin[[contains_genre_type(g, ["rock", "metal"]) for g in lyricsAndValenceBin['spotify_genre']]]
+lyricsAndValenceBinRock = lyricsAndValenceBin[[contains_genre_type(g, ["rock", "metal"]) \
+                            for g in lyricsAndValenceBin['spotify_genre']]]
 lyricsAndValenceBinRock.drop(["spotify_genre"], axis=1, inplace=True)
 X = lyricsAndValenceBinRock[lyricsAndValenceBinRock.columns.difference(['valence'])]
 y = lyricsAndValenceBinRock['valence']
@@ -213,7 +216,8 @@ lyricsAndFeaturesBin['valence'] = (lyricsAndFeaturesBin['valence'] > 0.5).astype
 
 
 # Run models for pop genre
-lyricsAndFeaturesBinPop = lyricsAndFeaturesBin[[contains_genre_type(g, ["pop"]) for g in lyricsAndFeaturesBin['spotify_genre']]]
+lyricsAndFeaturesBinPop = lyricsAndFeaturesBin[[contains_genre_type(g, ["pop"]) \
+                            for g in lyricsAndFeaturesBin['spotify_genre']]]
 lyricsAndFeaturesBinPop.drop(["spotify_genre"], axis=1, inplace=True)
 X = lyricsAndFeaturesBinPop[lyricsAndFeaturesBinPop.columns.difference(['valence'])]
 y = lyricsAndFeaturesBinPop['valence']
@@ -241,7 +245,8 @@ print(gradient_boost_class_results)
 
 
 # Run models for rock/metal genres
-lyricsAndFeaturesBinRock = lyricsAndFeaturesBin[[contains_genre_type(g, ["rock", "metal"]) for g in lyricsAndFeaturesBin['spotify_genre']]]
+lyricsAndFeaturesBinRock = lyricsAndFeaturesBin[[contains_genre_type(g, ["rock", "metal"]) \
+                            for g in lyricsAndFeaturesBin['spotify_genre']]]
 lyricsAndFeaturesBinRock.drop(["spotify_genre"], axis=1, inplace=True)
 X = lyricsAndFeaturesBinRock[lyricsAndFeaturesBinRock.columns.difference(['valence'])]
 y = lyricsAndFeaturesBinRock['valence']
