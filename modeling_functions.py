@@ -63,7 +63,7 @@ def plot_random_forest_class_hyperparameters(xtrain: np.array, xtest: np.array, 
 
     # Find optimal max depth
     start = time.time()
-    maxDepth = np.arange(3, 13)
+    maxDepth = np.arange(3, 11)
     accuracy_d = []
     for d in maxDepth:
         a = 0
@@ -115,7 +115,7 @@ def plot_gradient_boost_class_hyperparameters(xtrain: np.array, xtest: np.array,
                             np.array, ytest: np.array, genre_type: str) -> None:
     # Find optimal learning rate
     start = time.time()
-    learningRate = [0.01, 0.025, 0.05, 0.1, 0.25, 0.5]
+    learningRate = [0.01, 0.025, 0.05, 0.1, 0.2, 0.4]
     accuracy_l = []
     for l in learningRate:
         gbr = GradientBoostingClassifier(learning_rate=l).fit(xtrain, ytrain)
@@ -125,7 +125,7 @@ def plot_gradient_boost_class_hyperparameters(xtrain: np.array, xtest: np.array,
     fig, ax = plt.subplots()
     ax.plot(learningRate, accuracy_l)
     ax.set_title("GBR accuracy by learning rate ({})".format(genre_type))
-    fig.savefig("images/gradientBoostLearningRate.png")
+    fig.savefig("images/{}GradientBoostLearningRate.png".format(genre_type))
     end = time.time()
     print("learning rate time", end-start)
 
@@ -141,7 +141,7 @@ def plot_gradient_boost_class_hyperparameters(xtrain: np.array, xtest: np.array,
     fig, ax = plt.subplots()
     ax.plot(numTrees, accuracy_t)
     ax.set_title("GBR accuracy by number of trees ({})".format(genre_type))
-    fig.savefig("images/gradientBoostNumTrees.png")
+    fig.savefig("images/{}GradientBoostNumTrees.png".format(genre_type))
     end = time.time()
     print("num trees time", end-start)
 
@@ -162,7 +162,7 @@ def plot_gradient_boost_class_hyperparameters(xtrain: np.array, xtest: np.array,
 
     # Find optimal max depth
     start = time.time()
-    maxDepth = np.arange(3, 13)
+    maxDepth = np.arange(3, 11)
     accuracy_d = []
     for d in maxDepth:
         gbr = GradientBoostingClassifier(max_depth=d).fit(xtrain, ytrain)
@@ -172,7 +172,7 @@ def plot_gradient_boost_class_hyperparameters(xtrain: np.array, xtest: np.array,
     fig, ax = plt.subplots()
     ax.plot(maxDepth, accuracy_d)
     ax.set_title("GBR accuracy by max depth ({})".format(genre_type))
-    fig.savefig("images/gradientBoostMaxDepth.png")
+    fig.savefig("images/{}GradientBoostMaxDepth.png".format(genre_type))
     end = time.time()
     print("max depth time", end-start)
 
