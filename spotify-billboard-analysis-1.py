@@ -5,8 +5,7 @@ import scipy.stats as stats
 import itertools
 from clean_features import clean_features
 from clean_weeks import clean_weeks
-from make_plots import (make_frequency_plot, make_line_plot, make_dual_plot_same,
-                        make_dual_plot_mixed, make_scatter)
+import make_plots as plots
 
 
 # Import csvs and remove null rows and unnecessary columns
@@ -37,7 +36,7 @@ genresJoinedDecade = joinedGenres.groupby(['spotify_genre", "Decade'])['SongID']
 
 # Frequency of genres
 fig, ax = plt.subplots(figsize=(12, 6))
-make_frequency_plot(genresJoined.sort_values(by="SongID", ascending=False), 30, ax)
+plots.make_frequency_plot(genresJoined.sort_values(by="SongID", ascending=False), 30, ax)
 fig.tight_layout()
 fig.suptitle("Frequency of Genres of Tracks", fontsize=20)
 fig.subplots_adjust(top=0.9)
@@ -46,7 +45,7 @@ fig.subplots_adjust(top=0.9)
 
 # Frequency of genres (unique)
 fig, ax = plt.subplots(figsize=(12, 6))
-make_frequency_plot(genresJoined.sort_values(by="SongID", ascending=False), 30, ax)
+plots.make_frequency_plot(genresJoined.sort_values(by="SongID", ascending=False), 30, ax)
 fig.tight_layout()
 fig.suptitle("Frequency of Genres of Tracks (Unique)", fontsize=20)
 fig.subplots_adjust(top=0.9)
@@ -89,7 +88,7 @@ numericalMetrics = joined[numericals].groupby(['Year']).aggregate(np.nanmean).re
 
 for metric in numericalMetrics:
     fig, ax = plt.subplots()
-    make_line_plot(numericals, metric, ax)
+    plots.make_line_plot(numericals, metric, ax)
     fig.suptitle("Mean {} of Tracks by Year".format(metric.capitalize()), fontsize=20)
     #fig.savefig("images/{}.png".format(metric))
 
@@ -109,7 +108,7 @@ dualPlotsNormal = [("acousticness", "energy"), ("energy", "danceability"), ("ene
 
 for pair in dualPlotsNormal:
     fig, ax = plt.subplots()
-    make_dual_plot_same(numericals, pair, ax)
+    plots.make_dual_plot_same(numericals, pair, ax)
     ax.legend([pair[0].capitalize(), pair[1].capitalize()])
     fig.suptitle("{} and {} of Tracks by Year".format(pair[0].capitalize(),
                  pair[1].capitalize()), fontsize=18)
@@ -123,7 +122,7 @@ legendLocations = [(0.35, 0.87), (0.55, 0.87), (0.32, 0.87)]
 
 for i, pair in enumerate(dualPlotsMixed):
     fig, ax = plt.subplots()
-    make_dual_plot_mixed(numericals, pair, ax)
+    plots.make_dual_plot_mixed(numericals, pair, ax)
     fig.legend([pair[0].capitalize(), pair[1].capitalize()], bbox_to_anchor=legendLocations[i])
     fig.suptitle("{} and {} of Tracks by Year".format(pair[0].capitalize(),
                  pair[1].capitalize()), fontsize=18)
@@ -134,7 +133,7 @@ for i, pair in enumerate(dualPlotsMixed):
 scatterplots = dualPlotsNormal + dualPlotsMixed
 for pair in scatterplots:
     fig, ax = plt.subplots()
-    make_scatter(features, pair, ax)
+    plots.make_scatter(features, pair, ax)
     fig.suptitle("{} vs {} of Tracks".format(pair[0].capitalize(), pair[1].capitalize()),
                  fontsize=20)
     #fig.savefig("images/{}vs{}Scatter.png".format(pair[0], pair[1]))
