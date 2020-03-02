@@ -19,11 +19,10 @@ from bs4 import BeautifulSoup
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.cluster import KMeans
 from sklearn.metrics import silhouette_score, confusion_matrix, mean_squared_error
-from sklearn.model_selection import train_test_split, GridSearchCV
+from sklearn.model_selection import train_test_split, KFold, cross_val_score, GridSearchCV
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import (RandomForestClassifier, RandomForestRegressor,
                             GradientBoostingClassifier, GradientBoostingRegressor)
-from sklearn.naive_bayes import MultinomialNB
 
 import nltk
 nltk.download(["stopwords", "punkt", "averaged_perceptron_tagger", "maxent_treebank_pos_tagger"])
@@ -33,8 +32,10 @@ from nltk import pos_tag
 from nltk.stem.snowball import SnowballStemmer
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 
+import tensorflow as tf
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense, Activation
+from tensorflow.keras.layers import Dense, Activation, Dropout
+from tensorflow.keras.wrappers.scikit_learn import KerasRegressor
 
 from clean_dfs import clean_features, clean_weeks, clean_lyrics
 from web_scraping import parse_page, store_lyrics
@@ -208,6 +209,23 @@ print(gradient_boost_regress_results)
 # 0.009985, 0.2330
 
 
+# Multilayer perceptron
+model = Sequential()
+model.add(Dense(32, input_dim=X_train.shape[1]))
+model.add(Activation("tanh"))
+model.add(Dropout(0.5))
+model.add(Dense(32))
+model.add(Activation("tanh"))
+model.add(Dropout(0.5))
+model.add(Dense(1))
+model.add(Activation("softmax"))
+model.compile(optimizer="adadelta", loss="mean_squared_error", metrics=["mse"])
+model.fit(X_train, y_train, epochs=10, verbose=1, validation_data=(X_test, y_test))
+score = model.evaluate(X_test, y_test)
+print(score)
+#0.2082
+
+
 # Run classifier models for rock/metal genres
 lyricsAndValenceBinRock = lyricsAndValenceBin[[contains_genre_type(g, ["rock", "metal"]) \
                                 for g in lyricsAndValenceBin['spotify_genre']]]
@@ -264,6 +282,25 @@ gradient_boost_regress_results = mf.get_gradient_boost_regress_results(0.05, 120
 print(gradient_boost_regress_results)
 # 0.008093, 0.2345
 
+
+# Multilayer perceptron
+model = Sequential()
+model.add(Dense(32, input_dim=X_train.shape[1]))
+model.add(Activation("tanh"))
+model.add(Dropout(0.5))
+model.add(Dense(32))
+model.add(Activation("tanh"))
+model.add(Dropout(0.5))
+model.add(Dense(1))
+model.add(Activation("softmax"))
+model.compile(optimizer="adadelta", loss="mean_squared_error", metrics=["mse"])
+model.fit(X_train, y_train, epochs=10, verbose=1, validation_data=(X_test, y_test))
+score = model.evaluate(X_test, y_test)
+print(score)
+#0.2082
+
+
+###################
 
 # Now try adding all other numerical features to see if it improves accuracy/RMSE
 
@@ -333,6 +370,23 @@ print(gradient_boost_regress_results)
 # 0.4657, 0.1712
 
 
+# Multilayer perceptron
+model = Sequential()
+model.add(Dense(32, input_dim=X_train.shape[1]))
+model.add(Activation("tanh"))
+model.add(Dropout(0.5))
+model.add(Dense(32))
+model.add(Activation("tanh"))
+model.add(Dropout(0.5))
+model.add(Dense(1))
+model.add(Activation("softmax"))
+model.compile(optimizer="adadelta", loss="mean_squared_error", metrics=["mse"])
+model.fit(X_train, y_train, epochs=10, verbose=1, validation_data=(X_test, y_test))
+score = model.evaluate(X_test, y_test)
+print(score)
+#0.2082
+
+
 # Run classifier models for rock/metal genres
 lyricsAndFeaturesBinRock = lyricsAndFeaturesBin[[contains_genre_type(g, ["rock", "metal"]) \
                                 for g in lyricsAndFeaturesBin['spotify_genre']]]
@@ -389,3 +443,19 @@ gradient_boost_regress_results = mf.get_gradient_boost_regress_results(0.05, 120
                                         X_train, X_test, y_train, y_test)
 print(gradient_boost_regress_results)
 # 0.5332, 0.1609
+
+# Multilayer perceptron
+model = Sequential()
+model.add(Dense(32, input_dim=X_train.shape[1]))
+model.add(Activation("tanh"))
+model.add(Dropout(0.5))
+model.add(Dense(32))
+model.add(Activation("tanh"))
+model.add(Dropout(0.5))
+model.add(Dense(1))
+model.add(Activation("softmax"))
+model.compile(optimizer="adadelta", loss="mean_squared_error", metrics=["mse"])
+model.fit(X_train, y_train, epochs=10, verbose=1, validation_data=(X_test, y_test))
+score = model.evaluate(X_test, y_test)
+print(score)
+#0.2082
