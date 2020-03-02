@@ -46,7 +46,7 @@ def plot_random_forest_class_hyperparameters(xtrain: np.array, xtest: np.array, 
                         np.array, ytest: np.array, genre_type: str) -> None:
     # Find optimal number of trees
     start = time.time()
-    numTrees = np.arange(60, 201, 20)
+    numTrees = np.arange(100, 201, 20)
     accuracy_t = []
     for n in numTrees:
         a = 0
@@ -115,7 +115,7 @@ def plot_gradient_boost_class_hyperparameters(xtrain: np.array, xtest: np.array,
                             np.array, ytest: np.array, genre_type: str) -> None:
     # Find optimal learning rate
     start = time.time()
-    learningRate = [0.01, 0.025, 0.05, 0.1, 0.2, 0.4]
+    learningRate = [0.01, 0.025, 0.05, 0.1, 0.2]
     accuracy_l = []
     for l in learningRate:
         gbc = GradientBoostingClassifier(learning_rate=l, subsample=0.5).fit(xtrain, ytrain)
@@ -130,7 +130,7 @@ def plot_gradient_boost_class_hyperparameters(xtrain: np.array, xtest: np.array,
 
     # Find optimal number of trees
     start = time.time()
-    numTrees = np.arange(60, 201, 20)
+    numTrees = np.arange(100, 201, 20)
     accuracy_t = []
     for n in numTrees:
         gbc = GradientBoostingClassifier(n_estimators=n, subsample=0.5).fit(xtrain, ytrain)
@@ -176,8 +176,8 @@ def grid_search_gradient_boost(xtrain: np.array, xtest: np.array, ytrain: np.arr
                     ytest: np.array) -> (dict, float):
     start = time.time()
     gbr = GradientBoostingRegressor()
-    parameters = {"learning_rate": [0.01, 0.025, 0.05, 0.1, 0.2, 0.4], "n_estimators": \
-                  np.arange(60, 201, 20), "max_depth": np.arange(3, 11)}
+    parameters = {"learning_rate": [0.01, 0.025, 0.05, 0.1, 0.2], "n_estimators": \
+                  np.arange(100, 201, 20), "max_depth": np.arange(3, 11)}
     gridSearch = GridSearchCV(gbr, parameters, "neg_mean_squared_error", n_jobs=-1, \
                               cv=5, verbose=1)
     gridSearch.fit(xtrain, ytrain)
@@ -191,7 +191,7 @@ def plot_gradient_boost_regress_hyperparameters(xtrain: np.array, xtest: np.arra
                             np.array, ytest: np.array, genre_type: str) -> None:
     # Find optimal learning rate
     start = time.time()
-    learningRate = [0.01, 0.025, 0.05, 0.1, 0.2, 0.4]
+    learningRate = [0.01, 0.025, 0.05, 0.1, 0.2]
     rmse_l = []
     for l in learningRate:
         gbc = GradientBoostingRegressor(learning_rate=l, subsample=0.5).fit(xtrain, ytrain)
@@ -200,13 +200,13 @@ def plot_gradient_boost_regress_hyperparameters(xtrain: np.array, xtest: np.arra
         rmse_l.append(r)
     fig, ax = plt.subplots()
     ax.plot(learningRate, rmse_l)
-    ax.set_title("gbc rmse by learning rate ({})".format(genre_type))
+    ax.set_title("gbr rmse by learning rate ({})".format(genre_type))
     end = time.time()
     print("learning rate time", end-start)
 
     # Find optimal number of trees
     start = time.time()
-    numTrees = np.arange(60, 201, 20)
+    numTrees = np.arange(100, 201, 20)
     rmse_t = []
     for n in numTrees:
         gbc = GradientBoostingRegressor(n_estimators=n, subsample=0.5).fit(xtrain, ytrain)
@@ -215,7 +215,7 @@ def plot_gradient_boost_regress_hyperparameters(xtrain: np.array, xtest: np.arra
         rmse_t.append(r)
     fig, ax = plt.subplots()
     ax.plot(numTrees, rmse_t)
-    ax.set_title("gbc rmse by number of trees ({})".format(genre_type))
+    ax.set_title("gbr rmse by number of trees ({})".format(genre_type))
     end = time.time()
     print("num trees time", end-start)
 
@@ -230,7 +230,7 @@ def plot_gradient_boost_regress_hyperparameters(xtrain: np.array, xtest: np.arra
         rmse_d.append(r)
     fig, ax = plt.subplots()
     ax.plot(maxDepth, rmse_d)
-    ax.set_title("gbc rmse by max depth ({})".format(genre_type))
+    ax.set_title("gbr rmse by max depth ({})".format(genre_type))
     end = time.time()
     print("max depth time", end-start)
 

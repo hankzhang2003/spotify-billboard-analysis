@@ -202,7 +202,7 @@ end = time.time()
 print(end-start)
 
 # Gradient boosting regressor model
-gradient_boost_regress_results = mf.get_gradient_boost_regress_results(0.1, 140, 3, \
+gradient_boost_regress_results = mf.get_gradient_boost_regress_results(0.1, 120, 3, \
                                         X_train, X_test, y_train, y_test)
 print(gradient_boost_regress_results)
 # 
@@ -259,7 +259,7 @@ end = time.time()
 print(end-start)
 
 # Gradient boosting regressor model
-gradient_boost_regress_results = mf.get_gradient_boost_regress_results(0.1, 140, 3, \
+gradient_boost_regress_results = mf.get_gradient_boost_regress_results(0.1, 120, 3, \
                                         X_train, X_test, y_train, y_test)
 print(gradient_boost_regress_results)
 # 
@@ -327,7 +327,7 @@ end = time.time()
 print(end-start)
 
 # Gradient boosting regressor model
-gradient_boost_regress_results = mf.get_gradient_boost_regress_results(0.1, 140, 3, \
+gradient_boost_regress_results = mf.get_gradient_boost_regress_results(0.1, 120, 3, \
                                         X_train, X_test, y_train, y_test)
 print(gradient_boost_regress_results)
 # 
@@ -385,7 +385,7 @@ end = time.time()
 print(end-start)
 
 # Gradient boosting regressor model
-gradient_boost_regress_results = mf.get_gradient_boost_regress_results(0.1, 140, 3, \
+gradient_boost_regress_results = mf.get_gradient_boost_regress_results(0.1, 120, 3, \
                                         X_train, X_test, y_train, y_test)
 print(gradient_boost_regress_results)
 # 
