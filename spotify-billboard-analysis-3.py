@@ -188,14 +188,13 @@ X = lyricsAndValencePop[lyricsAndValencePop.columns.difference(['valence'])]
 y = lyricsAndValencePop['valence']
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
 
-# Grid search gradient boosting hyperparametrs
-bestParams, bestScore = mf.grid_search_gradient_boost(X_train, X_test, y_train, y_test)
-print(bestParams, bestScore)
-
-# Gradient boosting regressor model
-gradient_boost_regress_results = mf.get_gradient_boost_regress_results(0.1, 140, \
-                                        3, X_train, X_test, y_train, y_test)
-print(gradient_boost_regress_results)
+# Grid search gradient boosting regressor hyperparameters and return model score and RMSE
+gbr = mf.grid_search_gradient_boost(X_train, X_test, y_train, y_test)
+print(gbr.best_params_, np.sqrt(np.abs(gbr.best_score_)))
+scoreValencePop = gbr.score(X_test, y_test)
+y_pred = gbr.predict(X_test)
+rmseValencePop = np.sqrt(mean_squared_error(y_test, y_pred))
+print(scoreValencePop, rmseValencePop)
 
 
 # Run classifier models for rock/metal genres
@@ -235,14 +234,13 @@ X = lyricsAndValenceRock[lyricsAndValenceRock.columns.difference(['valence'])]
 y = lyricsAndValenceRock['valence']
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
 
-# Grid search gradient boosting hyperparametrs
-bestParams, bestScore = mf.grid_search_gradient_boost(X_train, X_test, y_train, y_test)
-print(bestParams, bestScore)
-
-# Gradient boosting regressor model
-gradient_boost_regress_results = mf.get_gradient_boost_regress_results(0.1, 140, \
-                                        3, X_train, X_test, y_train, y_test)
-print(gradient_boost_regress_results)
+# Grid search gradient boosting regressor hyperparameters and return model score and RMSE
+gbr = mf.grid_search_gradient_boost(X_train, X_test, y_train, y_test)
+print(gbr.best_params_, np.sqrt(np.abs(gbr.best_score_)))
+scoreValenceRock = gbr.score(X_test, y_test)
+y_pred = gbr.predict(X_test)
+rmseValenceRock = np.sqrt(mean_squared_error(y_test, y_pred))
+print(scoreValenceRock, rmseValenceRock)
 
 
 # Now try adding all other numerical features to see if it improves accuracy
@@ -293,14 +291,13 @@ X = lyricsAndFeaturesPop[lyricsAndFeaturesPop.columns.difference(['valence'])]
 y = lyricsAndFeaturesPop['valence']
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
 
-# Grid search gradient boosting hyperparametrs
-bestParams, bestScore = mf.grid_search_gradient_boost(X_train, X_test, y_train, y_test)
-print(bestParams, bestScore)
-
-# Gradient boosting regressor model
-gradient_boost_regress_results = mf.get_gradient_boost_regress_results(0.1, 140, \
-                                        3, X_train, X_test, y_train, y_test)
-print(gradient_boost_regress_results)
+# Grid search gradient boosting regressor hyperparameters and return model score and RMSE
+gbr = mf.grid_search_gradient_boost(X_train, X_test, y_train, y_test)
+print(gbr.best_params_, np.sqrt(np.abs(gbr.best_score_)))
+scoreFeaturesPop = gbr.score(X_test, y_test)
+y_pred = gbr.predict(X_test)
+rmseFeaturesPop = np.sqrt(mean_squared_error(y_test, y_pred))
+print(scoreFeaturesPop, rmseFeaturesPop)
 
 
 # Run classifier models for rock/metal genres
@@ -340,11 +337,10 @@ X = lyricsAndFeaturesRock[lyricsAndFeaturesRock.columns.difference(['valence'])]
 y = lyricsAndFeaturesRock['valence']
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
 
-# Grid search gradient boosting hyperparametrs
-bestParams, bestScore = mf.grid_search_gradient_boost(X_train, X_test, y_train, y_test)
-print(bestParams, bestScore)
-
-# Gradient boosting regressor model
-gradient_boost_regress_results = mf.get_gradient_boost_regress_results(0.1, 140, \
-                                        3, X_train, X_test, y_train, y_test)
-print(gradient_boost_regress_results)
+# Grid search gradient boosting regressor hyperparameters and return model score and RMSE
+gbr = mf.grid_search_gradient_boost(X_train, X_test, y_train, y_test)
+print(gbr.best_params_, np.sqrt(np.abs(gbr.best_score_)))
+scoreFeaturesRock = gbr.score(X_test, y_test)
+y_pred = gbr.predict(X_test)
+rmseFeaturesRock = np.sqrt(mean_squared_error(y_test, y_pred))
+print(scoreFeaturesRock, rmseFeaturesRock)

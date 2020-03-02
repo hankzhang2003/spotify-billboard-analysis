@@ -186,16 +186,4 @@ def grid_search_gradient_boost(xtrain: np.array, xtest: np.array, ytrain: np.arr
     gridSearch.fit(xtrain, ytrain)
     end = time.time()
     print("grid search time", end-start)
-    return gridSearch.best_params_, gridSearch.best_score_
-
-# Gradient boosting regressor wrapper function
-def get_gradient_boost_regress_results(learning_rate: float, num_trees: int, max_depth: \
-                        int, xtrain: np.array, xtest: np.array, ytrain: np.array, \
-                        ytest: np.array) -> (float, float):
-    gbr = GradientBoostingRegressor(learning_rate=learning_rate, n_estimators=num_trees, \
-                                    subsample=subsample_rate, max_depth=max_depth). \
-                                    fit(xtrain, ytrain)
-    score = gbr.score(xtest, ytest)
-    ypred = gbr.predict(xtest)
-    rmse = np.sqrt(mean_squared_error(ytest, ypred))
-    return score, rmse
+    return gridSearch
