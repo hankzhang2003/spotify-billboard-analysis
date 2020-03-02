@@ -202,10 +202,10 @@ end = time.time()
 print(end-start)
 
 # Gradient boosting regressor model
-gradient_boost_regress_results = mf.get_gradient_boost_regress_results(0.1, 120, 3, \
+gradient_boost_regress_results = mf.get_gradient_boost_regress_results(0.05, 120, 3, \
                                         X_train, X_test, y_train, y_test)
 print(gradient_boost_regress_results)
-# 
+# 0.009985, 0.2330
 
 
 # Run classifier models for rock/metal genres
@@ -259,10 +259,10 @@ end = time.time()
 print(end-start)
 
 # Gradient boosting regressor model
-gradient_boost_regress_results = mf.get_gradient_boost_regress_results(0.1, 120, 3, \
+gradient_boost_regress_results = mf.get_gradient_boost_regress_results(0.05, 120, 3, \
                                         X_train, X_test, y_train, y_test)
 print(gradient_boost_regress_results)
-# 
+# 0.008093, 0.2345
 
 
 # Now try adding all other numerical features to see if it improves accuracy/RMSE
@@ -327,10 +327,10 @@ end = time.time()
 print(end-start)
 
 # Gradient boosting regressor model
-gradient_boost_regress_results = mf.get_gradient_boost_regress_results(0.1, 120, 3, \
+gradient_boost_regress_results = mf.get_gradient_boost_regress_results(0.05, 120, 3, \
                                         X_train, X_test, y_train, y_test)
 print(gradient_boost_regress_results)
-# 
+# 0.4657, 0.1712
 
 
 # Run classifier models for rock/metal genres
@@ -385,7 +385,7 @@ end = time.time()
 print(end-start)
 
 # Gradient boosting regressor model
-gradient_boost_regress_results = mf.get_gradient_boost_regress_results(0.1, 120, 3, \
+gradient_boost_regress_results = mf.get_gradient_boost_regress_results(0.05, 120, 3, \
                                         X_train, X_test, y_train, y_test)
 print(gradient_boost_regress_results)
-# 
+# 0.5332, 0.1609
