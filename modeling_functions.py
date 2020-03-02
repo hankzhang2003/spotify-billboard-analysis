@@ -181,8 +181,8 @@ def grid_search_gradient_boost(xtrain: np.array, xtest: np.array, ytrain: np.arr
     gbr = GradientBoostingRegressor()
     parameters = {"learning_rate": [0.01, 0.025, 0.05, 0.1, 0.2, 0.4], "n_estimators": \
                   np.arange(50, 201, 30), "max_depth": np.arange(3, 11)}
-    gridSearch = GridSearchCV(gbr, parameters, "neg_mean_squared_error", n_jobs=-1, cv=5, \
-                              verbose=1)
+    gridSearch = GridSearchCV(gbr, parameters, "neg_mean_squared_error", n_jobs=-1, \
+                              cv=5, verbose=1)
     gridSearch.fit(xtrain, ytrain)
     y_pred = gridSearch.predict(xtest)
     end = time.time()
