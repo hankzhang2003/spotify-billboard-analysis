@@ -114,7 +114,7 @@ for pair in correlations:
 
 
 # Dual plots with same y-axis
-dualPlotsNormal = [("acousticness", "energy"), ("energy", "danceability"), ("energy", \
+dualPlotsNormal = [("acousticness", "energy"), ("energy", "danceability"), ("energy", 
                     "valence"), ("danceability", "valence")]
 
 for pair in dualPlotsNormal:
@@ -144,7 +144,7 @@ scatterplots = dualPlotsNormal + dualPlotsMixed
 for pair in scatterplots:
     fig, ax = plt.subplots()
     plots.make_scatter(features, pair, ax)
-    fig.suptitle("{} vs {} of Tracks".format(pair[0].capitalize(), pair[1].capitalize()),
+    fig.suptitle("{} vs {} of Tracks".format(pair[0].capitalize(), pair[1].capitalize()), \
                  fontsize=20)
     #fig.savefig("images/{}vs{}Scatter.png".format(pair[0], pair[1]))
 

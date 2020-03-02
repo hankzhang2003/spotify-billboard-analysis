@@ -46,10 +46,10 @@ def make_scatter(df: pd.DataFrame, pair: tuple, ax: plt.axes) -> None:
 
 def make_feature_importance_plot(feature_importance: np.array, feature_names: list, \
                                  top: int, ax: plt.axes) -> None:
-    feature_importance = 100.0 * (feature_importance / max(feature_importance))
-    size = len(feature_importance)
     sortedIndex = np.argsort(feature_importance)
     position = np.arange(top) + 0.5
-    ax.barh(position, feature_importance[sortedIndex][size:size-top-1:-1], align="center")
+    ax.barh(position, feature_importance[sortedIndex][len(feature_importance)-top:], \
+            align="center")
     ax.set_xlabel("Relative feature importance", fontsize=14)
-    ax.set_yticks(position, feature_names[sortedIndex][size:size-top-1:-1])
+    ax.set_yticks(position)
+    ax.set_yticklabels(feature_names[sortedIndex][len(feature_importance)-top:])

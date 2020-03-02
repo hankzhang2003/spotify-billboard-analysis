@@ -15,9 +15,9 @@ def parse_page(title: str, artist: str) -> list:
         artistFixed = artistFixed.split(",", 1)[0]
     if "feat" in artistFixed:
         artistFixed = artistFixed.split("feat", 1)[0]
-    titleFixed = titleFixed.replace("&", "and").translate(str.maketrans(" !$/()",
+    titleFixed = titleFixed.replace("&", "and").translate(str.maketrans(" !$/()", \
                     "------", "',.?+"))
-    artistFixed = artistFixed.replace("&", "and").translate(str.maketrans(" !$/()",
+    artistFixed = artistFixed.replace("&", "and").translate(str.maketrans(" !$/()", \
                     "------", "'.?+"))
     titleFixed = titleFixed.replace("--", "-")
     artistFixed = artistFixed.replace("--", "-")
@@ -47,3 +47,7 @@ def store_lyrics(title: str, artist: str, d: dict) -> dict:
     lyrics = [line.replace(",", "") for line in lyrics]
     d[songID] = lyrics
     return d
+
+def filter_profanity(words: list) -> list:
+    return [w.replace("fuck", "f*ck").replace("shit", "sh*t").replace("bitch", "b*tch"). \
+            replace("nigga", "ni**a") for w in words]

@@ -28,7 +28,7 @@ def lyrics_tokenize(lyrics: str) -> str:
     sent_tags = list(map(pos_tag, tokens))
     cp = RegexpParser(grammar)
     regexTokens = []
-    stemmer = SnowballStemmer('english')
+    stemmer = SnowballStemmer("english")
     for sent in sent_tags:
         tree = cp.parse(sent)
         for subtree in tree.subtrees():
@@ -38,7 +38,7 @@ def lyrics_tokenize(lyrics: str) -> str:
                 regexTokens.extend(tokensStemmed)
     
     tokensFiltered = regexTokens[1:]
-    stopwords_ = set(stopwords.words('english'))
+    stopwords_ = set(stopwords.words("english"))
     tokensFiltered = [w for w in tokensFiltered if not w in stopwords_]
     tokenString = " ".join(tokensFiltered)
     punctuation_ = set(string.punctuation)

@@ -38,7 +38,7 @@ from tensorflow.keras.layers import Dense, Activation, Dropout
 from tensorflow.keras.wrappers.scikit_learn import KerasRegressor
 
 from clean_dfs import clean_features, clean_weeks, clean_lyrics
-from web_scraping import parse_page, store_lyrics
+from web_scraping import parse_page, store_lyrics, filter_profanity
 from nlp_pipeline import lyrics_tokenize, get_tfidf_matrix
 from genre_helper_functions import get_bucket, contains_genre_type, create_genre_column
 import make_plots as plots
@@ -195,6 +195,7 @@ y_pred = gbr.predict(X_test)
 rmseValencePop = np.sqrt(mean_squared_error(y_test, y_pred))
 print(scoreValencePop, rmseValencePop)'''
 
+
 # Explore gradient boosting regressor hyperparameters
 start = time.time()
 model.plot_gradient_boost_reg_hyperparameters(X_train, X_test, y_train, y_test, "pop")
@@ -208,11 +209,12 @@ print(gradient_boost_reg_results)
 # 0.006539, 0.2334
 
 # Plot feature importances
-fig, ax = plt.subplots()
-plots.make_feature_importance_plot(feature_importances, lyricsAndValencePop.columns[:-1], \
-                                   30, ax)
-fig.suptitle("Top Feature Importances of Pop (valence only)")
-fig.savefig("images/feature_importances_valencepop.png")
+fig, ax = plt.subplots(figsize=(14, 10))
+plots.make_feature_importance_plot(feature_importances, filter_profanity( \
+                                   lyricsAndValencePop.columns[:-1]), 30, ax)
+fig.suptitle("Top Feature Importances of Pop (valence only)", fontsize=20)
+fig.subplots_adjust(top=0.9)
+fig.savefig("images/featureImportances_valencepop.png")
 
 
 # Multilayer perceptron
@@ -276,6 +278,7 @@ y_pred = gbr.predict(X_test)
 rmseValenceRock = np.sqrt(mean_squared_error(y_test, y_pred))
 print(scoreValenceRock, rmseValenceRock)'''
 
+
 # Explore gradient boosting regressor hyperparameters
 start = time.time()
 model.plot_gradient_boost_reg_hyperparameters(X_train, X_test, y_train, y_test, "rock")
@@ -289,11 +292,12 @@ print(gradient_boost_reg_results)
 # 0.01272, 0.2339
 
 # Plot feature importances
-fig, ax = plt.subplots()
-plots.make_feature_importance_plot(feature_importances, lyricsAndValenceRock.columns \
-                                   [:-1], 30, ax)
-fig.suptitle("Top Feature Importances of Rock (valence only)")
-fig.savefig("images/feature_importances_valencerock.png")
+fig, ax = plt.subplots(figsize=(14, 10))
+plots.make_feature_importance_plot(feature_importances, filter_profanity( \
+                                   lyricsAndValenceRock.columns[:-1]), 30, ax)
+fig.suptitle("Top Feature Importances of Rock (valence only)", fontsize=20)
+fig.subplots_adjust(top=0.9)
+fig.savefig("images/featureImportances_valenceRock.png")
 
 
 # Multilayer perceptron
@@ -370,6 +374,7 @@ y_pred = gbr.predict(X_test)
 rmseFeaturesPop = np.sqrt(mean_squared_error(y_test, y_pred))
 print(scoreFeaturesPop, rmseFeaturesPop)'''
 
+
 # Explore gradient boosting regressor hyperparameters
 start = time.time()
 model.plot_gradient_boost_reg_hyperparameters(X_train, X_test, y_train, y_test, "pop")
@@ -383,10 +388,12 @@ print(gradient_boost_reg_results)
 # 0.4659, 0.1711
 
 # Plot feature importances
-fig, ax = plt.subplots()
-plots.make_feature_importance_plot(feature_importances, lyricsAndFeaturesPop.columns[:-1], 30, ax)
-fig.suptitle("Top Feature Importances of Pop (all features)")
-fig.savefig("images/feature_importances_featurespop.png")
+fig, ax = plt.subplots(figsize=(14, 10))
+plots.make_feature_importance_plot(feature_importances, filter_profanity( \
+                                   lyricsAndFeaturesPop.columns[:-1]), 30, ax)
+fig.suptitle("Top Feature Importances of Pop (all features)", fontsize=20)
+fig.subplots_adjust(top=0.9)
+fig.savefig("images/featureImportances_featurespop.png")
 
 
 # Multilayer perceptron
@@ -451,6 +458,7 @@ y_pred = gbr.predict(X_test)
 rmseFeaturesRock = np.sqrt(mean_squared_error(y_test, y_pred))
 print(scoreFeaturesRock, rmseFeaturesRock)'''
 
+
 # Explore gradient boosting regressor hyperparameters
 start = time.time()
 model.plot_gradient_boost_reg_hyperparameters(X_train, X_test, y_train, y_test, "rock")
@@ -464,10 +472,12 @@ print(gradient_boost_reg_results)
 # 0.5324, 0.1610
 
 # Plot feature importances
-fig, ax = plt.subplots()
-plots.make_feature_importance_plot(feature_importances, lyricsAndFeaturesRock.columns[:-1], 30, ax)
-fig.suptitle("Top Feature Importances of Rock (all features)")
-fig.savefig("images/feature_importances_featuresrock.png")
+fig, ax = plt.subplots(figsize=(14, 10))
+plots.make_feature_importance_plot(feature_importances, filter_profanity( \
+                                   lyricsAndFeaturesRock.columns[:-1]), 30, ax)
+fig.suptitle("Top Feature Importances of Rock (all features)", fontsize=20)
+fig.subplots_adjust(top=0.9)
+fig.savefig("images/featureImportances_featuresrock.png")
 
 
 # Multilayer perceptron

@@ -61,7 +61,7 @@ for i, ax in enumerate(axs.flat):
     ax.bar(np.arange(15), temp['SongID'].iloc[0:15])
     ax.set_ylim((0, 24000))
     ax.set_xticks(np.arange(15))
-    ax.set_xticklabels(temp['spotify_genre'][0:15], fontsize="large", rotation=45, ha="right",
+    ax.set_xticklabels(temp['spotify_genre'][0:15], fontsize="large", rotation=45, ha="right", \
                        rotation_mode="anchor")
     ax.set_title(decades[i], fontsize="x-large")
 fig.tight_layout()
@@ -84,7 +84,6 @@ fig.savefig("images/explicitness.png")
 # Mean of each numerical metric by year
 numericals = ['Year'] + joined.columns.tolist()[11:22]
 numericalMetrics = joined[numericals].groupby(['Year']).aggregate(np.nanmean).reset_index()
-
 
 for metric in numericalMetrics:
     fig, ax = plt.subplots()
@@ -119,7 +118,6 @@ for pair in dualPlotsNormal:
 dualPlotsMixed = [("energy", "loudness"), ("acousticness", "loudness"), ("energy", "tempo")]
 legendLocations = [(0.35, 0.87), (0.55, 0.87), (0.32, 0.87)]
 
-
 for i, pair in enumerate(dualPlotsMixed):
     fig, ax = plt.subplots()
     plots.make_dual_plot_mixed(numericals, pair, ax)
@@ -134,7 +132,7 @@ scatterplots = dualPlotsNormal + dualPlotsMixed
 for pair in scatterplots:
     fig, ax = plt.subplots()
     plots.make_scatter(features, pair, ax)
-    fig.suptitle("{} vs {} of Tracks".format(pair[0].capitalize(), pair[1].capitalize()),
+    fig.suptitle("{} vs {} of Tracks".format(pair[0].capitalize(), pair[1].capitalize()), \
                  fontsize=20)
     #fig.savefig("images/{}vs{}Scatter.png".format(pair[0], pair[1]))
 
