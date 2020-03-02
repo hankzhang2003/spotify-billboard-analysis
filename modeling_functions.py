@@ -200,7 +200,7 @@ def plot_gradient_boost_regress_hyperparameters(xtrain: np.array, xtest: np.arra
         rmse_l.append(r)
     fig, ax = plt.subplots()
     ax.plot(learningRate, rmse_l)
-    ax.set_title("gbc accuracy by learning rate ({})".format(genre_type))
+    ax.set_title("gbc rmse by learning rate ({})".format(genre_type))
     end = time.time()
     print("learning rate time", end-start)
 
@@ -215,7 +215,7 @@ def plot_gradient_boost_regress_hyperparameters(xtrain: np.array, xtest: np.arra
         rmse_t.append(r)
     fig, ax = plt.subplots()
     ax.plot(numTrees, rmse_t)
-    ax.set_title("gbc accuracy by number of trees ({})".format(genre_type))
+    ax.set_title("gbc rmse by number of trees ({})".format(genre_type))
     end = time.time()
     print("num trees time", end-start)
 
@@ -230,7 +230,7 @@ def plot_gradient_boost_regress_hyperparameters(xtrain: np.array, xtest: np.arra
         rmse_d.append(r)
     fig, ax = plt.subplots()
     ax.plot(maxDepth, rmse_d)
-    ax.set_title("gbc accuracy by max depth ({})".format(genre_type))
+    ax.set_title("gbc rmse by max depth ({})".format(genre_type))
     end = time.time()
     print("max depth time", end-start)
 
