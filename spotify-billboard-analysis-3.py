@@ -197,10 +197,10 @@ print(scoreValencePop, rmseValencePop)'''
 
 
 # Explore gradient boosting regressor hyperparameters
-start = time.time()
+'''start = time.time()
 model.plot_gradient_boost_reg_hyperparameters(X_train, X_test, y_train, y_test, "pop")
 end = time.time()
-print(end-start)
+print(end-start)'''
 
 # Gradient boosting regressor model
 gradient_boost_reg_results, feature_importances = model.get_gradient_boost_reg_results( \
@@ -269,10 +269,10 @@ print(scoreValenceRock, rmseValenceRock)'''
 
 
 # Explore gradient boosting regressor hyperparameters
-start = time.time()
+'''start = time.time()
 model.plot_gradient_boost_reg_hyperparameters(X_train, X_test, y_train, y_test, "rock")
 end = time.time()
-print(end-start)
+print(end-start)'''
 
 # Gradient boosting regressor model
 gradient_boost_reg_results, feature_importances = model.get_gradient_boost_reg_results( \
@@ -295,7 +295,10 @@ print(score)
 # 0.2082
 
 
-del lyricsAndValence, lyricsAndValencePop, lyricsAndValenceRock
+try:
+    del lyricsAndValence, lyricsAndValencePop, lyricsAndValenceRock
+except:
+    pass
 
 
 ###################
@@ -357,10 +360,10 @@ print(scoreFeaturesPop, rmseFeaturesPop)'''
 
 
 # Explore gradient boosting regressor hyperparameters
-start = time.time()
+'''start = time.time()
 model.plot_gradient_boost_reg_hyperparameters(X_train, X_test, y_train, y_test, "pop")
 end = time.time()
-print(end-start)
+print(end-start)'''
 
 # Gradient boosting regressor model
 gradient_boost_reg_results, feature_importances = model.get_gradient_boost_reg_results( \
@@ -430,10 +433,10 @@ print(scoreFeaturesRock, rmseFeaturesRock)'''
 
 
 # Explore gradient boosting regressor hyperparameters
-start = time.time()
+'''start = time.time()
 model.plot_gradient_boost_reg_hyperparameters(X_train, X_test, y_train, y_test, "rock")
 end = time.time()
-print(end-start)
+print(end-start)'''
 
 # Gradient boosting regressor model
 gradient_boost_reg_results, feature_importances = model.get_gradient_boost_reg_results( \
@@ -456,4 +459,7 @@ print(score)
 # 0.2082
 
 
-del lyricsAndFeatures, lyricsAndFeaturesPop, lyricsAndFeaturessRock
+try:
+    del lyricsAndFeatures, lyricsAndFeaturesPop, lyricsAndFeaturesRock
+except:
+    pass
