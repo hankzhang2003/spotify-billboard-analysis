@@ -210,26 +210,15 @@ print(gradient_boost_reg_results)
 
 # Plot feature importances
 fig, ax = plt.subplots(figsize=(14, 10))
-plots.make_feature_importance_plot(feature_importances, filter_profanity( \
-                                   lyricsAndValencePop.columns[:-1]), 30, ax)
+filteredWords = np.array(filter_profanity(lyricsAndValencePop.columns[:-1]))
+plots.make_feature_importance_plot(feature_importances, filteredWords, 30, ax)
 fig.suptitle("Top Feature Importances of Pop (valence only)", fontsize=20)
 fig.subplots_adjust(top=0.9)
 fig.savefig("images/featureImportances_valencepop.png")
 
 
 # Multilayer perceptron
-mlp = Sequential()
-mlp.add(Dense(32, input_dim=X_train.shape[1]))
-mlp.add(Activation("tanh"))
-mlp.add(Dropout(0.5))
-mlp.add(Dense(32))
-mlp.add(Activation("tanh"))
-mlp.add(Dropout(0.5))
-mlp.add(Dense(1))
-mlp.add(Activation("softmax"))
-mlp.compile(optimizer="adadelta", loss="mean_squared_error", metrics=["mse"])
-mlp.fit(X_train, y_train, epochs=10, verbose=1, validation_data=(X_test, y_test))
-score = mlp.evaluate(X_test, y_test)
+score = model.get_mlp_score(10, X_train, y_train, X_test, y_test)
 print(score)
 # 0.2244
 
@@ -293,28 +282,20 @@ print(gradient_boost_reg_results)
 
 # Plot feature importances
 fig, ax = plt.subplots(figsize=(14, 10))
-plots.make_feature_importance_plot(feature_importances, filter_profanity( \
-                                   lyricsAndValenceRock.columns[:-1]), 30, ax)
+filteredWords = np.array(filter_profanity(lyricsAndValenceRock.columns[:-1]))
+plots.make_feature_importance_plot(feature_importances, filteredWords, 30, ax)
 fig.suptitle("Top Feature Importances of Rock (valence only)", fontsize=20)
 fig.subplots_adjust(top=0.9)
-fig.savefig("images/featureImportances_valenceRock.png")
+fig.savefig("images/featureImportances_valencerock.png")
 
 
 # Multilayer perceptron
-mlp = Sequential()
-mlp.add(Dense(32, input_dim=X_train.shape[1]))
-mlp.add(Activation("tanh"))
-mlp.add(Dropout(0.5))
-mlp.add(Dense(32))
-mlp.add(Activation("tanh"))
-mlp.add(Dropout(0.5))
-mlp.add(Dense(1))
-mlp.add(Activation("softmax"))
-mlp.compile(optimizer="adadelta", loss="mean_squared_error", metrics=["mse"])
-mlp.fit(X_train, y_train, epochs=10, verbose=1, validation_data=(X_test, y_test))
-score = mlp.evaluate(X_test, y_test)
+score = model.get_mlp_score(10, X_train, y_train, X_test, y_test)
 print(score)
 # 0.2082
+
+
+del lyricsAndValence, lyricsAndValencePop, lyricsAndValenceRock
 
 
 ###################
@@ -389,26 +370,15 @@ print(gradient_boost_reg_results)
 
 # Plot feature importances
 fig, ax = plt.subplots(figsize=(14, 10))
-plots.make_feature_importance_plot(feature_importances, filter_profanity( \
-                                   lyricsAndFeaturesPop.columns[:-1]), 30, ax)
+filteredWords = np.array(filter_profanity(lyricsAndFeaturesPop.columns[:-1]))
+plots.make_feature_importance_plot(feature_importances, filteredWords, 30, ax)
 fig.suptitle("Top Feature Importances of Pop (all features)", fontsize=20)
 fig.subplots_adjust(top=0.9)
 fig.savefig("images/featureImportances_featurespop.png")
 
 
 # Multilayer perceptron
-mlp = Sequential()
-mlp.add(Dense(32, input_dim=X_train.shape[1]))
-mlp.add(Activation("tanh"))
-mlp.add(Dropout(0.5))
-mlp.add(Dense(32))
-mlp.add(Activation("tanh"))
-mlp.add(Dropout(0.5))
-mlp.add(Dense(1))
-mlp.add(Activation("softmax"))
-mlp.compile(optimizer="adadelta", loss="mean_squared_error", metrics=["mse"])
-mlp.fit(X_train, y_train, epochs=10, verbose=1, validation_data=(X_test, y_test))
-score = mlp.evaluate(X_test, y_test)
+score = model.get_mlp_score(10, X_train, y_train, X_test, y_test)
 print(score)
 # 0.2244
 
@@ -473,25 +443,17 @@ print(gradient_boost_reg_results)
 
 # Plot feature importances
 fig, ax = plt.subplots(figsize=(14, 10))
-plots.make_feature_importance_plot(feature_importances, filter_profanity( \
-                                   lyricsAndFeaturesRock.columns[:-1]), 30, ax)
+filteredWords = np.array(filter_profanity(lyricsAndFeaturesRock.columns[:-1]))
+plots.make_feature_importance_plot(feature_importances, filteredWords, 30, ax)
 fig.suptitle("Top Feature Importances of Rock (all features)", fontsize=20)
 fig.subplots_adjust(top=0.9)
 fig.savefig("images/featureImportances_featuresrock.png")
 
 
 # Multilayer perceptron
-mlp = Sequential()
-mlp.add(Dense(32, input_dim=X_train.shape[1]))
-mlp.add(Activation("tanh"))
-mlp.add(Dropout(0.5))
-mlp.add(Dense(32))
-mlp.add(Activation("tanh"))
-mlp.add(Dropout(0.5))
-mlp.add(Dense(1))
-mlp.add(Activation("softmax"))
-mlp.compile(optimizer="adadelta", loss="mean_squared_error", metrics=["mse"])
-mlp.fit(X_train, y_train, epochs=10, verbose=1, validation_data=(X_test, y_test))
-score = mlp.evaluate(X_test, y_test)
+score = model.get_mlp_score(10, X_train, y_train, X_test, y_test)
 print(score)
 # 0.2082
+
+
+del lyricsAndFeatures, lyricsAndFeaturesPop, lyricsAndFeaturessRock

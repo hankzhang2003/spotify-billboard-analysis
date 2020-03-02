@@ -246,3 +246,21 @@ def get_gradient_boost_reg_results(learning_rate: float, num_trees: int, max_dep
     rmse = np.sqrt(mean_squared_error(ytest, ypred))
     featureImportances = gbc.feature_importances_
     return (score, rmse), featureImportances    
+
+
+# Multilayer perceptron wrapper function
+def get_mlp_score(epochs: int, xtrain: np.array, xtest: np.array, ytrain: np.array, \
+                ytest: np.array):
+    mlp = Sequential()
+    mlp.add(Dense(32, input_dim=xtrain.shape[1]))
+    mlp.add(Activation("tanh"))
+    mlp.add(Dropout(0.5))
+    mlp.add(Dense(32))
+    mlp.add(Activation("tanh"))
+    mlp.add(Dropout(0.5))
+    mlp.add(Dense(1))
+    mlp.add(Activation("softmax"))
+    mlp.compile(optimizer="adadelta", loss="mean_squared_error", metrics=["mse"])
+    mlp.fit(xtrain, ytrain, epochs=epochs, verbose=1, validation_data=(xtest, ytest))
+    score = mlp.evaluate(xtest, ytest)
+    return score
