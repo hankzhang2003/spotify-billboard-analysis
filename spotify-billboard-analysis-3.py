@@ -209,7 +209,8 @@ print(gradient_boost_reg_results)
 
 # Plot feature importances
 fig, ax = plt.subplots()
-plots.make_feature_importance_plot(feature_importances, lyricsAndValencePop.columns, 30, ax)
+plots.make_feature_importance_plot(feature_importances, lyricsAndValencePop.columns[:-1], \
+                                   30, ax)
 fig.suptitle("Top Feature Importances of Pop (valence only)")
 fig.savefig("images/feature_importances_valencepop.png")
 
@@ -289,7 +290,8 @@ print(gradient_boost_reg_results)
 
 # Plot feature importances
 fig, ax = plt.subplots()
-plots.make_feature_importance_plot(feature_importances, lyricsAndValenceRock.columns, 30, ax)
+plots.make_feature_importance_plot(feature_importances, lyricsAndValenceRock.columns \
+                                   [:-1], 30, ax)
 fig.suptitle("Top Feature Importances of Rock (valence only)")
 fig.savefig("images/feature_importances_valencerock.png")
 
@@ -382,7 +384,7 @@ print(gradient_boost_reg_results)
 
 # Plot feature importances
 fig, ax = plt.subplots()
-plots.make_feature_importance_plot(feature_importances, lyricsAndFeaturesPop.columns, 30, ax)
+plots.make_feature_importance_plot(feature_importances, lyricsAndFeaturesPop.columns[:-1], 30, ax)
 fig.suptitle("Top Feature Importances of Pop (all features)")
 fig.savefig("images/feature_importances_featurespop.png")
 
@@ -463,7 +465,7 @@ print(gradient_boost_reg_results)
 
 # Plot feature importances
 fig, ax = plt.subplots()
-plots.make_feature_importance_plot(feature_importances, lyricsAndFeaturesRock.columns, 30, ax)
+plots.make_feature_importance_plot(feature_importances, lyricsAndFeaturesRock.columns[:-1], 30, ax)
 fig.suptitle("Top Feature Importances of Rock (all features)")
 fig.savefig("images/feature_importances_featuresrock.png")
 
