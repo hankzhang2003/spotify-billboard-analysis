@@ -188,7 +188,7 @@ def grid_search_gradient_boost(xtrain: np.array, xtest: np.array, ytrain: np.arr
 
 
 # Function for gradient boosting regressor hyperparameter tuning
-def plot_gradient_boost_regress_hyperparameters(xtrain: np.array, xtest: np.array, ytrain: \
+def plot_gradient_boost_reg_hyperparameters(xtrain: np.array, xtest: np.array, ytrain: \
                             np.array, ytest: np.array, genre_type: str) -> None:
     # Find optimal learning rate
     start = time.time()
@@ -236,12 +236,13 @@ def plot_gradient_boost_regress_hyperparameters(xtrain: np.array, xtest: np.arra
     print("max depth time", end-start)
 
 # Gradient boosting regressor wrapper function
-def get_gradient_boost_regress_results(learning_rate: float, num_trees: int, max_depth: \
-                        int, xtrain: np.array, xtest: np.array, ytrain: np.array, \
-                        ytest: np.array) -> (float, float):
+def get_gradient_boost_reg_results(learning_rate: float, num_trees: int, max_depth: int, \
+                        xtrain: np.array, xtest: np.array, ytrain: np.array, ytest: \
+                        np.array) -> ((float, float), np.array):
     gbc = GradientBoostingRegressor(learning_rate=learning_rate, n_estimators=num_trees, \
-                                     subsample=0.5, max_depth=max_depth).fit(xtrain, ytrain)
+                                    subsample=0.5, max_depth=max_depth).fit(xtrain, ytrain)
     ypred = gbc.predict(xtest)
     score = gbc.score(xtest, ytest)
     rmse = np.sqrt(mean_squared_error(ytest, ypred))
-    return score, rmse
+    featureImportances = gbc.feature_importances_
+    return (score, rmse), featureImportances    

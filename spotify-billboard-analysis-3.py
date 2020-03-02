@@ -41,9 +41,8 @@ from clean_dfs import clean_features, clean_weeks, clean_lyrics
 from web_scraping import parse_page, store_lyrics
 from nlp_pipeline import lyrics_tokenize, get_tfidf_matrix
 from genre_helper_functions import get_bucket, contains_genre_type, create_genre_column
-from make_plots import (make_frequency_plot, make_line_plot, make_dual_plot_same,
-                        make_dual_plot_mixed, make_scatter)
-import modeling_functions as mf
+import make_plots as plots
+import modeling_functions as model
 
 
 features = clean_features()
@@ -162,19 +161,19 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 
 
 # Logistic regression model
-logistic_regression_results = mf.get_logistic_regression_results(X_train, \
+logistic_regression_results = model.get_logistic_regression_results(X_train, \
                                         X_test, y_train, y_test)
 print(logistic_regression_results)
 # 0.5559, 0.3957, 0.3917
 
 # Explore gradient boosting classifier hyperparameters
 '''start = time.time()
-mf.plot_gradient_boost_class_hyperparameters(X_train, X_test, y_train, y_test, "pop")
+model.plot_gradient_boost_class_hyperparameters(X_train, X_test, y_train, y_test, "pop")
 end = time.time()
 print(end-start)'''
 
 # Gradient boosting classifier model
-gradient_boost_class_results = mf.get_gradient_boost_class_results(0.1, 140, 3, \
+gradient_boost_class_results = model.get_gradient_boost_class_results(0.1, 140, 3, \
                                         X_train, X_test, y_train, y_test)
 print(gradient_boost_class_results)
 # 0.6347, 0.0585, 0.4894
@@ -189,7 +188,7 @@ y = lyricsAndValencePop['valence']
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
 
 '''# Grid search gradient boosting regressor hyperparameters and return model score and RMSE
-gbr = mf.grid_search_gradient_boost(X_train, X_test, y_train, y_test)
+gbr = model.grid_search_gradient_boost(X_train, X_test, y_train, y_test)
 print(gbr.best_params_, np.sqrt(np.abs(gbr.best_score_)))
 scoreValencePop = gbr.score(X_test, y_test)
 y_pred = gbr.predict(X_test)
@@ -198,30 +197,36 @@ print(scoreValencePop, rmseValencePop)'''
 
 # Explore gradient boosting regressor hyperparameters
 start = time.time()
-mf.plot_gradient_boost_class_hyperparameters(X_train, X_test, y_train, y_test, "pop")
+model.plot_gradient_boost_reg_hyperparameters(X_train, X_test, y_train, y_test, "pop")
 end = time.time()
 print(end-start)
 
 # Gradient boosting regressor model
-gradient_boost_regress_results = mf.get_gradient_boost_regress_results(0.05, 120, 3, \
-                                        X_train, X_test, y_train, y_test)
-print(gradient_boost_regress_results)
+gradient_boost_reg_results, feature_importances = model.get_gradient_boost_reg_results( \
+                            0.05, 120, 3, X_train, X_test, y_train, y_test)
+print(gradient_boost_reg_results)
 # 0.006539, 0.2334
+
+# Plot feature importances
+fig, ax = plt.subplots()
+make_feature_importance_plot(feature_importances, lyricsAndValencePop.columns, 30, ax)
+fig.suptitle("Top Feature Importances of Pop (valence only)")
+fig.savefig("images/feature_importances_valencepop.png")
 
 
 # Multilayer perceptron
-model = Sequential()
-model.add(Dense(32, input_dim=X_train.shape[1]))
-model.add(Activation("tanh"))
-model.add(Dropout(0.5))
-model.add(Dense(32))
-model.add(Activation("tanh"))
-model.add(Dropout(0.5))
-model.add(Dense(1))
-model.add(Activation("softmax"))
-model.compile(optimizer="adadelta", loss="mean_squared_error", metrics=["mse"])
-model.fit(X_train, y_train, epochs=10, verbose=1, validation_data=(X_test, y_test))
-score = model.evaluate(X_test, y_test)
+mlp = Sequential()
+mlp.add(Dense(32, input_dim=X_train.shape[1]))
+mlp.add(Activation("tanh"))
+mlp.add(Dropout(0.5))
+mlp.add(Dense(32))
+mlp.add(Activation("tanh"))
+mlp.add(Dropout(0.5))
+mlp.add(Dense(1))
+mlp.add(Activation("softmax"))
+mlp.compile(optimizer="adadelta", loss="mean_squared_error", metrics=["mse"])
+mlp.fit(X_train, y_train, epochs=10, verbose=1, validation_data=(X_test, y_test))
+score = mlp.evaluate(X_test, y_test)
 print(score)
 # 0.2244
 
@@ -236,19 +241,19 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 
 
 # Logistic regression model
-logistic_regression_results = mf.get_logistic_regression_results(X_train, \
+logistic_regression_results = model.get_logistic_regression_results(X_train, \
                                         X_test, y_train, y_test)
 print(logistic_regression_results)
 # 0.5877, 0.4042, 0.3867
 
 # Explore gradient boosting classifier hyperparameters
 '''start = time.time()
-mf.plot_gradient_boost_class_hyperparameters(X_train, X_test, y_train, y_test, "rock")
+model.plot_gradient_boost_class_hyperparameters(X_train, X_test, y_train, y_test, "rock")
 end = time.time()
 print(end-start)'''
 
 # Gradient boosting classifier model
-gradient_boost_class_results = mf.get_gradient_boost_class_results(0.1, 140, 3, \
+gradient_boost_class_results = model.get_gradient_boost_class_results(0.1, 140, 3, \
                                         X_train, X_test, y_train, y_test)
 print(gradient_boost_class_results)
 # 0.6644, 0.0436, 0.4630
@@ -263,7 +268,7 @@ y = lyricsAndValenceRock['valence']
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
 
 '''# Grid search gradient boosting regressor hyperparameters and return model score and RMSE
-gbr = mf.grid_search_gradient_boost(X_train, X_test, y_train, y_test)
+gbr = model.grid_search_gradient_boost(X_train, X_test, y_train, y_test)
 print(gbr.best_params_, np.sqrt(np.abs(gbr.best_score_)))
 scoreValenceRock = gbr.score(X_test, y_test)
 y_pred = gbr.predict(X_test)
@@ -272,30 +277,36 @@ print(scoreValenceRock, rmseValenceRock)'''
 
 # Explore gradient boosting regressor hyperparameters
 start = time.time()
-mf.plot_gradient_boost_regress_hyperparameters(X_train, X_test, y_train, y_test, "rock")
+model.plot_gradient_boost_reg_hyperparameters(X_train, X_test, y_train, y_test, "rock")
 end = time.time()
 print(end-start)
 
 # Gradient boosting regressor model
-gradient_boost_regress_results = mf.get_gradient_boost_regress_results(0.05, 120, 3, \
-                                        X_train, X_test, y_train, y_test)
-print(gradient_boost_regress_results)
+gradient_boost_reg_results, feature_importances = model.get_gradient_boost_reg_results( \
+                            0.05, 120, 3, X_train, X_test, y_train, y_test)
+print(gradient_boost_reg_results)
 # 0.01272, 0.2339
+
+# Plot feature importances
+fig, ax = plt.subplots()
+make_feature_importance_plot(feature_importances, lyricsAndValenceRock.columns, 30, ax)
+fig.suptitle("Top Feature Importances of Rock (valence only)")
+fig.savefig("images/feature_importances_valencerock.png")
 
 
 # Multilayer perceptron
-model = Sequential()
-model.add(Dense(32, input_dim=X_train.shape[1]))
-model.add(Activation("tanh"))
-model.add(Dropout(0.5))
-model.add(Dense(32))
-model.add(Activation("tanh"))
-model.add(Dropout(0.5))
-model.add(Dense(1))
-model.add(Activation("softmax"))
-model.compile(optimizer="adadelta", loss="mean_squared_error", metrics=["mse"])
-model.fit(X_train, y_train, epochs=10, verbose=1, validation_data=(X_test, y_test))
-score = model.evaluate(X_test, y_test)
+mlp = Sequential()
+mlp.add(Dense(32, input_dim=X_train.shape[1]))
+mlp.add(Activation("tanh"))
+mlp.add(Dropout(0.5))
+mlp.add(Dense(32))
+mlp.add(Activation("tanh"))
+mlp.add(Dropout(0.5))
+mlp.add(Dense(1))
+mlp.add(Activation("softmax"))
+mlp.compile(optimizer="adadelta", loss="mean_squared_error", metrics=["mse"])
+mlp.fit(X_train, y_train, epochs=10, verbose=1, validation_data=(X_test, y_test))
+score = mlp.evaluate(X_test, y_test)
 print(score)
 # 0.2082
 
@@ -323,19 +334,19 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 
 
 # Logistic regression model
-logistic_regression_results = mf.get_logistic_regression_results(X_train, \
+logistic_regression_results = model.get_logistic_regression_results(X_train, \
                                         X_test, y_train, y_test)
 print(logistic_regression_results)
 # 0.6796, 0.5280, 0.5646
 
 # Explore gradient boosting classifier hyperparameters
 '''start = time.time()
-mf.plot_gradient_boost_class_hyperparameters(X_train, X_test, y_train, y_test, "pop")
+model.plot_gradient_boost_class_hyperparameters(X_train, X_test, y_train, y_test, "pop")
 end = time.time()
 print(end-start)'''
 
 # Gradient boosting classifier model
-gradient_boost_class_results = mf.get_gradient_boost_class_results(0.1, 140, 3, \
+gradient_boost_class_results = model.get_gradient_boost_class_results(0.1, 140, 3, \
                                         X_train, X_test, y_train, y_test)
 print(gradient_boost_class_results)
 # 0.7821, 0.5954, 0.7548
@@ -350,7 +361,7 @@ y = lyricsAndFeaturesPop['valence']
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
 
 '''# Grid search gradient boosting regressor hyperparameters and return model score and RMSE
-gbr = mf.grid_search_gradient_boost(X_train, X_test, y_train, y_test)
+gbr = model.grid_search_gradient_boost(X_train, X_test, y_train, y_test)
 print(gbr.best_params_, np.sqrt(np.abs(gbr.best_score_)))
 scoreFeaturesPop = gbr.score(X_test, y_test)
 y_pred = gbr.predict(X_test)
@@ -359,30 +370,36 @@ print(scoreFeaturesPop, rmseFeaturesPop)'''
 
 # Explore gradient boosting regressor hyperparameters
 start = time.time()
-mf.plot_gradient_boost_class_hyperparameters(X_train, X_test, y_train, y_test, "pop")
+model.plot_gradient_boost_reg_hyperparameters(X_train, X_test, y_train, y_test, "pop")
 end = time.time()
 print(end-start)
 
 # Gradient boosting regressor model
-gradient_boost_regress_results = mf.get_gradient_boost_regress_results(0.05, 120, 3, \
-                                        X_train, X_test, y_train, y_test)
-print(gradient_boost_regress_results)
+gradient_boost_reg_results, feature_importances = model.get_gradient_boost_reg_results( \
+                            0.05, 120, 3, X_train, X_test, y_train, y_test)
+print(gradient_boost_reg_results)
 # 0.4659, 0.1711
+
+# Plot feature importances
+fig, ax = plt.subplots()
+make_feature_importance_plot(feature_importances, lyricsAndFeaturesPop.columns, 30, ax)
+fig.suptitle("Top Feature Importances of Pop (all features)")
+fig.savefig("images/feature_importances_featurespop.png")
 
 
 # Multilayer perceptron
-model = Sequential()
-model.add(Dense(32, input_dim=X_train.shape[1]))
-model.add(Activation("tanh"))
-model.add(Dropout(0.5))
-model.add(Dense(32))
-model.add(Activation("tanh"))
-model.add(Dropout(0.5))
-model.add(Dense(1))
-model.add(Activation("softmax"))
-model.compile(optimizer="adadelta", loss="mean_squared_error", metrics=["mse"])
-model.fit(X_train, y_train, epochs=10, verbose=1, validation_data=(X_test, y_test))
-score = model.evaluate(X_test, y_test)
+mlp = Sequential()
+mlp.add(Dense(32, input_dim=X_train.shape[1]))
+mlp.add(Activation("tanh"))
+mlp.add(Dropout(0.5))
+mlp.add(Dense(32))
+mlp.add(Activation("tanh"))
+mlp.add(Dropout(0.5))
+mlp.add(Dense(1))
+mlp.add(Activation("softmax"))
+mlp.compile(optimizer="adadelta", loss="mean_squared_error", metrics=["mse"])
+mlp.fit(X_train, y_train, epochs=10, verbose=1, validation_data=(X_test, y_test))
+score = mlp.evaluate(X_test, y_test)
 print(score)
 # 0.2244
 
@@ -397,20 +414,20 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 
 
 # Logistic regression model
-logistic_regression_results = mf.get_logistic_regression_results(X_train, \
+logistic_regression_results = model.get_logistic_regression_results(X_train, \
                                         X_test, y_train, y_test)
 print(logistic_regression_results)
 # 0.7294, 0.6028, 0.5925
 
 # Explore gradient boosting classifier hyperparameters
 '''start = time.time()
-mf.plot_gradient_boost_class_hyperparameters(X_train, X_test, y_train, y_test, \
+model.plot_gradient_boost_class_hyperparameters(X_train, X_test, y_train, y_test, \
                                              "pop")
 end = time.time()
 print(end-start)'''
 
 # Gradient boosting classifier model
-gradient_boost_class_results = mf.get_gradient_boost_class_results(0.1, 140, 3, \
+gradient_boost_class_results = model.get_gradient_boost_class_results(0.1, 140, 3, \
                                         X_train, X_test, y_train, y_test)
 print(gradient_boost_class_results)
 # 0.8055, 0.6045, 0.7626
@@ -425,7 +442,7 @@ y = lyricsAndFeaturesRock['valence']
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
 
 '''# Grid search gradient boosting regressor hyperparameters and return model score and RMSE
-gbr = mf.grid_search_gradient_boost(X_train, X_test, y_train, y_test)
+gbr = model.grid_search_gradient_boost(X_train, X_test, y_train, y_test)
 print(gbr.best_params_, np.sqrt(np.abs(gbr.best_score_)))
 scoreFeaturesRock = gbr.score(X_test, y_test)
 y_pred = gbr.predict(X_test)
@@ -434,28 +451,35 @@ print(scoreFeaturesRock, rmseFeaturesRock)'''
 
 # Explore gradient boosting regressor hyperparameters
 start = time.time()
-mf.plot_gradient_boost_regress_hyperparameters(X_train, X_test, y_train, y_test, "rock")
+model.plot_gradient_boost_reg_hyperparameters(X_train, X_test, y_train, y_test, "rock")
 end = time.time()
 print(end-start)
 
 # Gradient boosting regressor model
-gradient_boost_regress_results = mf.get_gradient_boost_regress_results(0.05, 120, 3, \
-                                        X_train, X_test, y_train, y_test)
-print(gradient_boost_regress_results)
+gradient_boost_reg_results, feature_importances = model.get_gradient_boost_reg_results( \
+                            0.05, 120, 3, X_train, X_test, y_train, y_test)
+print(gradient_boost_reg_results)
 # 0.5324, 0.1610
 
+# Plot feature importances
+fig, ax = plt.subplots()
+make_feature_importance_plot(feature_importances, lyricsAndFeaturesRock.columns, 30, ax)
+fig.suptitle("Top Feature Importances of Rock (all features)")
+fig.savefig("images/feature_importances_featuresrock.png")
+
+
 # Multilayer perceptron
-model = Sequential()
-model.add(Dense(32, input_dim=X_train.shape[1]))
-model.add(Activation("tanh"))
-model.add(Dropout(0.5))
-model.add(Dense(32))
-model.add(Activation("tanh"))
-model.add(Dropout(0.5))
-model.add(Dense(1))
-model.add(Activation("softmax"))
-model.compile(optimizer="adadelta", loss="mean_squared_error", metrics=["mse"])
-model.fit(X_train, y_train, epochs=10, verbose=1, validation_data=(X_test, y_test))
-score = model.evaluate(X_test, y_test)
+mlp = Sequential()
+mlp.add(Dense(32, input_dim=X_train.shape[1]))
+mlp.add(Activation("tanh"))
+mlp.add(Dropout(0.5))
+mlp.add(Dense(32))
+mlp.add(Activation("tanh"))
+mlp.add(Dropout(0.5))
+mlp.add(Dense(1))
+mlp.add(Activation("softmax"))
+mlp.compile(optimizer="adadelta", loss="mean_squared_error", metrics=["mse"])
+mlp.fit(X_train, y_train, epochs=10, verbose=1, validation_data=(X_test, y_test))
+score = mlp.evaluate(X_test, y_test)
 print(score)
 # 0.2082

@@ -7,7 +7,7 @@ import scipy.stats as stats
 # Functions to make plots for EDA
 
 def make_frequency_plot(df: pd.DataFrame, top: int, ax: plt.axes) -> None:
-    ax.bar(np.arange(top), df['SongID'].iloc[0:top])
+    ax.bar(np.arange(top), df['SongID'][0:top])
     ax.set_xticks(np.arange(top))
     ax.set_xticklabels(df['spotify_genre'][0:top], rotation=45, ha="right", rotation_mode="anchor")
     ax.set_xlabel("Genre", fontsize=14)
@@ -43,3 +43,13 @@ def make_scatter(df: pd.DataFrame, pair: tuple, ax: plt.axes) -> None:
     ax.set_ylabel(pair[1].capitalize(), fontsize=14)
     r2 = stats.pearsonr(df[pair[0]], df[pair[1]])[0]
     print("\nR^2 of " + pair[0] + " and " + pair[1] + " is " + str(r2))
+
+def make_feature_importance_plot(feature_importance: np.array, feature_names: list, \
+                                 top: int, ax: plt.axes) -> None:
+    feature_importance = 100.0 * (feature_importance / max(feature_importance))
+    size = len(feature_importance)
+    sortedIndex = np.argsort(feature_importance)
+    position = np.arange(top) + 0.5
+    ax.barh(position, feature_importance[sortedIndex][size:size-top-1:-1], align="center")
+    ax.set_xlabel("Relative feature importance", fontsize=14)
+    ax.set_yticks(position, feature_names[sortedIndex][size:size-top-1:-1])
