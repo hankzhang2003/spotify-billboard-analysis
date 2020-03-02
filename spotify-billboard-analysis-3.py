@@ -189,6 +189,7 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 
 # Baseline RMSE is the standard deviation
 print(lyricsAndValencePop['valence'].std())
+# 0.2379
 
 
 '''# Grid search gradient boosting regressor hyperparameters and return model score and RMSE
@@ -265,6 +266,7 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 
 # Baseline RMSE is the standard deviation
 print(lyricsAndValenceRock['valence'].std())
+# 0.2362
 
 
 '''# Grid search gradient boosting regressor hyperparameters and return model score and RMSE
@@ -360,6 +362,7 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 
 # Baseline RMSE is the standard deviation
 print(lyricsAndFeaturesPop['valence'].std())
+# 0.2379
 
 
 '''# Grid search gradient boosting regressor hyperparameters and return model score and RMSE
@@ -437,6 +440,7 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 
 # Baseline RMSE is the standard deviation
 print(lyricsAndFeaturesRock['valence'].std())
+# 0.2362
 
 
 '''# Grid search gradient boosting regressor hyperparameters and return model score and RMSE
