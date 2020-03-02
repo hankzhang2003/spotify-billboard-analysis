@@ -210,7 +210,7 @@ print(gradient_boost_reg_results)
 
 # Plot feature importances
 fig, ax = plt.subplots(figsize=(14, 10))
-filteredWords = np.array(filter_profanity(lyricsAndValencePop.columns[:-1]))
+filteredWords = np.array(filter_profanity(lyricsAndValencePop.columns.difference(['valence'])))
 plots.make_feature_importance_plot(feature_importances, filteredWords, 30, ax)
 fig.suptitle("Top Feature Importances of Pop (valence only)", fontsize=20)
 fig.subplots_adjust(top=0.9)
@@ -282,7 +282,7 @@ print(gradient_boost_reg_results)
 
 # Plot feature importances
 fig, ax = plt.subplots(figsize=(14, 10))
-filteredWords = np.array(filter_profanity(lyricsAndValenceRock.columns[:-1]))
+filteredWords = np.array(filter_profanity(lyricsAndValenceRock.columns.difference(['valence'])))
 plots.make_feature_importance_plot(feature_importances, filteredWords, 30, ax)
 fig.suptitle("Top Feature Importances of Rock (valence only)", fontsize=20)
 fig.subplots_adjust(top=0.9)
@@ -370,7 +370,7 @@ print(gradient_boost_reg_results)
 
 # Plot feature importances
 fig, ax = plt.subplots(figsize=(14, 10))
-filteredWords = np.array(filter_profanity(lyricsAndFeaturesPop.columns[:-1]))
+filteredWords = np.array(filter_profanity(lyricsAndFeaturesPop.columns.difference(['valence'])))
 plots.make_feature_importance_plot(feature_importances, filteredWords, 30, ax)
 fig.suptitle("Top Feature Importances of Pop (all features)", fontsize=20)
 fig.subplots_adjust(top=0.9)
@@ -443,7 +443,7 @@ print(gradient_boost_reg_results)
 
 # Plot feature importances
 fig, ax = plt.subplots(figsize=(14, 10))
-filteredWords = np.array(filter_profanity(lyricsAndFeaturesRock.columns[:-1]))
+filteredWords = np.array(filter_profanity(lyricsAndFeaturesRock.columns.difference(['valence'])))
 plots.make_feature_importance_plot(feature_importances, filteredWords, 30, ax)
 fig.suptitle("Top Feature Importances of Rock (all features)", fontsize=20)
 fig.subplots_adjust(top=0.9)

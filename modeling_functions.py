@@ -14,7 +14,7 @@ from sklearn.ensemble import (RandomForestClassifier, RandomForestRegressor,
                             GradientBoostingClassifier, GradientBoostingRegressor)
 import tensorflow as tf
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense, Activation
+from tensorflow.keras.layers import Dense, Activation, Dropout
 
 
 def create_confusion_matrix(ytest: np.array, ypred: np.array) -> (int, int, int, int):
