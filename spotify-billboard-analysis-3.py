@@ -218,7 +218,7 @@ fig.savefig("images/featureImportances_valencepop.png")
 
 
 # Multilayer perceptron
-score = model.get_mlp_score(10, X_train, y_train, X_test, y_test)
+score = model.get_mlp_score(10, X_train, X_test, y_train, y_test)
 print(score)
 # 0.2244
 
@@ -290,7 +290,7 @@ fig.savefig("images/featureImportances_valencerock.png")
 
 
 # Multilayer perceptron
-score = model.get_mlp_score(10, X_train, y_train, X_test, y_test)
+score = model.get_mlp_score(10, X_train, X_test, y_train, y_test)
 print(score)
 # 0.2082
 
@@ -378,7 +378,7 @@ fig.savefig("images/featureImportances_featurespop.png")
 
 
 # Multilayer perceptron
-score = model.get_mlp_score(10, X_train, y_train, X_test, y_test)
+score = model.get_mlp_score(10, X_train, X_test, y_train, y_test)
 print(score)
 # 0.2244
 
@@ -451,7 +451,7 @@ fig.savefig("images/featureImportances_featuresrock.png")
 
 
 # Multilayer perceptron
-score = model.get_mlp_score(10, X_train, y_train, X_test, y_test)
+score = model.get_mlp_score(10, X_train, X_test, y_train, y_test)
 print(score)
 # 0.2082
 
