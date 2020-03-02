@@ -285,6 +285,24 @@ print(gradient_boost_class_results)
 # 0.7821, 0.5954, 0.7548
 
 
+# Run regressor models for pop genre
+lyricsAndFeaturesPop = lyricsAndFeatures[[contains_genre_type(g, ["pop"]) \
+                            for g in lyricsAndFeatures['spotify_genre']]]
+lyricsAndFeaturesPop.drop(["spotify_genre"], axis=1, inplace=True)
+X = lyricsAndFeaturesPop[lyricsAndFeaturesPop.columns.difference(['valence'])]
+y = lyricsAndFeaturesPop['valence']
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
+
+# Grid search gradient boosting hyperparametrs
+bestParams, bestScore = mf.grid_search_gradient_boost(X_train, X_test, y_train, y_test)
+print(bestParams, bestScore)
+
+# Gradient boosting regressor model
+gradient_boost_regress_results = mf.get_gradient_boost_regress_results(0.1, 140, \
+                                        3, X_train, X_test, y_train, y_test)
+print(gradient_boost_regress_results)
+
+
 # Run classifier models for rock/metal genres
 lyricsAndFeaturesBinRock = lyricsAndFeaturesBin[[contains_genre_type(g, ["rock", "metal"]) \
                                 for g in lyricsAndFeaturesBin['spotify_genre']]]
@@ -295,7 +313,7 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 
 
 # Logistic regression model
-y_pred, logistic_regression_results = mf.get_logistic_regression_results(X_train, \
+logistic_regression_results = mf.get_logistic_regression_results(X_train, \
                                         X_test, y_train, y_test)
 print(logistic_regression_results)
 # 0.7294, 0.6028, 0.5925
