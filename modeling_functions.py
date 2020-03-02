@@ -41,12 +41,12 @@ def get_logistic_regression_results(xtrain: np.array, xtest: np.array, ytrain: n
     return accuracy, precision, recall
 
 
-# Function for random forest hyperparameter tuning
+# Function for random forest classifier hyperparameter tuning
 def plot_random_forest_class_hyperparameters(xtrain: np.array, xtest: np.array, ytrain: \
                         np.array, ytest: np.array, genre_type: str) -> None:
     # Find optimal number of trees
     start = time.time()
-    numTrees = np.arange(50, 201, 30)
+    numTrees = np.arange(60, 201, 20)
     accuracy_t = []
     for n in numTrees:
         a = 0
@@ -110,7 +110,7 @@ def get_random_forest_class_results(num_trees: int, max_depth: int, max_features
     return accuracy, precision, recall
 
 
-# Function for gradient boosting hyperparameter tuning
+# Function for gradient boosting classifier hyperparameter tuning
 def plot_gradient_boost_class_hyperparameters(xtrain: np.array, xtest: np.array, ytrain: \
                             np.array, ytest: np.array, genre_type: str) -> None:
     # Find optimal learning rate
@@ -118,30 +118,28 @@ def plot_gradient_boost_class_hyperparameters(xtrain: np.array, xtest: np.array,
     learningRate = [0.01, 0.025, 0.05, 0.1, 0.2, 0.4]
     accuracy_l = []
     for l in learningRate:
-        gbc = GradientBoostingClassifier(learning_rate=l).fit(xtrain, ytrain)
+        gbc = GradientBoostingClassifier(learning_rate=l, subsample=0.5).fit(xtrain, ytrain)
         # ypred = gbc.predict(xtest)
         a = gbc.score(xtest, ytest)
         accuracy_l.append(a)
     fig, ax = plt.subplots()
     ax.plot(learningRate, accuracy_l)
     ax.set_title("gbc accuracy by learning rate ({})".format(genre_type))
-    fig.savefig("images/{}GradientBoostLearningRate.png".format(genre_type))
     end = time.time()
     print("learning rate time", end-start)
 
     # Find optimal number of trees
     start = time.time()
-    numTrees = np.arange(50, 201, 30)
+    numTrees = np.arange(60, 201, 20)
     accuracy_t = []
     for n in numTrees:
-        gbc = GradientBoostingClassifier(n_estimators=n).fit(xtrain, ytrain)
+        gbc = GradientBoostingClassifier(n_estimators=n, subsample=0.5).fit(xtrain, ytrain)
         # ypred = gbc.predict(xtest)
         a = gbc.score(xtest, ytest)
         accuracy_t.append(a)
     fig, ax = plt.subplots()
     ax.plot(numTrees, accuracy_t)
     ax.set_title("gbc accuracy by number of trees ({})".format(genre_type))
-    fig.savefig("images/{}GradientBoostNumTrees.png".format(genre_type))
     end = time.time()
     print("num trees time", end-start)
 
@@ -150,14 +148,13 @@ def plot_gradient_boost_class_hyperparameters(xtrain: np.array, xtest: np.array,
     maxDepth = np.arange(3, 11)
     accuracy_d = []
     for d in maxDepth:
-        gbc = GradientBoostingClassifier(max_depth=d).fit(xtrain, ytrain)
+        gbc = GradientBoostingClassifier(subsample=0.5, max_depth=d).fit(xtrain, ytrain)
         # ypred = gbc.predict(xtest)
         a = gbc.score(xtest, ytest)
         accuracy_d.append(a)
     fig, ax = plt.subplots()
     ax.plot(maxDepth, accuracy_d)
     ax.set_title("gbc accuracy by max depth ({})".format(genre_type))
-    fig.savefig("images/{}GradientBoostMaxDepth.png".format(genre_type))
     end = time.time()
     print("max depth time", end-start)
 
@@ -166,7 +163,7 @@ def get_gradient_boost_class_results(learning_rate: float, num_trees: int, max_d
                         int, xtrain: np.array, xtest: np.array, ytrain: np.array, \
                         ytest: np.array) -> (float, float, float):
     gbc = GradientBoostingClassifier(learning_rate=learning_rate, n_estimators=num_trees, \
-                                    max_depth=max_depth).fit(xtrain, ytrain)
+                                     subsample=0.5, max_depth=max_depth).fit(xtrain, ytrain)
     ypred = gbc.predict(xtest)
     accuracy = gbc.score(xtest, ytest)
     tp, fp, fn, tn = create_confusion_matrix(ytest, ypred)
@@ -180,10 +177,70 @@ def grid_search_gradient_boost(xtrain: np.array, xtest: np.array, ytrain: np.arr
     start = time.time()
     gbr = GradientBoostingRegressor()
     parameters = {"learning_rate": [0.01, 0.025, 0.05, 0.1, 0.2, 0.4], "n_estimators": \
-                  np.arange(50, 201, 30), "max_depth": np.arange(3, 11)}
+                  np.arange(60, 201, 20), "max_depth": np.arange(3, 11)}
     gridSearch = GridSearchCV(gbr, parameters, "neg_mean_squared_error", n_jobs=-1, \
                               cv=5, verbose=1)
     gridSearch.fit(xtrain, ytrain)
     end = time.time()
     print("grid search time", end-start)
     return gridSearch
+
+
+# Function for gradient boosting regressor hyperparameter tuning
+def plot_gradient_boost_regress_hyperparameters(xtrain: np.array, xtest: np.array, ytrain: \
+                            np.array, ytest: np.array, genre_type: str) -> None:
+    # Find optimal learning rate
+    start = time.time()
+    learningRate = [0.01, 0.025, 0.05, 0.1, 0.2, 0.4]
+    rmse_l = []
+    for l in learningRate:
+        gbc = GradientBoostingRegressor(learning_rate=l, subsample=0.5).fit(xtrain, ytrain)
+        ypred = gbc.predict(xtest)
+        r = np.sqrt(mean_squared_error(ytest, ypred))
+        rmse_l.append(r)
+    fig, ax = plt.subplots()
+    ax.plot(learningRate, rmse_l)
+    ax.set_title("gbc accuracy by learning rate ({})".format(genre_type))
+    end = time.time()
+    print("learning rate time", end-start)
+
+    # Find optimal number of trees
+    start = time.time()
+    numTrees = np.arange(60, 201, 20)
+    rmse_t = []
+    for n in numTrees:
+        gbc = GradientBoostingRegressor(n_estimators=n, subsample=0.5).fit(xtrain, ytrain)
+        ypred = gbc.predict(xtest)
+        r = np.sqrt(mean_squared_error(ytest, ypred))
+        rmse_t.append(r)
+    fig, ax = plt.subplots()
+    ax.plot(numTrees, rmse_t)
+    ax.set_title("gbc accuracy by number of trees ({})".format(genre_type))
+    end = time.time()
+    print("num trees time", end-start)
+
+    # Find optimal max depth
+    start = time.time()
+    maxDepth = np.arange(3, 11)
+    rmse_d = []
+    for d in maxDepth:
+        gbc = GradientBoostingRegressor(subsample=0.5, max_depth=d).fit(xtrain, ytrain)
+        ypred = gbc.predict(xtest)
+        r = np.sqrt(mean_squared_error(ytest, ypred))
+        rmse_d.append(r)
+    fig, ax = plt.subplots()
+    ax.plot(maxDepth, rmse_d)
+    ax.set_title("gbc accuracy by max depth ({})".format(genre_type))
+    end = time.time()
+    print("max depth time", end-start)
+
+# Gradient boosting regressor wrapper function
+def get_gradient_boost_regress_results(learning_rate: float, num_trees: int, max_depth: \
+                        int, xtrain: np.array, xtest: np.array, ytrain: np.array, \
+                        ytest: np.array) -> (float, float):
+    gbc = GradientBoostingClassifier(learning_rate=learning_rate, n_estimators=num_trees, \
+                                     subsample=0.5, max_depth=max_depth).fit(xtrain, ytrain)
+    ypred = gbc.predict(xtest)
+    score = gbc.score(xtest, ytest)
+    rmse = np.sqrt(mean_squared_error(ytest, ypred))
+    return score, rmse

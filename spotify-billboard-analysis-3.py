@@ -166,10 +166,9 @@ logistic_regression_results = mf.get_logistic_regression_results(X_train, \
 print(logistic_regression_results)
 # 0.5559, 0.3957, 0.3917
 
-# Explore gradient boosting hyperparameters
+# Explore gradient boosting classifier hyperparameters
 '''start = time.time()
-mf.plot_gradient_boost_class_hyperparameters(X_train, X_test, y_train, y_test, \
-                                             "pop")
+mf.plot_gradient_boost_class_hyperparameters(X_train, X_test, y_train, y_test, "pop")
 end = time.time()
 print(end-start)'''
 
@@ -188,13 +187,25 @@ X = lyricsAndValencePop[lyricsAndValencePop.columns.difference(['valence'])]
 y = lyricsAndValencePop['valence']
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
 
-# Grid search gradient boosting regressor hyperparameters and return model score and RMSE
+'''# Grid search gradient boosting regressor hyperparameters and return model score and RMSE
 gbr = mf.grid_search_gradient_boost(X_train, X_test, y_train, y_test)
 print(gbr.best_params_, np.sqrt(np.abs(gbr.best_score_)))
 scoreValencePop = gbr.score(X_test, y_test)
 y_pred = gbr.predict(X_test)
 rmseValencePop = np.sqrt(mean_squared_error(y_test, y_pred))
-print(scoreValencePop, rmseValencePop)
+print(scoreValencePop, rmseValencePop)'''
+
+# Explore gradient boosting regressor hyperparameters
+start = time.time()
+mf.plot_gradient_boost_class_hyperparameters(X_train, X_test, y_train, y_test, "pop")
+end = time.time()
+print(end-start)
+
+# Gradient boosting regressor model
+gradient_boost_regress_results = mf.get_gradient_boost_regress_results(0.1, 140, 3, \
+                                        X_train, X_test, y_train, y_test)
+print(gradient_boost_regress_results)
+# 
 
 
 # Run classifier models for rock/metal genres
@@ -212,10 +223,9 @@ logistic_regression_results = mf.get_logistic_regression_results(X_train, \
 print(logistic_regression_results)
 # 0.5877, 0.4042, 0.3867
 
-# Explore gradient boosting hyperparameters
+# Explore gradient boosting classifier hyperparameters
 '''start = time.time()
-mf.plot_gradient_boost_class_hyperparameters(X_train, X_test, y_train, y_test, \
-                                             "pop")
+mf.plot_gradient_boost_class_hyperparameters(X_train, X_test, y_train, y_test, "rock")
 end = time.time()
 print(end-start)'''
 
@@ -234,16 +244,28 @@ X = lyricsAndValenceRock[lyricsAndValenceRock.columns.difference(['valence'])]
 y = lyricsAndValenceRock['valence']
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
 
-# Grid search gradient boosting regressor hyperparameters and return model score and RMSE
+'''# Grid search gradient boosting regressor hyperparameters and return model score and RMSE
 gbr = mf.grid_search_gradient_boost(X_train, X_test, y_train, y_test)
 print(gbr.best_params_, np.sqrt(np.abs(gbr.best_score_)))
 scoreValenceRock = gbr.score(X_test, y_test)
 y_pred = gbr.predict(X_test)
 rmseValenceRock = np.sqrt(mean_squared_error(y_test, y_pred))
-print(scoreValenceRock, rmseValenceRock)
+print(scoreValenceRock, rmseValenceRock)'''
+
+# Explore gradient boosting regressor hyperparameters
+start = time.time()
+mf.plot_gradient_boost_regress_hyperparameters(X_train, X_test, y_train, y_test, "rock")
+end = time.time()
+print(end-start)
+
+# Gradient boosting regressor model
+gradient_boost_regress_results = mf.get_gradient_boost_regress_results(0.1, 140, 3, \
+                                        X_train, X_test, y_train, y_test)
+print(gradient_boost_regress_results)
+# 
 
 
-# Now try adding all other numerical features to see if it improves accuracy
+# Now try adding all other numerical features to see if it improves accuracy/RMSE
 
 # Join with features to get all numerical features as well as valence
 lyricsAndFeatures = tfidfLyrics.merge(features, on='SongID')
@@ -269,10 +291,9 @@ logistic_regression_results = mf.get_logistic_regression_results(X_train, \
 print(logistic_regression_results)
 # 0.6796, 0.5280, 0.5646
 
-# Explore gradient boosting hyperparameters
+# Explore gradient boosting classifier hyperparameters
 '''start = time.time()
-mf.plot_gradient_boost_class_hyperparameters(X_train, X_test, y_train, y_test, \
-                                             "pop")
+mf.plot_gradient_boost_class_hyperparameters(X_train, X_test, y_train, y_test, "pop")
 end = time.time()
 print(end-start)'''
 
@@ -291,13 +312,25 @@ X = lyricsAndFeaturesPop[lyricsAndFeaturesPop.columns.difference(['valence'])]
 y = lyricsAndFeaturesPop['valence']
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
 
-# Grid search gradient boosting regressor hyperparameters and return model score and RMSE
+'''# Grid search gradient boosting regressor hyperparameters and return model score and RMSE
 gbr = mf.grid_search_gradient_boost(X_train, X_test, y_train, y_test)
 print(gbr.best_params_, np.sqrt(np.abs(gbr.best_score_)))
 scoreFeaturesPop = gbr.score(X_test, y_test)
 y_pred = gbr.predict(X_test)
 rmseFeaturesPop = np.sqrt(mean_squared_error(y_test, y_pred))
-print(scoreFeaturesPop, rmseFeaturesPop)
+print(scoreFeaturesPop, rmseFeaturesPop)'''
+
+# Explore gradient boosting regressor hyperparameters
+start = time.time()
+mf.plot_gradient_boost_class_hyperparameters(X_train, X_test, y_train, y_test, "pop")
+end = time.time()
+print(end-start)
+
+# Gradient boosting regressor model
+gradient_boost_regress_results = mf.get_gradient_boost_regress_results(0.1, 140, 3, \
+                                        X_train, X_test, y_train, y_test)
+print(gradient_boost_regress_results)
+# 
 
 
 # Run classifier models for rock/metal genres
@@ -315,7 +348,7 @@ logistic_regression_results = mf.get_logistic_regression_results(X_train, \
 print(logistic_regression_results)
 # 0.7294, 0.6028, 0.5925
 
-# Explore gradient boosting hyperparameters
+# Explore gradient boosting classifier hyperparameters
 '''start = time.time()
 mf.plot_gradient_boost_class_hyperparameters(X_train, X_test, y_train, y_test, \
                                              "pop")
@@ -337,10 +370,22 @@ X = lyricsAndFeaturesRock[lyricsAndFeaturesRock.columns.difference(['valence'])]
 y = lyricsAndFeaturesRock['valence']
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
 
-# Grid search gradient boosting regressor hyperparameters and return model score and RMSE
+'''# Grid search gradient boosting regressor hyperparameters and return model score and RMSE
 gbr = mf.grid_search_gradient_boost(X_train, X_test, y_train, y_test)
 print(gbr.best_params_, np.sqrt(np.abs(gbr.best_score_)))
 scoreFeaturesRock = gbr.score(X_test, y_test)
 y_pred = gbr.predict(X_test)
 rmseFeaturesRock = np.sqrt(mean_squared_error(y_test, y_pred))
-print(scoreFeaturesRock, rmseFeaturesRock)
+print(scoreFeaturesRock, rmseFeaturesRock)'''
+
+# Explore gradient boosting regressor hyperparameters
+start = time.time()
+mf.plot_gradient_boost_regress_hyperparameters(X_train, X_test, y_train, y_test, "rock")
+end = time.time()
+print(end-start)
+
+# Gradient boosting regressor model
+gradient_boost_regress_results = mf.get_gradient_boost_regress_results(0.1, 140, 3, \
+                                        X_train, X_test, y_train, y_test)
+print(gradient_boost_regress_results)
+# 
