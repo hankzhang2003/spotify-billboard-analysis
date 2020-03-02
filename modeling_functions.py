@@ -7,8 +7,8 @@ from collections import Counter
 import time
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.cluster import KMeans
-from sklearn.metrics import silhouette_score, confusion_matrix, roc_curve
-from sklearn.model_selection import train_test_split
+from sklearn.metrics import silhouette_score, confusion_matrix, mean_squared_error
+from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import (RandomForestClassifier, RandomForestRegressor,
                             GradientBoostingClassifier, GradientBoostingRegressor)
@@ -38,7 +38,7 @@ def get_logistic_regression_results(xtrain: np.array, xtest: np.array, ytrain: n
     accuracy = lr.score(xtest, ytest)
     tp, fp, fn, tn = create_confusion_matrix(ytest, ypred)
     precision, recall = get_precision_recall(tp, fp, fn, tn)
-    return ypred, (accuracy, precision, recall)
+    return accuracy, precision, recall
 
 
 # Function for random forest hyperparameter tuning
@@ -107,7 +107,7 @@ def get_random_forest_class_results(num_trees: int, max_depth: int, max_features
     accuracy = rf.score(xtest, ytest)
     tp, fp, fn, tn = create_confusion_matrix(ytest, ypred)
     precision, recall = get_precision_recall(tp, fp, fn, tn)
-    return ypred, (accuracy, precision, recall)
+    return accuracy, precision, recall
 
 
 # Function for gradient boosting hyperparameter tuning
@@ -118,13 +118,13 @@ def plot_gradient_boost_class_hyperparameters(xtrain: np.array, xtest: np.array,
     learningRate = [0.01, 0.025, 0.05, 0.1, 0.2, 0.4]
     accuracy_l = []
     for l in learningRate:
-        gbr = GradientBoostingClassifier(learning_rate=l).fit(xtrain, ytrain)
-        # ypred = gbr.predict(xtest)
-        a = gbr.score(xtest, ytest)
+        gbc = GradientBoostingClassifier(learning_rate=l).fit(xtrain, ytrain)
+        # ypred = gbc.predict(xtest)
+        a = gbc.score(xtest, ytest)
         accuracy_l.append(a)
     fig, ax = plt.subplots()
     ax.plot(learningRate, accuracy_l)
-    ax.set_title("GBR accuracy by learning rate ({})".format(genre_type))
+    ax.set_title("gbc accuracy by learning rate ({})".format(genre_type))
     fig.savefig("images/{}GradientBoostLearningRate.png".format(genre_type))
     end = time.time()
     print("learning rate time", end-start)
@@ -134,70 +134,69 @@ def plot_gradient_boost_class_hyperparameters(xtrain: np.array, xtest: np.array,
     numTrees = np.arange(50, 201, 30)
     accuracy_t = []
     for n in numTrees:
-        gbr = GradientBoostingClassifier(n_estimators=n).fit(xtrain, ytrain)
-        # ypred = gbr.predict(xtest)
-        a = gbr.score(xtest, ytest)
+        gbc = GradientBoostingClassifier(n_estimators=n).fit(xtrain, ytrain)
+        # ypred = gbc.predict(xtest)
+        a = gbc.score(xtest, ytest)
         accuracy_t.append(a)
     fig, ax = plt.subplots()
     ax.plot(numTrees, accuracy_t)
-    ax.set_title("GBR accuracy by number of trees ({})".format(genre_type))
+    ax.set_title("gbc accuracy by number of trees ({})".format(genre_type))
     fig.savefig("images/{}GradientBoostNumTrees.png".format(genre_type))
     end = time.time()
     print("num trees time", end-start)
-
-    '''# Find optimal subsample rate
-    start = time.time()
-    subsampleRate = np.arange(0.2, 1.1, 0.2)
-    accuracy_s = []
-    for s in subsampleRate:
-        gbr = GradientBoostingClassifier(subsample=s).fit(xtrain, ytrain)
-        # ypred = gbr.predict(xtest)
-        a = gbr.score(xtest, ytest)
-        accuracy_s.append(a)
-    fig, ax = plt.subplots()
-    ax.plot(subsampleRate, accuracy_s)
-    ax.set_title("GBR accuracy by subsample rate ({})".format(genre_type))
-    end = time.time()
-    print("subsample rate time", end-start)'''
 
     # Find optimal max depth
     start = time.time()
     maxDepth = np.arange(3, 11)
     accuracy_d = []
     for d in maxDepth:
-        gbr = GradientBoostingClassifier(max_depth=d).fit(xtrain, ytrain)
-        # ypred = gbr.predict(xtest)
-        a = gbr.score(xtest, ytest)
+        gbc = GradientBoostingClassifier(max_depth=d).fit(xtrain, ytrain)
+        # ypred = gbc.predict(xtest)
+        a = gbc.score(xtest, ytest)
         accuracy_d.append(a)
     fig, ax = plt.subplots()
     ax.plot(maxDepth, accuracy_d)
-    ax.set_title("GBR accuracy by max depth ({})".format(genre_type))
+    ax.set_title("gbc accuracy by max depth ({})".format(genre_type))
     fig.savefig("images/{}GradientBoostMaxDepth.png".format(genre_type))
     end = time.time()
     print("max depth time", end-start)
 
 # Gradient boosting classifier wrapper function
-def get_gradient_boost_class_results(learning_rate: float, num_trees: int, subsample_rate: \
-                        float, max_depth: int, xtrain: np.array, xtest: np.array, \
-                        ytrain: np.array, ytest: np.array) -> (float, float, float):
-    gbr = GradientBoostingClassifier(learning_rate=learning_rate, n_estimators=num_trees, \
-                                    subsample=subsample_rate, max_depth=max_depth). \
-                                    fit(xtrain, ytrain)
-    ypred = gbr.predict(xtest)
-    accuracy = gbr.score(xtest, ytest)
+def get_gradient_boost_class_results(learning_rate: float, num_trees: int, max_depth: \
+                        int, xtrain: np.array, xtest: np.array, ytrain: np.array, \
+                        ytest: np.array) -> (float, float, float):
+    gbc = GradientBoostingClassifier(learning_rate=learning_rate, n_estimators=num_trees, \
+                                    max_depth=max_depth).fit(xtrain, ytrain)
+    ypred = gbc.predict(xtest)
+    accuracy = gbc.score(xtest, ytest)
     tp, fp, fn, tn = create_confusion_matrix(ytest, ypred)
     precision, recall = get_precision_recall(tp, fp, fn, tn)
-    return ypred, (accuracy, precision, recall)
+    return accuracy, precision, recall
 
 
-# Function for plotting ROC curve
-def plot_roc_curve(ytest: np.array, ypred: np.array, ax: plt.axes) -> None:
-    tpr, fpr, thresholds = roc_curve(ytest, ypred)
-    ax.plot([0, 1], [0, 1])
-    #ax.plot()
-    ax.set_xlim(0, 1)
-    ax.set_ylim(0, 1)
-    ax.set_xlabel("False positive rate")
-    ax.set_ylabel("True positive rate")
+# Grid search on gradient boosting regressor 
+def grid_search_gradient_boost(xtrain: np.array, xtest: np.array, ytrain: np.array, \
+                    ytest: np.array) -> (dict, float):
+    start = time.time()
+    gbr = GradientBoostingRegressor()
+    parameters = {"learning_rate": [0.01, 0.025, 0.05, 0.1, 0.2, 0.4], "n_estimators": \
+                  np.arange(50, 201, 30), "max_depth": np.arange(3, 11)}
+    gridSearch = GridSearchCV(gbr, parameters, "neg_mean_squared_error", n_jobs=-1, cv=5, \
+                              verbose=1)
+    gridSearch.fit(xtrain, ytrain)
+    y_pred = gridSearch.predict(xtest)
+    end = time.time()
+    print("grid search time", end-start)
+    return gridSearch.best_params_, gridSearch.best_score_
 
-
+# Gradient boosting regressor wrapper function
+def get_gradient_boost_regress_results(learning_rate: float, num_trees: int, max_depth: \
+                        int, xtrain: np.array, xtest: np.array, ytrain: np.array, \
+                        ytest: np.array) -> (float, float):
+    gbr = GradientBoostingRegressor(learning_rate=learning_rate, n_estimators=num_trees, \
+                                    subsample=subsample_rate, max_depth=max_depth). \
+                                    fit(xtrain, ytrain)
+    score = gbr.score(xtest, ytest)
+    ypred = gbr.predict(xtest)
+    rmse = np.sqrt(mean_squared_error(ytest, ypred))
+    return score, rmse

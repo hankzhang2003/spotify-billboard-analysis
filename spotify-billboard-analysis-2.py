@@ -206,8 +206,8 @@ y = featureBuckets['genre_bucket']
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
 
 # Logistic regression model
-y_pred, logistic_regression_results = mf.get_logistic_regression_results(X_train, \
-                                            X_test, y_train, y_test)
+logistic_regression_results = mf.get_logistic_regression_results(X_train, \
+                                        X_test, y_train, y_test)
 print(logistic_regression_results)
 # 0.8490, 0.9425, 0.8541
 
@@ -215,8 +215,8 @@ print(logistic_regression_results)
 mf.plot_random_forest_class_hyperparameters(X_train, X_test, y_train, y_test, \
                                             "binary buckets")
 
-y_pred, random_forest_class_results = mf.get_random_forest_class_results(150, 10, \
-                                            8, X_train, X_test, y_train, y_test)
+random_forest_class_results = mf.get_random_forest_class_results(150, 10, 8, \
+                                        X_train, X_test, y_train, y_test)
 print(random_forest_class_results)
 # 0.8653, 0.9481, 0.8690
 
@@ -224,8 +224,8 @@ print(random_forest_class_results)
 mf.plot_gradient_boost_class_hyperparameters(X_train, X_test, y_train, y_test, \
                                              "binary buckets")
 
-y_pred, gradient_boost_class_results = mf.get_gradient_boost_class_results(0.2, 150, \
-                                            1.0, 9, X_train, X_test, y_train, y_test)
+gradient_boost_class_results = mf.get_gradient_boost_class_results(0.2, 150, 9, \
+                                        X_train, X_test, y_train, y_test)
 print(gradient_boost_class_results)
 # 0.8617, 0.9364, 0.8726
 
@@ -240,16 +240,16 @@ y = featureRock['is_genre']
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
 
 # Logistic regression model
-y_pred, logistic_regression_results = mf.get_logistic_regression_results(X_train, \
-                                            X_test, y_train, y_test)
+logistic_regression_results = mf.get_logistic_regression_results(X_train, \
+                                        X_test, y_train, y_test)
 print(logistic_regression_results)
 # 0.8002, 0.9894, 0.8037
 
 # Random forest model
 mf.plot_random_forest_class_hyperparameters(X_train, X_test, y_train, y_test, "rock")
 
-y_pred, random_forest_class_results = mf.get_random_forest_class_results(150, 10, \
-                                            8, X_train, X_test, y_train, y_test)
+random_forest_class_results = mf.get_random_forest_class_results(150, 10, 8, \
+                                        X_train, X_test, y_train, y_test)
 print(random_forest_class_results)
 # 0.8097, 0.9596, 0.8274
 
@@ -258,8 +258,8 @@ print(random_forest_class_results)
 mf.plot_gradient_boost_class_hyperparameters(X_train, X_test, y_train, y_test, \
                                              "rock")
 
-y_pred, gradient_boost_class_results = mf.get_gradient_boost_class_results(0.2, 150, \
-                                            1.0, 9, X_train, X_test, y_train, y_test)
+gradient_boost_class_results = mf.get_gradient_boost_class_results(0.2, 150, 9, \
+                                        X_train, X_test, y_train, y_test)
 print(gradient_boost_class_results)
 # 0.8084, 0.9570, 0.8279
 
@@ -274,16 +274,16 @@ y = featurePop['is_genre']
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
 
 # Logistic regression model
-y_pred, logistic_regression_results = mf.get_logistic_regression_results(X_train, \
-                                            X_test, y_train, y_test)
+logistic_regression_results = mf.get_logistic_regression_results(X_train, \
+                                        X_test, y_train, y_test)
 print(logistic_regression_results)
 # 0.8034, 0.9960, 0.8056
 
 # Random forest model
 mf.plot_random_forest_class_hyperparameters(X_train, X_test, y_train, y_test, "pop")
 
-y_pred, random_forest_class_results = mf.get_random_forest_class_results(150, 10, \
-                                            8, X_train, X_test, y_train, y_test)
+random_forest_class_results = mf.get_random_forest_class_results(150, 10, 8, \
+                                        X_train, X_test, y_train, y_test)
 print(random_forest_class_results)
 # 0.8183, 0.9786, 0.8273
 
@@ -291,7 +291,7 @@ print(random_forest_class_results)
 mf.plot_gradient_boost_class_hyperparameters(X_train, X_test, y_train, y_test, \
                                              "pop")
 
-y_pred, gradient_boost_class_results = mf.get_gradient_boost_class_results(0.2, 150, \
-                                            1.0, 9, X_train, X_test, y_train, y_test)
+gradient_boost_class_results = mf.get_gradient_boost_class_results(0.2, 150, 9, \
+                                        X_train, X_test, y_train, y_test)
 print(gradient_boost_class_results)
 # 0.8174, 0.9786, 0.8265
