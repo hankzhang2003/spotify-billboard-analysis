@@ -187,6 +187,10 @@ X = lyricsAndValencePop[lyricsAndValencePop.columns.difference(['valence'])]
 y = lyricsAndValencePop['valence']
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
 
+# Baseline RMSE is the standard deviation
+print(lyricsAndValencePop['valence'].std())
+
+
 '''# Grid search gradient boosting regressor hyperparameters and return model score and RMSE
 gbr = model.grid_search_gradient_boost(X_train, X_test, y_train, y_test)
 print(gbr.best_params_, np.sqrt(np.abs(gbr.best_score_)))
@@ -258,6 +262,10 @@ lyricsAndValenceRock.drop(["spotify_genre"], axis=1, inplace=True)
 X = lyricsAndValenceRock[lyricsAndValenceRock.columns.difference(['valence'])]
 y = lyricsAndValenceRock['valence']
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
+
+# Baseline RMSE is the standard deviation
+print(lyricsAndValenceRock['valence'].std())
+
 
 '''# Grid search gradient boosting regressor hyperparameters and return model score and RMSE
 gbr = model.grid_search_gradient_boost(X_train, X_test, y_train, y_test)
@@ -350,6 +358,10 @@ X = lyricsAndFeaturesPop[lyricsAndFeaturesPop.columns.difference(['valence'])]
 y = lyricsAndFeaturesPop['valence']
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
 
+# Baseline RMSE is the standard deviation
+print(lyricsAndFeaturesPop['valence'].std())
+
+
 '''# Grid search gradient boosting regressor hyperparameters and return model score and RMSE
 gbr = model.grid_search_gradient_boost(X_train, X_test, y_train, y_test)
 print(gbr.best_params_, np.sqrt(np.abs(gbr.best_score_)))
@@ -422,6 +434,10 @@ lyricsAndFeaturesRock.drop(["spotify_genre"], axis=1, inplace=True)
 X = lyricsAndFeaturesRock[lyricsAndFeaturesRock.columns.difference(['valence'])]
 y = lyricsAndFeaturesRock['valence']
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
+
+# Baseline RMSE is the standard deviation
+print(lyricsAndFeaturesRock['valence'].std())
+
 
 '''# Grid search gradient boosting regressor hyperparameters and return model score and RMSE
 gbr = model.grid_search_gradient_boost(X_train, X_test, y_train, y_test)
