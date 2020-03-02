@@ -206,7 +206,7 @@ print(end-start)
 gradient_boost_regress_results = mf.get_gradient_boost_regress_results(0.05, 120, 3, \
                                         X_train, X_test, y_train, y_test)
 print(gradient_boost_regress_results)
-# 0.009985, 0.2330
+# 0.006539, 0.2334
 
 
 # Multilayer perceptron
@@ -223,7 +223,7 @@ model.compile(optimizer="adadelta", loss="mean_squared_error", metrics=["mse"])
 model.fit(X_train, y_train, epochs=10, verbose=1, validation_data=(X_test, y_test))
 score = model.evaluate(X_test, y_test)
 print(score)
-#0.2082
+# 0.2244
 
 
 # Run classifier models for rock/metal genres
@@ -280,7 +280,7 @@ print(end-start)
 gradient_boost_regress_results = mf.get_gradient_boost_regress_results(0.05, 120, 3, \
                                         X_train, X_test, y_train, y_test)
 print(gradient_boost_regress_results)
-# 0.008093, 0.2345
+# 0.01272, 0.2339
 
 
 # Multilayer perceptron
@@ -297,7 +297,7 @@ model.compile(optimizer="adadelta", loss="mean_squared_error", metrics=["mse"])
 model.fit(X_train, y_train, epochs=10, verbose=1, validation_data=(X_test, y_test))
 score = model.evaluate(X_test, y_test)
 print(score)
-#0.2082
+# 0.2082
 
 
 ###################
@@ -367,7 +367,7 @@ print(end-start)
 gradient_boost_regress_results = mf.get_gradient_boost_regress_results(0.05, 120, 3, \
                                         X_train, X_test, y_train, y_test)
 print(gradient_boost_regress_results)
-# 0.4657, 0.1712
+# 0.4659, 0.1711
 
 
 # Multilayer perceptron
@@ -384,7 +384,7 @@ model.compile(optimizer="adadelta", loss="mean_squared_error", metrics=["mse"])
 model.fit(X_train, y_train, epochs=10, verbose=1, validation_data=(X_test, y_test))
 score = model.evaluate(X_test, y_test)
 print(score)
-#0.2082
+# 0.2244
 
 
 # Run classifier models for rock/metal genres
@@ -442,7 +442,7 @@ print(end-start)
 gradient_boost_regress_results = mf.get_gradient_boost_regress_results(0.05, 120, 3, \
                                         X_train, X_test, y_train, y_test)
 print(gradient_boost_regress_results)
-# 0.5332, 0.1609
+# 0.5324, 0.1610
 
 # Multilayer perceptron
 model = Sequential()
@@ -458,4 +458,4 @@ model.compile(optimizer="adadelta", loss="mean_squared_error", metrics=["mse"])
 model.fit(X_train, y_train, epochs=10, verbose=1, validation_data=(X_test, y_test))
 score = model.evaluate(X_test, y_test)
 print(score)
-#0.2082
+# 0.2082
