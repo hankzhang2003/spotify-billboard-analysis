@@ -238,7 +238,7 @@ def plot_gradient_boost_regress_hyperparameters(xtrain: np.array, xtest: np.arra
 def get_gradient_boost_regress_results(learning_rate: float, num_trees: int, max_depth: \
                         int, xtrain: np.array, xtest: np.array, ytrain: np.array, \
                         ytest: np.array) -> (float, float):
-    gbc = GradientBoostingClassifier(learning_rate=learning_rate, n_estimators=num_trees, \
+    gbc = GradientBoostingRegressor(learning_rate=learning_rate, n_estimators=num_trees, \
                                      subsample=0.5, max_depth=max_depth).fit(xtrain, ytrain)
     ypred = gbc.predict(xtest)
     score = gbc.score(xtest, ytest)
