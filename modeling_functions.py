@@ -184,7 +184,6 @@ def grid_search_gradient_boost(xtrain: np.array, xtest: np.array, ytrain: np.arr
     gridSearch = GridSearchCV(gbr, parameters, "neg_mean_squared_error", n_jobs=-1, \
                               cv=5, verbose=1)
     gridSearch.fit(xtrain, ytrain)
-    y_pred = gridSearch.predict(xtest)
     end = time.time()
     print("grid search time", end-start)
     return gridSearch.best_params_, gridSearch.best_score_
