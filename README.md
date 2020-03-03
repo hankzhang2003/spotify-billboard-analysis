@@ -597,7 +597,7 @@ There are many groups of genres that are similar, basically sub-genres of one an
 
 Numerical features usually have much higher impact than words on song happiness.  In these models run on this dataset, all of the words combined contributed to less than 5% of what overall determines the happiness of a song.
 
-In general, it also seems like rock songs are easier to predict than pop songs.  This is likely due to a higher variety in music styles among pop music, especially in recent years.
+In general, it seems like rock songs are easier to predict than pop songs.  This is likely due to a higher variety in music styles among pop music, especially in recent years.
 
 &nbsp;
 
