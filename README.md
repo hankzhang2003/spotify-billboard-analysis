@@ -421,7 +421,7 @@ RMSE: 0.2339
 
 ### Multilayer Perceptron
 
-Tried with 32-unit dense layers, tanh/tanh/softmax activations, and 0.5 dropout.  Still in progress, not fully implemented yet.
+Tried with 100 epochs, 32-unit dense layers, tanh/tanh/softmax activations, and 0.5 dropout.  Still in progress, not fully implemented yet.
 
 Score (RMSE): 0.2082
 
@@ -473,7 +473,7 @@ RMSE: 0.2334
 
 ### Multilayer Perceptron
 
-Tried with 32-unit dense layers, tanh/tanh/softmax activations, and 0.5 dropout.  Still in progress, not fully implemented yet.
+Tried with 100 epochs, 32-unit dense layers, tanh/tanh/softmax activations, and 0.5 dropout.  Still in progress, not fully implemented yet.
 
 Score (RMSE): 0.2244
 
@@ -525,7 +525,7 @@ RMSE: 0.1610
 
 ### Multilayer Perceptron
 
-Tried with 32-unit dense layers, tanh/tanh/softmax activations, and 0.5 dropout.  Still in progress, not fully implemented yet.
+Tried with 100 epochs, 32-unit dense layers, tanh/tanh/softmax activations, and 0.5 dropout.  Still in progress, not fully implemented yet.
 
 Score (RMSE): 0.2082
 
@@ -577,7 +577,7 @@ RMSE: 0.1711
 
 ### Multilayer Perceptron
 
-Tried with 32-unit dense layers, tanh/tanh/softmax activations, and 0.5 dropout.  Still in progress, not fully implemented yet.
+Tried with 100 epochs, 32-unit dense layers, tanh/tanh/softmax activations, and 0.5 dropout.  Still in progress, not fully implemented yet.
 
 Score (RMSE): 0.2244
 
