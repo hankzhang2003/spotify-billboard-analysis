@@ -78,7 +78,7 @@ Numeric: spotify track duration ms, track duration, spotify track popularity, da
 
 ### Web scraping
 
-For part 3, I web scraped the lyrics of each song from Genius using BeautifulSoup.  Using the song title and artist name from the features table and cleaning up the anomalies I could, I generated the URL of the Genius page containing the lyrics of a given song.  For every single song, the lyric page URL is in the format of https://genius.com/{artist}-{title}-lyrics.  Then, I used threading to parallelize the request processes and wrote each set of scraped lyrics into a hashmap, with the song ID as the key.  This operation is thread safe because there are no conflicting keys and no simultaneous updates of the same variable.  If the lyrics page was formatted in a different way than normal, the url request would not work and it would catch the exception, returning a filler list to show the song and URL that failed.  This process took an extremely long time but once it was finished it outputted all the lyrics into a neat hashmap, which was then converted into a dataframe and stored on the hard disk.
+For part 3, to get the lyrics data to add to the models, I web scraped the lyrics of each song from Genius using BeautifulSoup.  Using the song title and artist name from the features table and cleaning up the anomalies I could, I generated the URL of the Genius page containing the lyrics of a given song.  For every single song, the lyric page URL is in the format of https://genius.com/{artist}-{title}-lyrics.  Then, I used threading to parallelize the request processes and wrote each set of scraped lyrics into a hashmap, with the song ID as the key.  This operation is thread safe because there are no conflicting keys and no simultaneous updates of the same variable.  If the lyrics page was formatted in a different way than normal, the URL request would not work and it would catch the exception, returning a filler list to show the song and URL that failed.  This process took an extremely long time but once it was finished it outputted all the lyrics into a neat hashmap, which was then converted into a dataframe and stored on the hard disk.
 
 
 &nbsp;
@@ -352,9 +352,9 @@ Recall: 0.8265
 
 &nbsp;
 
-## Feature Engineering + NLP: Wee
+## Feature Engineering + NLP: NLP Pipeline
 
-asdf
+From the scraped lyrics, I processed the lyrics into a corpus.  This was done by first importing the saved file stored from the web scraping earlier.  From this dataframe, the invalid songs were removed and the lines were cleaned 
 
 ## Models: Logistic Regression
 
@@ -384,7 +384,7 @@ Numerical features usually have much higher impact than words on song happiness.
 There are many ways to improve the accuracy and lower the RMSE of the models.  One possible way is to apply principal component analysis and/or singular value decomposition (PCA/SVD) on the tf-idf matrix in order to reduce the number of features.
 
 ## Conclusion and Future Directions
-
+************
 There are many insights and data analysis techniques one can use on these expansive tables.  The main future direction here is to create a multi-label classifier where the model would be able to find which class a song belongs to.  Specifically, each bucket (cluster) would contain the group of genres most similar to each other and the model would classify songs into the most appropriate bucket.  This would be helpful for categorizing songs based on their features and recommending songs to people based on the previous few listened songs, in a manner similar to Pandora or Spotify Radio.  It can also eliminate the need to manually tag songs, which would be helpful for automatically generating a "Songs You May Like" pre-made list for people.  For the lyrics analysis, it would be helpful to employ technologies such as multilayer perceptrons or convolutional neural networks to improve the structure of the models.  Since text data is extremely difficult to process, .  A long-term goal is to build a flask app to deploy the code into a form that is easily usable.
 
 Music is an aspect of culture and life that has existed since the dawn of mankind.  Over the years and ages, music has evolved from primitive instruments such as logs and rocks to old-school rock bands and jazz to modern hip hop and electronic music.  At its core, most tracks can be broken down into a set of features that can be represented with either words or numbers.  The ability to analyze the trends of music is only one of many factors in the analysis of human cultural evolution itself.

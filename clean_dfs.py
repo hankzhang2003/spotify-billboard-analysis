@@ -54,7 +54,7 @@ def decade(year: int) -> str:
 
 # Read csv of previously outputted scraped lyrics and reformat to match original
 def clean_lyrics() -> pd.DataFrame:
-    lyrics = pd.read_csv("data/scrapedLyrics.csv", converters={'Lyrics': lambda s: 
+    lyrics = pd.read_csv("data/scrapedLyrics.csv", converters={'Lyrics': lambda s:
                             s[1:-1].split(", ")})
     lyrics['Lyrics'] = lyrics['Lyrics'].map(lambda l: [s[1:-1] for s in l])
     lyrics['Lyrics'] = lyrics['Lyrics'].map(lambda l: [s.replace("\\", "") for s in l])
@@ -66,7 +66,7 @@ def clean_lyrics() -> pd.DataFrame:
     return lyrics
 
 # Remove all songs that couldn't be scraped (marked with stars)
-def valid_lyrics(lyrics: str) -> bool:
+def valid_lyrics(lyrics: list) -> bool:
     return lyrics[0][0] != "*"
 
 # Remove all invalid lines in scraped lyrics and join into 1 string
