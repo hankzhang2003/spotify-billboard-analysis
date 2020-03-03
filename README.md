@@ -4,7 +4,7 @@
 
 ## Overview
 
-This is an an analysis of the Spotify audio features of songs on the Billboard Hot 100 Songs chart.  The objective of this project is to perform exploratory data analysis on and make models for the Spotify trends of popular music over the past 60 years.  There are many categorical and numerical varables with characteristics of each song, from basic metrics such as title, artist, and album, to metrics that may not even properly expressible with numbers such as energy, danceability, and valence.
+This is an analysis of the Spotify audio features of songs on the Billboard Hot 100 Songs chart.  The objective of this project is to perform exploratory data analysis on and make models for the Spotify trends of popular music over the past 60 years.  There are many categorical and numerical variables with characteristics of each song, from basic metrics such as title, artist, and album, to metrics that may not even properly expressible with numbers such as energy, danceability, and valence.
 
 &nbsp;
 
@@ -52,16 +52,17 @@ The dataset contains information about the Billboard Hot 100 Songs chart between
 * **Tempo:** The overall estimated speed of a track in beats per minute (BPM).  Corresponds to the average beat duration within the track.
 * **Time signature:** An estimate of how many beats are in each measure.  Also known as meter.
 
-### Pipeline
+## Pipeline
 
-The columns "url", "Instance", "Previous Week Position", "Peak Position", "Weeks on Chart", "spotify_track_id", "spotify_track_preview_url", 
-"spotify_track_album", and "spotify_track_popularity" were dropped as they were not needed for this analysis.  For the models that only use numerical data, all the null rows were dropped too.
+### Data cleaning
+
+Part 1 only used the raw data tables themselves.  The columns "url", "Instance", "Previous Week Position", "Peak Position", "Weeks on Chart", "spotify_track_id", "spotify_track_preview_url", "spotify_track_album", and "spotify_track_popularity" were dropped as they were not needed for this analysis.  For the models that only use numerical data, all the null rows were dropped too.
 
 Some feature engineering was done too.  The week ID from the weeks table was parsed into a datetime during the import.  Two new columns named Year and Decade were created; Year is the year gathered from the datetime and Decade is a string that describes the decade of that year, obtained by passing the year into a custom-made function.  The spotify track duration was given in milliseconds, so a new column named Track_duration was created that contains the duration in seconds.
 
 Since the spotify genre column in the features table had the genres in the form of a list, the dataframe was stripped of its endings, expanded with explode(), and stripped again of quotes in order to analyze the individual genres of each song and the frequency of each genre.  The resulting data frame was 1.4 million rows when expanded.
 
-I created labels, or buckets, for each genre group.  This was done in various ways, such as k-means clustering on a number of groups or string parsing into binary groups based on "pop," "rock," "hip hop"/"rap," "jazz," etc.
+For part 2, I created labels, or buckets, for each genre group.  This was done in various ways, such as k-means clustering on a number of groups or string parsing into binary groups based on "pop," "rock/metal," "hip hop"/"rap," "jazz," etc. so that a song is classified into a label depending on what its genres say.
 
 ### Data types (features)
 
@@ -75,9 +76,14 @@ Categorical: songID, performer, song, spotify genre, spotify track ID, spotify t
 
 Numeric: spotify track duration ms, track duration, spotify track popularity, danceability, key, energy, loudness, speechiness, acousticness, instrumentalness, liveness, valence, tempo
 
+### Web scraping
+
+For part 3, I web scraped the lyrics of each song from Genius using BeautifulSoup.  Using the song title and artist name from the features table and cleaning up the anomalies I could, I generated the URL of the Genius page containing the lyrics of a given song.  For every single song, the lyric page URL is in the format of https://genius.com/{artist}-{title}-lyrics.  Then, I used threading to parallelize the request processes and wrote each set of scraped lyrics into a hashmap, with the song ID as the key.  This operation is thread safe because there are no conflicting keys and no simultaneous updates of the same variable.  If the lyrics page was formatted in a different way than normal, the url request would not work and it would catch the exception, returning a filler list to show the song and URL that failed.  This process took an extremely long time but once it was finished it outputted all the lyrics into a neat hashmap, which was then converted into a dataframe and stored on the hard disk.
+
+
 &nbsp;
 
-## Plots and Analysis: Single Plots
+## EDA: Single Plots
 
 ### Frequency of Genres
 
@@ -150,7 +156,9 @@ This graph shows the mean valence of songs in a time series over the time period
 
 This graph shows the mean tempo (beats per minute) of songs in a time series over the time period.  Interestingly, since the danceability, energy, and loudness of songs had a definitive increase, one would expect tempo to have an increase as well.  However, the average tempo had little net change over the years; it went up and down many times but only ended up a little bit above the initial values in the 1950s.
 
-## Plots and Analysis: Dual Plots and Scatterplots
+&nbsp;
+
+## EDA: Dual Plots and Scatterplots
 
 ### Energy and Loudness
 
@@ -245,9 +253,7 @@ All of the p-values are far too low for both tests, so we reject every single nu
 
 &nbsp;
 
-## Pipeline + Model
-
-### K-Means Clustering
+## Feature Engineering + Genre Analysis: K-Means Clustering
 
 I applied k-means clustering to grouped genres to find which genres were most similar to one another.  There are a total of 1014 genres, which is far too many to do normal classification on.  I made a separate dataframe of all normalized numerical data (everything [0, 1]).  The normalized dataframe was used to calculate the mean of each genre and create clusters of genre groups based on the average value of their audio features.  The intention of this is to classify genres into buckets and then manually label each bucket based on how similar the genres are.  Then, supervised learning can be applied to classify songs into one of these buckets.  I visualized the curve and difference curve to see the point of diminishing returns using the elbow method and seeing the differences of the WCSS (within-cluster sum of squares) and silhouette score.  The original plan was to ideally use 18 clusters.
 
@@ -313,6 +319,8 @@ Precision: 0.9786
 
 Recall: 0.8273
 
+&nbsp;
+
 ## Models: Gradient Boosting Classifier
 
 Did hyperparameter tuning on learning rate, number of trees, subsample rate, and max depth.
@@ -342,12 +350,41 @@ Precision: 0.9786
 
 Recall: 0.8265
 
-## Thoughts/Possible Improvements on Models
+&nbsp;
+
+## Feature Engineering + NLP: Wee
+
+asdf
+
+## Models: Logistic Regression
+
+
+## Models: Gradient Boosting Classifier
+
+## Models: Gradient Boosting Regressor
+
+## Models: Multilayer Perceptron
+
+
+
+&nbsp;
+
+## Findings and Possible Improvements on Models
+
+### Part 2
+
+Numerical features can be used to predict the genre of a song with decent accuracy.  The top songs of the same genre or genre group tend to have similar features with one another.
 
 This analysis is not completely concrete because the initial classification is a little far-fetched; there is inherent bias in the partitioning of the buckets in the 0-1 case.  The train/test split of the data is not stratified by decade, so there may be bias in proportions of songs in the training set due to differences in genre distribution over time.  For the models themselves, the precisions seem quite a bit higher than the recalls, so the models can try to be more aggressive (predict more true positives) when determining hyperparameters to slightly reduce precision for recall, even though precision is generally better than recall (better to miss a good song than to recommend a bad song).  Grid search can be used to comprehensively explore all hyperparameters for better model tuning.  Finally, I can plot the ROC curve to help visualize comparison of model effectiveness.
 
+### Part 3
+
+Numerical features usually have much higher impact than words on song happiness.  In these models run on this dataset, all of the words combined contributed to less than 5% of what overall determines the happiness of a song.
+
+There are many ways to improve the accuracy and lower the RMSE of the models.  One possible way is to apply principal component analysis and/or singular value decomposition (PCA/SVD) on the tf-idf matrix in order to reduce the number of features.
+
 ## Conclusion and Future Directions
 
-There are many insights and data analysis techniques one can use on these expansive tables.  The main future direction here is to create a multi-label classifier where the model would be able to find which class a song belongs to.  Specifically, each bucket (cluster) would contain the group of genres most similar to each other and the model would classify songs into the most appropriate bucket.  This would be helpful for categorizing songs based on their features and recommending songs to people based on the previous few listened songs, in a manner similar to Pandora or Spotify Radio.  It can also eliminate the need to manually tag songs, which would be helpful for automatically generating a "Songs You May Like" pre-made list for people.
+There are many insights and data analysis techniques one can use on these expansive tables.  The main future direction here is to create a multi-label classifier where the model would be able to find which class a song belongs to.  Specifically, each bucket (cluster) would contain the group of genres most similar to each other and the model would classify songs into the most appropriate bucket.  This would be helpful for categorizing songs based on their features and recommending songs to people based on the previous few listened songs, in a manner similar to Pandora or Spotify Radio.  It can also eliminate the need to manually tag songs, which would be helpful for automatically generating a "Songs You May Like" pre-made list for people.  For the lyrics analysis, it would be helpful to employ technologies such as multilayer perceptrons or convolutional neural networks to improve the structure of the models.  Since text data is extremely difficult to process, .  A long-term goal is to build a flask app to deploy the code into a form that is easily usable.
 
 Music is an aspect of culture and life that has existed since the dawn of mankind.  Over the years and ages, music has evolved from primitive instruments such as logs and rocks to old-school rock bands and jazz to modern hip hop and electronic music.  At its core, most tracks can be broken down into a set of features that can be represented with either words or numbers.  The ability to analyze the trends of music is only one of many factors in the analysis of human cultural evolution itself.

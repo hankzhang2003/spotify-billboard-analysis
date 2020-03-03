@@ -35,7 +35,6 @@ from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 import tensorflow as tf
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Activation, Dropout
-from tensorflow.keras.wrappers.scikit_learn import KerasRegressor
 
 from clean_dfs import clean_features, clean_weeks, clean_lyrics
 from web_scraping import parse_page, store_lyrics, filter_profanity
@@ -142,7 +141,7 @@ tfidfLyrics.to_csv("data/tfidfMatrix.csv", index=False)
 # Run models with only lyrics, not counting other features
 
 # Join with valence column from features to get valence of each song
-valenceOnly = pd.DataFrame({"SongID": features['SongID'], "spotify_genre": 
+valenceOnly = pd.DataFrame({"SongID": features['SongID'], "spotify_genre":
                             features['spotify_genre'], "valence": features['valence']})
 lyricsAndValence = tfidfLyrics.merge(valenceOnly, on='SongID')
 lyricsAndValence.set_index("SongID", inplace=True)
@@ -306,7 +305,8 @@ print(score)
 
 
 try:
-    del lyricsAndValence, lyricsAndValencePop, lyricsAndValenceRock
+    del lyricsAndValence, lyricsAndValencePop, lyricsAndValenceRock,
+    lyricsAndValenceBinPop, lyricsAndValenceBinRock
 except:
     pass
 
@@ -480,6 +480,7 @@ print(score)
 
 
 try:
-    del lyricsAndFeatures, lyricsAndFeaturesPop, lyricsAndFeaturesRock
+    del lyricsAndFeatures, lyricsAndFeaturesPop, lyricsAndFeaturesRock,
+    lyricsAndFeaturesBinPop, lyricsAndFeaturesBinRock
 except:
     pass
