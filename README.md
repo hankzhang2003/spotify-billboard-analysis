@@ -371,7 +371,7 @@ From the scraped lyrics, I processed the lyrics into a corpus.  This was done by
 
 Web scrape lyrics (str[]) -> Remove invalid songs (str[]) -> Clean text in lines (str[]) -> Join lines in array into string (str) -> Tokenize each line (str) -> Parse regex and stem words (str) -> Filter stopwords/punctuation (str) -> Create corpus and make tf-idf matrix (str)
 
-This finished tf-idf matrix was then joined with features to get a dataframe of the lyrics text and either valence or all features.  The valence (Spotify numerical metric for perceived happiness) is the target variable.  The dataframe was subsetted according to genre and the sub-df was split into train and test set.  There are 2 sets of models: one only using lyrics to predict valence, the other using both lyrics and numerical features to predict valence.  Each set has classification models, casting valence to 0 or 1 depending on its value relative to the cutoff, and regression models, using the raw valence value.
+This finished tf-idf matrix was then joined with features to get a dataframe of the lyrics text and either valence or all features.  The valence (Spotify numerical metric for perceived happiness, range [0, 1], non-normal bell curve) is the target variable.  The dataframe was subsetted according to genre and the sub-df was split into train and test set.  There are 2 sets of models: one only using lyrics to predict valence, the other using both lyrics and numerical features to predict valence.  Each set has classification models, casting valence to 0 or 1 depending on its value relative to the cutoff, and regression models, using the raw valence value.
 
 &nbsp;
 
