@@ -373,7 +373,7 @@ Web scrape lyrics (str[]) -> Remove invalid songs (str[]) -> Clean text in lines
 
 &nbsp;
 
-## Models: Rock Valence Classification (lyrics only)
+## Models: Rock Happiness Classification (lyrics only)
 
 ### Logistic regression
 
@@ -397,7 +397,7 @@ Recall: 0.4630
 
 &nbsp;
 
-## Models: Rock Valence Regression (lyrics only)
+## Models: Rock Happiness Regression (lyrics only)
 
 ### Baseline
 
@@ -413,6 +413,10 @@ Score: 0.01272
 
 RMSE: 0.2339
 
+### Feature Importances
+
+![Feature Importances Valence Rock](/images/featureImportances_valencerock.png)
+
 ### Multilayer Perceptron
 
 Tried with 32-unit dense layers, tanh/tanh/softmax activations, and 0.5 dropout.  Still in progress, not fully implemented yet.
@@ -421,7 +425,7 @@ Score (RMSE): 0.2082
 
 &nbsp;
 
-## Models: Pop Valence Classification (lyrics only)
+## Models: Pop Happiness Classification (lyrics only)
 
 ### Logistic regression
 
@@ -445,7 +449,7 @@ Recall: 0.4894
 
 &nbsp;
 
-## Models: Pop Valence Regression (lyrics only)
+## Models: Pop Happiness Regression (lyrics only)
 
 ### Baseline
 
@@ -461,6 +465,10 @@ Score: 0.006539
 
 RMSE: 0.2334
 
+### Feature Importances
+
+![Feature Importances Valence Pop](/images/featureImportances_valencepop.png)
+
 ### Multilayer Perceptron
 
 Tried with 32-unit dense layers, tanh/tanh/softmax activations, and 0.5 dropout.  Still in progress, not fully implemented yet.
@@ -469,7 +477,7 @@ Score (RMSE): 0.2244
 
 &nbsp;
 
-## Models: Rock Valence Classification (all features)
+## Models: Rock Happiness Classification (all features)
 
 ### Logistic regression
 
@@ -493,7 +501,7 @@ Recall: 0.7626
 
 &nbsp;
 
-## Models: Rock Valence Regression (all features)
+## Models: Rock Happiness Regression (all features)
 
 ### Baseline
 
@@ -509,6 +517,10 @@ Score: 0.5324
 
 RMSE: 0.1610
 
+### Feature Importances
+
+![Feature Importances Features Rock](/images/featureImportances_featuresrock.png)
+
 ### Multilayer Perceptron
 
 Tried with 32-unit dense layers, tanh/tanh/softmax activations, and 0.5 dropout.  Still in progress, not fully implemented yet.
@@ -517,7 +529,7 @@ Score (RMSE): 0.2082
 
 &nbsp;
 
-## Models: Pop Valence Classification (all features)
+## Models: Pop Happiness Classification (all features)
 
 ### Logistic regression
 
@@ -541,7 +553,7 @@ Recall: 0.7548
 
 &nbsp;
 
-## Models: Pop Valence Regression (all features)
+## Models: Pop Happiness Regression (all features)
 
 ### Baseline
 
@@ -557,6 +569,10 @@ Score: 0.4659
 
 RMSE: 0.1711
 
+### Feature Importances
+
+![Feature Importances Features Pop](/images/featureImportances_featurespop.png)
+
 ### Multilayer Perceptron
 
 Tried with 32-unit dense layers, tanh/tanh/softmax activations, and 0.5 dropout.  Still in progress, not fully implemented yet.
@@ -565,19 +581,33 @@ Score (RMSE): 0.2244
 
 &nbsp;
 
-## Findings and Possible Improvements on Models
+## Findings
 
 ### Part 2
 
-Numerical features can be used to predict the genre of a song with decent accuracy.  The top songs of the same genre or genre group tend to have similar features with one another.
+Numerical features can be used to predict the genre of a song with decent accuracy.
+
+The top songs of the same genre or genre group tend to have similar features with one another.
+
+There are many groups of genres that are similar, basically sub-genres of one another, so they can eventually be grouped together.
+
+### Part 3
+
+Numerical features usually have much higher impact than words on song happiness.  In these models run on this dataset, all of the words combined contributed to less than 5% of what overall determines the happiness of a song.
+
+In general, it also seems like rock songs are easier to predict than pop songs.  This is likely due to a higher variety in music styles among pop music, especially in recent years.
+
+&nbsp;
+
+## Possible Improvements on Models
+
+### Part 2
 
 This analysis is not completely concrete because the initial classification is a little far-fetched; there is inherent bias in the partitioning of the buckets in the 0-1 case.  The train/test split of the data is not stratified by decade, so there may be bias in proportions of songs in the training set due to differences in genre distribution over time.  For the models themselves, the precisions seem quite a bit higher than the recalls, so the models can try to be more aggressive (predict more true positives) when determining hyperparameters to slightly reduce precision for recall, even though precision is generally better than recall (better to miss a good song than to recommend a bad song).  Grid search can be used to comprehensively explore all hyperparameters for better model tuning.  Finally, I can plot the ROC curve to help visualize comparison of model effectiveness.
 
 ### Part 3
 
-Numerical features usually have much higher impact than words on song happiness.  In these models run on this dataset, all of the words combined contributed to less than 5% of what overall determines the happiness of a song.  In general, it also seems like rock songs are easier to predict than pop songs.  This is likely due to a higher variety in music styles among pop music, especially in recent years.
-
-There are many ways to improve the accuracy and lower the RMSE of the models.  One possible way is to apply principal component analysis and/or singular value decomposition (PCA/SVD) on the tf-idf matrix in order to reduce the number of features.  Regarding other score metrics, the precision values of the gradient boosting models are extremely low, especially for the classifiers, so more exploration would be needed to see what is going on there.  Grid search was set up but not used because it took to long to run; with stronger processing power, it can be used to comprehensively explore all hyperparameters for better model tuning.
+There are many ways to improve the accuracy and lower the RMSE of the models.  One possible way is to apply principal component analysis and/or singular value decomposition (PCA/SVD) on the tf-idf matrix in order to reduce the number of features and get the important latent features.  Regarding other score metrics, the precision values of the gradient boosting models are extremely low, especially for the classifiers, so more exploration would be needed to see what is going on there.  Grid search was set up but not used because it took to long to run; with stronger processing power, it can be used to comprehensively explore all hyperparameters for better model tuning.
 
 &nbsp;
 
