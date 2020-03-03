@@ -287,7 +287,7 @@ Recall: 0.8690
 
 ### Gradient Boosting Classifier
 
-Did hyperparameter tuning on learning rate, number of trees, subsample rate, and max depth. Final model uses 0.2 learning rate, 150 trees, 1.0 subsample rate, and 7 max depth.
+Did hyperparameter tuning on learning rate, number of trees, and max depth. Final model uses 0.2 learning rate, 150 trees, and 7 max depth.
 
 Accuracy: 0.8617
 
@@ -321,7 +321,7 @@ Recall: 0.8274
 
 ### Gradient Boosting Classifier
 
-Did hyperparameter tuning on learning rate, number of trees, subsample rate, and max depth. Final model uses 0.2 learning rate, 150 trees, 1.0 subsample rate, and 7 max depth.
+Did hyperparameter tuning on learning rate, number of trees, and max depth. Final model uses 0.2 learning rate, 150 trees, and 7 max depth.
 
 Accuracy: 0.8084
 
@@ -355,7 +355,7 @@ Recall: 0.8273
 
 ### Gradient Boosting Classifier
 
-Did hyperparameter tuning on learning rate, number of trees, subsample rate, and max depth. Final model uses 0.2 learning rate, 150 trees, 1.0 subsample rate, and 7 max depth.
+Did hyperparameter tuning on learning rate, number of trees, and max depth. Final model uses 0.2 learning rate, 150 trees, and 7 max depth.
 
 Accuracy: 0.8174
 
@@ -367,28 +367,201 @@ Recall: 0.8265
 
 ## Feature Engineering + NLP: NLP Pipeline
 
-From the scraped lyrics, I processed the lyrics into a corpus.  This was done by first importing the saved file stored from the web scraping earlier.  From this dataframe, the invalid songs were removed and the lines were cleaned with 
+From the scraped lyrics, I processed the lyrics into a corpus.  This was done by first importing the saved file stored from the web scraping earlier.  From this dataframe, the invalid songs were removed and the lines were cleaned by stripping the ends, converting the string into an array of strings, and individually cleaning each line (item in the array).  After the lines were cleaned, they were joined back into a string.  Then, using NLTK (natural language toolkit), the lyrics were tokenized, regex parsed, and stemmed using SnowballStemmer.  The stopwords and punctuation were filtered out.  When all the NLP processing was done, the items were combined to create the corpus, which was run through a tf-idf vectorizer to get the tf-idf matrix.  This matrix was stored as a Pandas dataframe in order to match the columns to the words in the vocabluary.
+
+Web scrape lyrics (str[]) -> Remove invalid songs (str[]) -> Clean text in lines (str[]) -> Join lines in array into string (str) -> Tokenize each line (str) -> Parse regex and stem words (str) -> Filter stopwords/punctuation (str) -> Create corpus and make tf-idf matrix (str)
 
 &nbsp;
 
-## Models: Rock Valence Classification
+## Models: Rock Valence Classification (lyrics only)
+
+### Logistic regression
+
+Simple logistic regression.  Cutoff for happy vs. not happy was set at valence = 0.5 (higher means happier).
+
+Accuracy: 0.5877
+
+Precision: 0.4042
+
+Recall: 0.3867
+
+### Gradient Boosting Classifier
+
+Did hyperparameter tuning on learning rate, number of trees, and max depth. Final model uses 0.1 learning rate, 140 trees, and 3 max depth.
+
+Accuracy: 0.6644
+
+Precision: 0.0436
+
+Recall: 0.4630
 
 &nbsp;
 
-## Models: Pop Valence Classification
+## Models: Rock Valence Regression (lyrics only)
 
-## Gradient Boosting Classifier
+### Baseline
 
-Did hyperparameter tuning on learning rate, number of trees, subsample rate, and max depth.  Final model uses 0.2 learning rate, 150 trees, 1.0 subsample rate, and 7 max depth.
+The baseline model just uses the mean to predict everything.
 
-## Gradient Boosting Regressor
+RMSE: 0.2362
 
-Did hyperparameter tuning on learning rate, number of trees, subsample rate, and max depth.  Final model uses 0.2 learning rate, 150 trees, 1.0 subsample rate, and 7 max depth.
+### Gradient Boosting Regressor
 
-## Multilayer Perceptron
+Did hyperparameter tuning on learning rate, number of trees, and max depth. Final model uses 0.05 learning rate, 120 trees, and 3 max depth.
 
-Still in progress, not fully implemented yet.
+Score: 0.01272
 
+RMSE: 0.2339
+
+### Multilayer Perceptron
+
+Tried with 32-unit dense layers, tanh/tanh/softmax activations, and 0.5 dropout.  Still in progress, not fully implemented yet.
+
+Score (RMSE): 0.2082
+
+&nbsp;
+
+## Models: Pop Valence Classification (lyrics only)
+
+### Logistic regression
+
+Simple logistic regression.  Cutoff for happy vs. not happy was set at valence = 0.5 (higher means happier).
+
+Accuracy: 0.5559
+
+Precision: 0.3957
+
+Recall: 0.3917
+
+### Gradient Boosting Classifier
+
+Did hyperparameter tuning on learning rate, number of trees, and max depth. Final model uses 0.1 learning rate, 140 trees, and 3 max depth.
+
+Accuracy: 0.6347
+
+Precision: 0.0585
+
+Recall: 0.4894
+
+&nbsp;
+
+## Models: Pop Valence Regression (lyrics only)
+
+### Baseline
+
+The baseline model just uses the mean to predict everything.
+
+RMSE: 0.2379
+
+### Gradient Boosting Regressor
+
+Did hyperparameter tuning on learning rate, number of trees, and max depth. Final model uses 0.05 learning rate, 120 trees, and 3 max depth.
+
+Score: 0.006539
+
+RMSE: 0.2334
+
+### Multilayer Perceptron
+
+Tried with 32-unit dense layers, tanh/tanh/softmax activations, and 0.5 dropout.  Still in progress, not fully implemented yet.
+
+Score (RMSE): 0.2244
+
+&nbsp;
+
+## Models: Rock Valence Classification (all features)
+
+### Logistic regression
+
+Simple logistic regression.  Cutoff for happy vs. not happy was set at valence = 0.5 (higher means happier).
+
+Accuracy: 0.7294
+
+Precision: 0.6028
+
+Recall: 0.5925
+
+### Gradient Boosting Classifier
+
+Did hyperparameter tuning on learning rate, number of trees, and max depth. Final model uses 0.1 learning rate, 140 trees, and 3 max depth.
+
+Accuracy: 0.8055
+
+Precision: 0.6045
+
+Recall: 0.7626
+
+&nbsp;
+
+## Models: Rock Valence Regression (all features)
+
+### Baseline
+
+The baseline model just uses the mean to predict everything.
+
+RMSE: 0.2362
+
+### Gradient Boosting Regressor
+
+Did hyperparameter tuning on learning rate, number of trees, and max depth. Final model uses 0.05 learning rate, 120 trees, and 3 max depth.
+
+Score: 0.5324
+
+RMSE: 0.1610
+
+### Multilayer Perceptron
+
+Tried with 32-unit dense layers, tanh/tanh/softmax activations, and 0.5 dropout.  Still in progress, not fully implemented yet.
+
+Score (RMSE): 0.2082
+
+&nbsp;
+
+## Models: Pop Valence Classification (all features)
+
+### Logistic regression
+
+Simple logistic regression.  Cutoff for happy vs. not happy was set at valence = 0.5 (higher means happier).
+
+Accuracy: 0.6796
+
+Precision: 0.5280
+
+Recall: 0.5646
+
+### Gradient Boosting Classifier
+
+Did hyperparameter tuning on learning rate, number of trees, and max depth. Final model uses 0.1 learning rate, 140 trees, and 3 max depth.
+
+Accuracy: 0.7821
+
+Precision: 0.5954
+
+Recall: 0.7548
+
+&nbsp;
+
+## Models: Pop Valence Regression (all features)
+
+### Baseline
+
+The baseline model just uses the mean to predict everything.
+
+RMSE: 0.2379
+
+### Gradient Boosting Regressor
+
+Did hyperparameter tuning on learning rate, number of trees, and max depth. Final model uses 0.05 learning rate, 120 trees, and 3 max depth.
+
+Score: 0.4659
+
+RMSE: 0.1711
+
+### Multilayer Perceptron
+
+Tried with 32-unit dense layers, tanh/tanh/softmax activations, and 0.5 dropout.  Still in progress, not fully implemented yet.
+
+Score (RMSE): 0.2244
 
 &nbsp;
 
@@ -402,9 +575,9 @@ This analysis is not completely concrete because the initial classification is a
 
 ### Part 3
 
-Numerical features usually have much higher impact than words on song happiness.  In these models run on this dataset, all of the words combined contributed to less than 5% of what overall determines the happiness of a song.
+Numerical features usually have much higher impact than words on song happiness.  In these models run on this dataset, all of the words combined contributed to less than 5% of what overall determines the happiness of a song.  In general, it also seems like rock songs are easier to predict than pop songs.  This is likely due to a higher variety in music styles among pop music, especially in recent years.
 
-There are many ways to improve the accuracy and lower the RMSE of the models.  One possible way is to apply principal component analysis and/or singular value decomposition (PCA/SVD) on the tf-idf matrix in order to reduce the number of features.  Regarding other score metrics, the precision values of the gradient boosting models are strangely extremely low, especially for the classifiers, so more exploration would be needed to see what is going on there.  Grid search was set up but not used because it took to long to run; with stronger processing power, it can be used to comprehensively explore all hyperparameters for better model tuning.
+There are many ways to improve the accuracy and lower the RMSE of the models.  One possible way is to apply principal component analysis and/or singular value decomposition (PCA/SVD) on the tf-idf matrix in order to reduce the number of features.  Regarding other score metrics, the precision values of the gradient boosting models are extremely low, especially for the classifiers, so more exploration would be needed to see what is going on there.  Grid search was set up but not used because it took to long to run; with stronger processing power, it can be used to comprehensively explore all hyperparameters for better model tuning.
 
 &nbsp;
 
