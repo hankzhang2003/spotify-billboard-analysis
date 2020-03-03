@@ -263,11 +263,11 @@ I applied k-means clustering to grouped genres to find which genres were most si
 
 &nbsp;
 
-## Models: Logistic Regression
+## Models: Binary Genre Classification
+
+### Logistic Regression
 
 Simple logistic regression.  It predicts labeling for the binary case, and can predict probabilities if designed as a multi-class model.
-
-### Binary
 
 Accuracy: 0.8490
 
@@ -275,27 +275,9 @@ Precision: 0.9425
 
 Recall: 0.8541
 
-### Rock
-
-Accuracy: 0.8002
-
-Precision: 0.9894
-
-Recall: 0.8037
-
-### Pop
-
-Accuracy: 0.8034
-
-Precision: 0.9894
-
-Recall: 0.8056
-
-## Models: Random Forest Classifier
+### Random Forest Classifier
 
 Did hyperparameter tuning on number of trees, max depth, and max features.  Bootstrapped with 5 trees and took average of each during tuning.  Final model uses 150 trees, 10 max depth, and 8 max features.
-
-### Binary
 
 Accuracy: 0.8653
 
@@ -303,30 +285,9 @@ Precision: 0.9481
 
 Recall: 0.8690
 
-### Rock
+### Gradient Boosting Classifier
 
-Accuracy: 0.8097
-
-Precision: 0.9596
-
-Recall: 0.8274
-
-### Pop
-
-Accuracy: 0.8183
-
-Precision: 0.9786
-
-Recall: 0.8273
-
-&nbsp;
-
-## Models: Gradient Boosting Classifier
-
-Did hyperparameter tuning on learning rate, number of trees, subsample rate, and max depth.
-Final model uses 0.2 learning rate, 150 trees, 1.0 subsample rate, and 7 max depth.
-
-### Binary
+Did hyperparameter tuning on learning rate, number of trees, subsample rate, and max depth. Final model uses 0.2 learning rate, 150 trees, 1.0 subsample rate, and 7 max depth.
 
 Accuracy: 0.8617
 
@@ -334,7 +295,33 @@ Precision: 0.9364
 
 Recall: 0.8726
 
-### Rock
+&nbsp;
+
+## Models: Rock Genre Classification
+
+### Logistic Regression
+
+Simple logistic regression.  It predicts whether a song can be classified as rock or not.
+
+Accuracy: 0.8002
+
+Precision: 0.9894
+
+Recall: 0.8037
+
+### Random Forest Classifier
+
+Did hyperparameter tuning on number of trees, max depth, and max features.  Bootstrapped with 5 trees and took average of each during tuning.  Final model uses 150 trees, 10 max depth, and 8 max features.
+
+Accuracy: 0.8097
+
+Precision: 0.9596
+
+Recall: 0.8274
+
+### Gradient Boosting Classifier
+
+Did hyperparameter tuning on learning rate, number of trees, subsample rate, and max depth. Final model uses 0.2 learning rate, 150 trees, 1.0 subsample rate, and 7 max depth.
 
 Accuracy: 0.8084
 
@@ -342,7 +329,33 @@ Precision: 0.9570
 
 Recall: 0.8279
 
-### Pop
+&nbsp;
+
+## Models: Pop Genre Classification
+
+### Logistic regression
+
+Simple logistic regression.  It predicts whether a song can be classified as pop or not.
+
+Accuracy: 0.8034
+
+Precision: 0.9894
+
+Recall: 0.8056
+
+### Random Forest Classifier
+
+Did hyperparameter tuning on number of trees, max depth, and max features.  Bootstrapped with 5 trees and took average of each during tuning.  Final model uses 150 trees, 10 max depth, and 8 max features.
+
+Accuracy: 0.8183
+
+Precision: 0.9786
+
+Recall: 0.8273
+
+### Gradient Boosting Classifier
+
+Did hyperparameter tuning on learning rate, number of trees, subsample rate, and max depth. Final model uses 0.2 learning rate, 150 trees, 1.0 subsample rate, and 7 max depth.
 
 Accuracy: 0.8174
 
@@ -354,17 +367,27 @@ Recall: 0.8265
 
 ## Feature Engineering + NLP: NLP Pipeline
 
-From the scraped lyrics, I processed the lyrics into a corpus.  This was done by first importing the saved file stored from the web scraping earlier.  From this dataframe, the invalid songs were removed and the lines were cleaned 
+From the scraped lyrics, I processed the lyrics into a corpus.  This was done by first importing the saved file stored from the web scraping earlier.  From this dataframe, the invalid songs were removed and the lines were cleaned with 
 
-## Models: Logistic Regression
+&nbsp;
 
+## Models: Rock Valence Classification
 
-## Models: Gradient Boosting Classifier
+&nbsp;
 
-## Models: Gradient Boosting Regressor
+## Models: Pop Valence Classification
 
-## Models: Multilayer Perceptron
+## Gradient Boosting Classifier
 
+Did hyperparameter tuning on learning rate, number of trees, subsample rate, and max depth.  Final model uses 0.2 learning rate, 150 trees, 1.0 subsample rate, and 7 max depth.
+
+## Gradient Boosting Regressor
+
+Did hyperparameter tuning on learning rate, number of trees, subsample rate, and max depth.  Final model uses 0.2 learning rate, 150 trees, 1.0 subsample rate, and 7 max depth.
+
+## Multilayer Perceptron
+
+Still in progress, not fully implemented yet.
 
 
 &nbsp;
@@ -381,10 +404,14 @@ This analysis is not completely concrete because the initial classification is a
 
 Numerical features usually have much higher impact than words on song happiness.  In these models run on this dataset, all of the words combined contributed to less than 5% of what overall determines the happiness of a song.
 
-There are many ways to improve the accuracy and lower the RMSE of the models.  One possible way is to apply principal component analysis and/or singular value decomposition (PCA/SVD) on the tf-idf matrix in order to reduce the number of features.
+There are many ways to improve the accuracy and lower the RMSE of the models.  One possible way is to apply principal component analysis and/or singular value decomposition (PCA/SVD) on the tf-idf matrix in order to reduce the number of features.  Regarding other score metrics, the precision values of the gradient boosting models are strangely extremely low, especially for the classifiers, so more exploration would be needed to see what is going on there.  Grid search was set up but not used because it took to long to run; with stronger processing power, it can be used to comprehensively explore all hyperparameters for better model tuning.
 
-## Conclusion and Future Directions
-************
-There are many insights and data analysis techniques one can use on these expansive tables.  The main future direction here is to create a multi-label classifier where the model would be able to find which class a song belongs to.  Specifically, each bucket (cluster) would contain the group of genres most similar to each other and the model would classify songs into the most appropriate bucket.  This would be helpful for categorizing songs based on their features and recommending songs to people based on the previous few listened songs, in a manner similar to Pandora or Spotify Radio.  It can also eliminate the need to manually tag songs, which would be helpful for automatically generating a "Songs You May Like" pre-made list for people.  For the lyrics analysis, it would be helpful to employ technologies such as multilayer perceptrons or convolutional neural networks to improve the structure of the models.  Since text data is extremely difficult to process, .  A long-term goal is to build a flask app to deploy the code into a form that is easily usable.
+&nbsp;
+
+## Future Directions and Conclusion
+
+There are many insights and data analysis techniques one can use on these expansive tables.  One of the main future directions is to create a multi-label classifier where the model would be able to find which class a song belongs to.  Specifically, each bucket (cluster) would contain the group of genres most similar to each other and the model would classify songs into the most appropriate bucket.  This would be helpful for categorizing songs based on their features and recommending songs to people based on the previous few listened songs, in a manner similar to Pandora or Spotify Radio.  It can also eliminate the need to manually tag songs, which would be helpful for automatically generating a "Songs You May Like" pre-made list for people.
+
+The other major future direction would be to improve the analysis of the text features within the lyrics.  For the lyrics analysis, it would be helpful to employ technologies such as multilayer perceptrons or convolutional neural networks to get a better structured model.  Since text data is extremely difficult to process, any optimizations would be valuable to improve the state of the modeling.  Another option, with more data, would be to create a collaborative filtering recommender for recommending songs to users based on their play history, songs with similar audio features, and listening trends of people who listen to the same artists.  The sparsity would be quite high, but it can prove to be very helpful from a business perspective.  A long-term goal is to build a flask app to deploy the code into a form that is easily usable.
 
 Music is an aspect of culture and life that has existed since the dawn of mankind.  Over the years and ages, music has evolved from primitive instruments such as logs and rocks to old-school rock bands and jazz to modern hip hop and electronic music.  At its core, most tracks can be broken down into a set of features that can be represented with either words or numbers.  The ability to analyze the trends of music is only one of many factors in the analysis of human cultural evolution itself.

@@ -150,83 +150,6 @@ lyricsAndValenceBin = lyricsAndValence.copy()
 lyricsAndValenceBin['valence'] = (lyricsAndValenceBin['valence'] > 0.5).astype(int)
 
 
-# Run classifier models for pop genre
-lyricsAndValenceBinPop = lyricsAndValenceBin[[contains_genre_type(g, ["pop"]) \
-                                for g in lyricsAndValenceBin['spotify_genre']]]
-lyricsAndValenceBinPop.drop(["spotify_genre"], axis=1, inplace=True)
-X = lyricsAndValenceBinPop[lyricsAndValenceBinPop.columns.difference(['valence'])]
-y = lyricsAndValenceBinPop['valence']
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
-
-
-# Logistic regression model
-logistic_regression_results = model.get_logistic_regression_results(X_train, \
-                                        X_test, y_train, y_test)
-print(logistic_regression_results)
-# 0.5559, 0.3957, 0.3917
-
-# Explore gradient boosting classifier hyperparameters
-'''start = time.time()
-model.plot_gradient_boost_class_hyperparameters(X_train, X_test, y_train, y_test, "pop")
-end = time.time()
-print(end-start)'''
-
-# Gradient boosting classifier model
-gradient_boost_class_results = model.get_gradient_boost_class_results(0.1, 140, 3, \
-                                        X_train, X_test, y_train, y_test)
-print(gradient_boost_class_results)
-# 0.6347, 0.0585, 0.4894
-
-
-# Run regressor models for pop genre
-lyricsAndValencePop = lyricsAndValence[[contains_genre_type(g, ["pop"]) \
-                            for g in lyricsAndValence['spotify_genre']]]
-lyricsAndValencePop.drop(["spotify_genre"], axis=1, inplace=True)
-X = lyricsAndValencePop[lyricsAndValencePop.columns.difference(['valence'])]
-y = lyricsAndValencePop['valence']
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
-
-# Baseline RMSE is the standard deviation
-print(lyricsAndValencePop['valence'].std())
-# 0.2379
-
-
-'''# Grid search gradient boosting regressor hyperparameters and return model score and RMSE
-gbr = model.grid_search_gradient_boost(X_train, X_test, y_train, y_test)
-print(gbr.best_params_, np.sqrt(np.abs(gbr.best_score_)))
-scoreValencePop = gbr.score(X_test, y_test)
-y_pred = gbr.predict(X_test)
-rmseValencePop = np.sqrt(mean_squared_error(y_test, y_pred))
-print(scoreValencePop, rmseValencePop)'''
-
-
-# Explore gradient boosting regressor hyperparameters
-'''start = time.time()
-model.plot_gradient_boost_reg_hyperparameters(X_train, X_test, y_train, y_test, "pop")
-end = time.time()
-print(end-start)'''
-
-# Gradient boosting regressor model
-gradient_boost_reg_results, feature_importances = model.get_gradient_boost_reg_results( \
-                            0.05, 120, 3, X_train, X_test, y_train, y_test)
-print(gradient_boost_reg_results)
-# 0.006539, 0.2334
-
-# Plot feature importances
-fig, ax = plt.subplots(figsize=(12, 8))
-filteredWords = np.array(filter_profanity(lyricsAndValencePop.columns.difference(['valence'])))
-plots.make_feature_importance_plot(feature_importances, filteredWords, 30, ax)
-fig.suptitle("Top Feature Importances of Pop (valence only)", fontsize=20)
-fig.subplots_adjust(top=0.9)
-fig.savefig("images/featureImportances_valencepop.png")
-
-
-# Multilayer perceptron
-score = model.get_mlp_score(10, X_train, X_test, y_train, y_test)
-print(score)
-# 0.2244
-
-
 # Run classifier models for rock/metal genres
 lyricsAndValenceBinRock = lyricsAndValenceBin[[contains_genre_type(g, ["rock", "metal"]) \
                                 for g in lyricsAndValenceBin['spotify_genre']]]
@@ -304,9 +227,86 @@ print(score)
 # 0.2082
 
 
+# Run classifier models for pop genre
+lyricsAndValenceBinPop = lyricsAndValenceBin[[contains_genre_type(g, ["pop"]) \
+                                for g in lyricsAndValenceBin['spotify_genre']]]
+lyricsAndValenceBinPop.drop(["spotify_genre"], axis=1, inplace=True)
+X = lyricsAndValenceBinPop[lyricsAndValenceBinPop.columns.difference(['valence'])]
+y = lyricsAndValenceBinPop['valence']
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
+
+
+# Logistic regression model
+logistic_regression_results = model.get_logistic_regression_results(X_train, \
+                                        X_test, y_train, y_test)
+print(logistic_regression_results)
+# 0.5559, 0.3957, 0.3917
+
+# Explore gradient boosting classifier hyperparameters
+'''start = time.time()
+model.plot_gradient_boost_class_hyperparameters(X_train, X_test, y_train, y_test, "pop")
+end = time.time()
+print(end-start)'''
+
+# Gradient boosting classifier model
+gradient_boost_class_results = model.get_gradient_boost_class_results(0.1, 140, 3, \
+                                        X_train, X_test, y_train, y_test)
+print(gradient_boost_class_results)
+# 0.6347, 0.0585, 0.4894
+
+
+# Run regressor models for pop genre
+lyricsAndValencePop = lyricsAndValence[[contains_genre_type(g, ["pop"]) \
+                            for g in lyricsAndValence['spotify_genre']]]
+lyricsAndValencePop.drop(["spotify_genre"], axis=1, inplace=True)
+X = lyricsAndValencePop[lyricsAndValencePop.columns.difference(['valence'])]
+y = lyricsAndValencePop['valence']
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
+
+# Baseline RMSE is the standard deviation
+print(lyricsAndValencePop['valence'].std())
+# 0.2379
+
+
+'''# Grid search gradient boosting regressor hyperparameters and return model score and RMSE
+gbr = model.grid_search_gradient_boost(X_train, X_test, y_train, y_test)
+print(gbr.best_params_, np.sqrt(np.abs(gbr.best_score_)))
+scoreValencePop = gbr.score(X_test, y_test)
+y_pred = gbr.predict(X_test)
+rmseValencePop = np.sqrt(mean_squared_error(y_test, y_pred))
+print(scoreValencePop, rmseValencePop)'''
+
+
+# Explore gradient boosting regressor hyperparameters
+'''start = time.time()
+model.plot_gradient_boost_reg_hyperparameters(X_train, X_test, y_train, y_test, "pop")
+end = time.time()
+print(end-start)'''
+
+# Gradient boosting regressor model
+gradient_boost_reg_results, feature_importances = model.get_gradient_boost_reg_results( \
+                            0.05, 120, 3, X_train, X_test, y_train, y_test)
+print(gradient_boost_reg_results)
+# 0.006539, 0.2334
+
+# Plot feature importances
+fig, ax = plt.subplots(figsize=(12, 8))
+filteredWords = np.array(filter_profanity(lyricsAndValencePop.columns.difference(['valence'])))
+plots.make_feature_importance_plot(feature_importances, filteredWords, 30, ax)
+fig.suptitle("Top Feature Importances of Pop (valence only)", fontsize=20)
+fig.subplots_adjust(top=0.9)
+fig.savefig("images/featureImportances_valencepop.png")
+
+
+# Multilayer perceptron
+score = model.get_mlp_score(10, X_train, X_test, y_train, y_test)
+print(score)
+# 0.2244
+
+
 try:
-    del lyricsAndValence, lyricsAndValencePop, lyricsAndValenceRock,
-    lyricsAndValenceBinPop, lyricsAndValenceBinRock
+    del lyricsAndValence, lyricsAndValenceRock, lyricsAndValencePop,
+    lyricsAndValenceBinRock, lyricsAndValenceBinPop
 except:
     pass
 
@@ -322,83 +322,6 @@ lyricsAndFeatures.set_index("SongID", inplace=True)
 # Create new dataframe using classifier instead of regressor
 lyricsAndFeaturesBin = lyricsAndFeatures.copy()
 lyricsAndFeaturesBin['valence'] = (lyricsAndFeaturesBin['valence'] > 0.5).astype(int)
-
-
-# Run classifier models for pop genre
-lyricsAndFeaturesBinPop = lyricsAndFeaturesBin[[contains_genre_type(g, ["pop"]) \
-                                for g in lyricsAndFeaturesBin['spotify_genre']]]
-lyricsAndFeaturesBinPop.drop(["spotify_genre"], axis=1, inplace=True)
-X = lyricsAndFeaturesBinPop[lyricsAndFeaturesBinPop.columns.difference(['valence'])]
-y = lyricsAndFeaturesBinPop['valence']
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
-
-
-# Logistic regression model
-logistic_regression_results = model.get_logistic_regression_results(X_train, \
-                                        X_test, y_train, y_test)
-print(logistic_regression_results)
-# 0.6796, 0.5280, 0.5646
-
-# Explore gradient boosting classifier hyperparameters
-'''start = time.time()
-model.plot_gradient_boost_class_hyperparameters(X_train, X_test, y_train, y_test, "pop")
-end = time.time()
-print(end-start)'''
-
-# Gradient boosting classifier model
-gradient_boost_class_results = model.get_gradient_boost_class_results(0.1, 140, 3, \
-                                        X_train, X_test, y_train, y_test)
-print(gradient_boost_class_results)
-# 0.7821, 0.5954, 0.7548
-
-
-# Run regressor models for pop genre
-lyricsAndFeaturesPop = lyricsAndFeatures[[contains_genre_type(g, ["pop"]) \
-                            for g in lyricsAndFeatures['spotify_genre']]]
-lyricsAndFeaturesPop.drop(["spotify_genre"], axis=1, inplace=True)
-X = lyricsAndFeaturesPop[lyricsAndFeaturesPop.columns.difference(['valence'])]
-y = lyricsAndFeaturesPop['valence']
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
-
-# Baseline RMSE is the standard deviation
-print(lyricsAndFeaturesPop['valence'].std())
-# 0.2379
-
-
-'''# Grid search gradient boosting regressor hyperparameters and return model score and RMSE
-gbr = model.grid_search_gradient_boost(X_train, X_test, y_train, y_test)
-print(gbr.best_params_, np.sqrt(np.abs(gbr.best_score_)))
-scoreFeaturesPop = gbr.score(X_test, y_test)
-y_pred = gbr.predict(X_test)
-rmseFeaturesPop = np.sqrt(mean_squared_error(y_test, y_pred))
-print(scoreFeaturesPop, rmseFeaturesPop)'''
-
-
-# Explore gradient boosting regressor hyperparameters
-'''start = time.time()
-model.plot_gradient_boost_reg_hyperparameters(X_train, X_test, y_train, y_test, "pop")
-end = time.time()
-print(end-start)'''
-
-# Gradient boosting regressor model
-gradient_boost_reg_results, feature_importances = model.get_gradient_boost_reg_results( \
-                            0.05, 120, 3, X_train, X_test, y_train, y_test)
-print(gradient_boost_reg_results)
-# 0.4659, 0.1711
-
-# Plot feature importances
-fig, ax = plt.subplots(figsize=(12, 8))
-filteredWords = np.array(filter_profanity(lyricsAndFeaturesPop.columns.difference(['valence'])))
-plots.make_feature_importance_plot(feature_importances, filteredWords, 30, ax)
-fig.suptitle("Top Feature Importances of Pop (all features)", fontsize=20)
-fig.subplots_adjust(top=0.9)
-fig.savefig("images/featureImportances_featurespop.png")
-
-
-# Multilayer perceptron
-score = model.get_mlp_score(10, X_train, X_test, y_train, y_test)
-print(score)
-# 0.2244
 
 
 # Run classifier models for rock/metal genres
@@ -479,8 +402,85 @@ print(score)
 # 0.2082
 
 
+# Run classifier models for pop genre
+lyricsAndFeaturesBinPop = lyricsAndFeaturesBin[[contains_genre_type(g, ["pop"]) \
+                                for g in lyricsAndFeaturesBin['spotify_genre']]]
+lyricsAndFeaturesBinPop.drop(["spotify_genre"], axis=1, inplace=True)
+X = lyricsAndFeaturesBinPop[lyricsAndFeaturesBinPop.columns.difference(['valence'])]
+y = lyricsAndFeaturesBinPop['valence']
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
+
+
+# Logistic regression model
+logistic_regression_results = model.get_logistic_regression_results(X_train, \
+                                        X_test, y_train, y_test)
+print(logistic_regression_results)
+# 0.6796, 0.5280, 0.5646
+
+# Explore gradient boosting classifier hyperparameters
+'''start = time.time()
+model.plot_gradient_boost_class_hyperparameters(X_train, X_test, y_train, y_test, "pop")
+end = time.time()
+print(end-start)'''
+
+# Gradient boosting classifier model
+gradient_boost_class_results = model.get_gradient_boost_class_results(0.1, 140, 3, \
+                                        X_train, X_test, y_train, y_test)
+print(gradient_boost_class_results)
+# 0.7821, 0.5954, 0.7548
+
+
+# Run regressor models for pop genre
+lyricsAndFeaturesPop = lyricsAndFeatures[[contains_genre_type(g, ["pop"]) \
+                            for g in lyricsAndFeatures['spotify_genre']]]
+lyricsAndFeaturesPop.drop(["spotify_genre"], axis=1, inplace=True)
+X = lyricsAndFeaturesPop[lyricsAndFeaturesPop.columns.difference(['valence'])]
+y = lyricsAndFeaturesPop['valence']
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
+
+# Baseline RMSE is the standard deviation
+print(lyricsAndFeaturesPop['valence'].std())
+# 0.2379
+
+
+'''# Grid search gradient boosting regressor hyperparameters and return model score and RMSE
+gbr = model.grid_search_gradient_boost(X_train, X_test, y_train, y_test)
+print(gbr.best_params_, np.sqrt(np.abs(gbr.best_score_)))
+scoreFeaturesPop = gbr.score(X_test, y_test)
+y_pred = gbr.predict(X_test)
+rmseFeaturesPop = np.sqrt(mean_squared_error(y_test, y_pred))
+print(scoreFeaturesPop, rmseFeaturesPop)'''
+
+
+# Explore gradient boosting regressor hyperparameters
+'''start = time.time()
+model.plot_gradient_boost_reg_hyperparameters(X_train, X_test, y_train, y_test, "pop")
+end = time.time()
+print(end-start)'''
+
+# Gradient boosting regressor model
+gradient_boost_reg_results, feature_importances = model.get_gradient_boost_reg_results( \
+                            0.05, 120, 3, X_train, X_test, y_train, y_test)
+print(gradient_boost_reg_results)
+# 0.4659, 0.1711
+
+# Plot feature importances
+fig, ax = plt.subplots(figsize=(12, 8))
+filteredWords = np.array(filter_profanity(lyricsAndFeaturesPop.columns.difference(['valence'])))
+plots.make_feature_importance_plot(feature_importances, filteredWords, 30, ax)
+fig.suptitle("Top Feature Importances of Pop (all features)", fontsize=20)
+fig.subplots_adjust(top=0.9)
+fig.savefig("images/featureImportances_featurespop.png")
+
+
+# Multilayer perceptron
+score = model.get_mlp_score(10, X_train, X_test, y_train, y_test)
+print(score)
+# 0.2244
+
+
 try:
-    del lyricsAndFeatures, lyricsAndFeaturesPop, lyricsAndFeaturesRock,
-    lyricsAndFeaturesBinPop, lyricsAndFeaturesBinRock
+    del lyricsAndFeatures, lyricsAndFeaturesRock, lyricsAndFeaturesPop,
+    lyricsAndFeaturesBinRock, lyricsAndFeaturesBinPop
 except:
     pass
