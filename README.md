@@ -76,11 +76,6 @@ Categorical: songID, performer, song, spotify genre, spotify track ID, spotify t
 
 Numeric: spotify track duration ms, track duration, spotify track popularity, danceability, key, energy, loudness, speechiness, acousticness, instrumentalness, liveness, valence, tempo
 
-### Web scraping
-
-For part 3, to get the lyrics data to add to the models, I web scraped the lyrics of each song from Genius using BeautifulSoup.  Using the song title and artist name from the features table and cleaning up the anomalies I could, I generated the URL of the Genius page containing the lyrics of a given song.  For every single song, the lyric page URL is in the format of https://genius.com/{artist}-{title}-lyrics.  Then, I used threading to parallelize the request processes and wrote each set of scraped lyrics into a hashmap, with the song ID as the key.  This operation is thread safe because there are no conflicting keys and no simultaneous updates of the same variable.  If the lyrics page was formatted in a different way than normal, the URL request would not work and it would catch the exception, returning a filler list to show the song and URL that failed.  This process took an extremely long time but once it was finished it outputted all the lyrics into a neat hashmap, which was then converted into a dataframe and stored on the hard disk.
-
-
 &nbsp;
 
 ## EDA: Single Plots
@@ -365,7 +360,13 @@ Recall: 0.8265
 
 &nbsp;
 
-## Feature Engineering + NLP: NLP Pipeline
+## Lyrics Feature Engineering + NLP
+
+### Web Scraping
+
+For part 3, to get the lyrics data to add to the models, I web scraped the lyrics of each song from Genius using BeautifulSoup.  Using the song title and artist name from the features table and cleaning up the anomalies I could, I generated the URL of the Genius page containing the lyrics of a given song.  For every single song, the lyric page URL is in the format of https://genius.com/{artist}-{title}-lyrics.  Then, I used threading to parallelize the request processes and wrote each set of scraped lyrics into a hashmap, with the song ID as the key.  This operation is thread safe because there are no conflicting keys and no simultaneous updates of the same variable.  If the lyrics page was formatted in a different way than normal, the URL request would not work and it would catch the exception, returning a filler list to show the song and URL that failed.  This process took an extremely long time but once it was finished it outputted all the lyrics into a neat hashmap, which was then converted into a dataframe and stored on the hard disk.
+
+### NLP Pipeline
 
 From the scraped lyrics, I processed the lyrics into a corpus.  This was done by first importing the saved file stored from the web scraping earlier.  From this dataframe, the invalid songs were removed and the lines were cleaned by stripping the ends, converting the string into an array of strings, and individually cleaning each line (item in the array).  After the lines were cleaned, they were joined back into a string.  Then, using NLTK (natural language toolkit), the lyrics were tokenized, regex parsed, and stemmed using SnowballStemmer.  The stopwords and punctuation were filtered out.  When all the NLP processing was done, the items were combined to create the corpus, which was run through a tf-idf vectorizer to get the tf-idf matrix.  This matrix was stored as a Pandas dataframe in order to match the columns to the words in the vocabluary.
 
